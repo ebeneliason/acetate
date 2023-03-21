@@ -10,15 +10,13 @@ Acetate is a visual debugging utility for use with the [Playdate](https://play.d
 specifically optimized for use with the `playdate.graphics.sprite` class (and subclasses). It wraps
 the built-in functionality for debug drawing, adding:
 
-1.  the ability to perform debug drawing from directly within your sprite classes
-2.  out-of-the-box visual debugging for your sprite objects: bounding boxes, orientations,
-    center points, etc.
-3.  controls for cycling through all extant sprites to display live debug info for each
-4.  rich debug string output with a custom monospaced font designed specifically for debugging
-5.  the ability to pause your game while performing visual debugging
-6.  a host of keyboard shortcuts that can be used to toggle Acetate's debugging UI and various
-    layers of debugging information
-7.  a simple configuration system that gives you full control over how it looks and behaves
+1.  The ability to do debug drawing from directly within your sprite classes
+2.  Out-of-the-box visualizations for your sprites: bounding boxes, center points, rotation, etc.
+3.  Controls for cycling through your sprites one by one
+4.  Rich debug strings displayed in a custom monospaced font
+5.  The option to pause your game while performing visual debugging
+6.  Keyboard shortcuts for toggling debug mode and various visualization options
+7.  Settings that let you decide how it looks and behaves
 
 _Playdate is a registered trademark of [Panic](https://panic.com)._
 
@@ -28,9 +26,9 @@ _Playdate is a registered trademark of [Panic](https://panic.com)._
 
 1. Clone this repo into your project folder (e.g. inside `source`).
 2. Import it into your project within your `main.lua` file.
-3. Move the `Acetate-Mono-Bold.fnt` file into your `source/fonts/` directory.
+3. Move the `Acetate-Mono-Bold.fnt` file into your `source/fonts/` folder.
 
-You can wrap the import in a condition to ensure it only loads when you're using the simulator:
+You can wrap the `import` statement in a condition to ensure it only loads in the simulator:
 
 ```lua
 if playdate.isSimulator then
@@ -67,38 +65,39 @@ end
 Once you've imported Acetate in your project, you don't need to do anything else to start
 taking advantage of its features.
 
-1. Build and run your app in the Playdate simulator
-2. Press the `d` key on your keyboard
-3. Use `,` (<) and `.` (>) to cycle through individual sprites
-4. Refer to the list of keyboard shortcuts below for additional options
+1. Build and run your app in the Playdate Simulator.
+2. Press the `D` key on your keyboard to enter debug mode.
+3. Use `,` (<) and `.` (>) to cycle through individual sprites.
+4. Refer to the list of [keyboard shortcuts](#keyboard-shortcuts) below for additional options.
 
 Read on to learn how to implement custom debug drawing for your sprite classes and customize
 the debug string displayed as you cycle through them in debug mode.
 
 ### Implementing Custom Debug Drawing for Your Sprites
 
-Acetate provides a number of basic debug drawing features out-of-the-box suitable for visualizing
-basic properties common to most sprites. However, you might have a number of custom properties
-unique to your sprite that you'd like to visualize as well. Acetate makes this easy! You can
-implement the `debugDraw` function within your `playdate.graphics.sprite` subclasses and Acetate
-will ensure it gets called automatically:
+Acetate provides several debug visualizations out-of-the-box, which are suitable for showing
+basic properties common to most sprites. However, you may want to visualize custom properties
+unique to your sprite as well. Acetate makes this easy!
+
+You can implement the `debugDraw` function within your `playdate.graphics.sprite` subclasses and
+Acetate will ensure it gets called automatically:
 
 ```lua
 function MySprite:debugDraw()
-	-- perform custom debug drawing here
+    -- perform custom debug drawing here
 end
 ```
 
-Acetate sets up the graphics context for you automatically so you don't have to. Specifically:
+Acetate prepares the graphics context for you automatically:
 
 -   The color will be set to `kColorWhite` (the color used for all debug drawing).
--   The line width will be set to 1.
+-   The line width will be set to `1`.
 -   The drawing offset will be set according to the position of your sprite, so you can do all
-    drawing relative to your sprite (just like in `draw` itself).
+    drawing relative to your sprite (just like in your `draw` function).
 
-Anything you add to this function will be drawn by default in debug mode. You can toggle it
-on/off using the `m` key, or set `Acetate.customDebugDrawing` to `true` or `false` from within
-your code.
+Anything you draw within this function will be appear in debug mode. You can toggle your custom
+debug drawing on/off using the `m` key, or set `Acetate.customDebugDrawing` to `true` or `false`
+from within your code.
 
 ### Reusing Acetate's Built-in Debug Visualizations
 
@@ -113,7 +112,8 @@ that they appear even when they are turned off globally.
 
 ```lua
 function MySprite:debugDraw()
-	self:drawOrientation()
+    self:drawOrientation()
+    -- perform additional debug drawing here
 end
 ```
 
@@ -122,36 +122,30 @@ The following built-in debug drawing functions are supported:
 -   **`drawBounds`:** Draw the sprite's bounding box
 -   **`drawCenter`:** Draw the sprite's center point
 -   **`drawOrientation`:** Draw an indicator of the sprite's current rotation
--   **`drawCollideRect`:** Draw the sprite's collision rect, if set (this option is also provided
-    by the simulator itself, and as such can appear as a second debug layer in another color).
+-   **`drawCollideRect`:** Draw the sprite's collision rect, if set. (This option is also provided
+    by the simulator itself. You can use the simulator version to overlay collision rects in a
+    contrasting color.)
 
 ### Focusing Individual Sprites
 
-Acetate allows you to cycle through all sprites in the display list using the `,` and `.` keys in
-order to see only debug drawing info for that sprite, along with it's debug string (which can be
-toggled independently with the `/` key).
+Acetate allows you to cycle through sprites in the display list using the `,` and `.` keys in order
+to see debug visualizations for one at a time. A debug string for the focused sprite is also shown
+(the debug string can be toggled with the `/` key).
 
-You can also bring a sprite into focus programmatically. This makes it easy to reveal debug drawing
-at the right time, for the right sprite.
-
-```lua
-local mySprite = MySprite()
-mySprite:makeDebugDrawFocus()
-```
-
-Or from within your sprite class itself:
+You can also focus a sprite programmatically. This makes it easy to reveal initiate debugging at the
+right time, for the right sprite.
 
 ```lua
-self:makeDebugDrawFocus()
+Acetate.setFocus(mySprite)
 ```
 
-If Acetate's debug mode isn't active when you call this function, it will toggle on automatically.
+If Acetate's debug mode isn't active when you call this function, it will be enabled automatically.
 
 ### Formatting Debug Strings
 
 Acetate displays a debug string for the focused sprite while debug mode is active. By default, this
 string indicates the size and position of the sprite. You can modify the debug string format to
-include the most useful information to your use case in two ways:
+include the most useful information for your use case in two ways:
 
 1.  **Set the default.** Modify the `Acetate.defaultDebugStringFormat` setting to change the
     debug string shown for all of your sprites.
@@ -159,8 +153,11 @@ include the most useful information to your use case in two ways:
 2.  **Set custom strings.** Set the `debugFormatString` or `debugString` properties directly on
     your sprites, such as in their `init` functions. The former behaves just like the default debug
     string, performing substitutions as described in the table below. The latter will display the
-    provided string directly, which is slightly more performant depending on your needs at the cost
-    of extra work to format the string yourself.
+    provided string verbatim, which is slightly more performant at the cost of having to format the
+    string yourself.
+
+All substitution patterns begin with a dollar sign (`$`) followed by either one or two alphabetical
+characters. They are case sensitive.
 
 | Pattern | Substitution                                 |
 | ------- | -------------------------------------------- |
@@ -193,26 +190,26 @@ the settings object or override the defaults in your project e.g. `Acetate.toggl
 
 | Key | Function                                                                            |
 | --- | ----------------------------------------------------------------------------------- |
-| d   | Toggle Acetate's visual [D]ebugging mode on/off                                     |
-| c   | Toggle drawing of sprite [C]enters while in debug mode                              |
-| b   | toggle drawing of sprite [B]ounds while in debug mode                               |
-| v   | toggle drawing of sprite orientation [V]ectors while in debug mode                  |
-| x   | toggle drawing of sprite colli[X]ion rects while in debug mode                      |
-| z   | toggle debug drawing of invi[Z]ible sprites while in debug mode                     |
-| m   | toggle the use of custo[M] sprite `debugDraw` functions defined in your own sprites |
-| f   | toggle the [F]PS display on/off                                                     |
+| D   | Toggle Acetate's visual [D]ebugging mode on/off                                     |
+| C   | Toggle drawing of sprite [C]enters while in debug mode                              |
+| B   | toggle drawing of sprite [B]ounds while in debug mode                               |
+| V   | toggle drawing of sprite orientation [V]ectors while in debug mode                  |
+| X   | toggle drawing of sprite colli[X]ion rects while in debug mode                      |
+| Z   | toggle debug drawing of invi[Z]ible sprites while in debug mode                     |
+| M   | toggle the use of custo[M] `debugDraw` functions defined in your own sprites        |
+| F   | toggle the [F]PS display on/off                                                     |
 | /   | toggle display of the debug string [?] while focused on an individual sprite        |
 | .   | cycle forward [>] through sprites to focus them one by one and show additional info |
 | ,   | cycle backward [<] through sprites                                                  |
-| p   | [P]ause/unpause the game while in debug mode                                        |
+| P   | [P]ause/unpause the game while in debug mode                                        |
 
 ## Settings
 
 Acetate's settings object allows you to change a wide array of options to configure the debugging
 experience. You can change the configuration in one of two ways:
 
-1.  **Edit the file.** You can edit the settings file in the Acetate directory in your project to
-    update the values that will apply when importing Acetate into your project.
+1.  **Edit the file.** You can edit the `settings.lua` file in the Acetate directory of your project
+    to change the defaults that will apply when launching your app.
 
 2.  **Set at runtime.** You can update the settings object directly at runtime from within your
     app, e.g. `Acetate.color = {0, 255, 0, 0.8}` and so on.
@@ -231,33 +228,33 @@ The following settings are available:
 
 | Setting              | Type    | Default | Description                                                                              |
 | -------------------- | ------- | ------- | ---------------------------------------------------------------------------------------- |
-| `drawCenters`        | boolean | `true`  | Whether center points are drawn for all sprites when debug mode is enabled.              |
-| `drawBounds`         | boolean | `true`  | Whether bounding rects are drawn for all sprites when debug mode is enabled.             |
-| `drawOrientations`   | boolean | `true`  | Whether orientation orbs are drawn for all sprites when debug mode is enabled.           |
-| `drawCollideRects`   | boolean | `false` | Whether collision rects are drawn for all sprites when debug mode is enabled.            |
-| `customDebugDrawing` | boolean | `true`  | Whether custom debug drawing, implemented in spites `debugDraw` functions, is performed. |
+| `drawCenters`        | boolean | `true`  | Whether center points are drawn for all sprites while debug mode is enabled.             |
+| `drawBounds`         | boolean | `true`  | Whether bounding rects are drawn for all sprites while debug mode is enabled.            |
+| `drawOrientations`   | boolean | `true`  | Whether orientation orbs are drawn for all sprites while debug mode is enabled.          |
+| `drawCollideRects`   | boolean | `false` | Whether collision rects are drawn for all sprites while debug mode is enabled.           |
+| `customDebugDrawing` | boolean | `true`  | Whether custom debug drawing, implemented in sprite `debugDraw` functions, is performed. |
 
 ### Debug Text
 
-| Setting                    | Type    | Default                            | Description                                                                                                                                                   |
-| -------------------------- | ------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `showFPS`                  | boolean | `true`                             | Whether to show the current FPS (frames per second).                                                                                                          |
-| `showFPSAlways`            | boolean | `false`                            | Whether to show the FPS (frames per second) even when debug mode isn't enabled.                                                                               |
-| `showDebugString`          | boolean | `true`                             | Whether the debug string is show when focused on a single sprite in debug mode.                                                                               |
-| `defaultDebugStringFormat` | string  | `"$n\nX: $x\nY: $y\nW: $w\nH: $h"` | The debug string format used for any sprites which don't define their own. See [Debug String Formats](#formatting-debug-strings) for details.                 |
-| `debugStringPosition`      | {x, y}  | `{2, 14}`                          | A table containing the x and y position at which the debug string is drawn. By default, it draws just beneath the FPS counter at the left edge of the screen. |
-| `debugFontPath`            | string  | `"fonts/Acetate-Mono-Bold"`        | The path to the font to use for displaying the debug string.                                                                                                  |
+| Setting                    | Type    | Default                            | Description                                                                                                                                                         |
+| -------------------------- | ------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `showFPS`                  | boolean | `true`                             | Whether to show the current FPS (frames per second).                                                                                                                |
+| `showFPSAlways`            | boolean | `false`                            | Whether to show the FPS (frames per second) even while debug mode isn't enabled.                                                                                    |
+| `showDebugString`          | boolean | `true`                             | Whether the debug string is shown while focused on a single sprite in debug mode.                                                                                   |
+| `defaultDebugStringFormat` | string  | `"$n\nX: $x\nY: $y\nW: $w\nH: $h"` | The debug string format used for any sprites which don't define their own. See [Debug String Formats](#formatting-debug-strings) for details.                       |
+| `debugStringPosition`      | {x,y}   | `{2, 14}`                          | A table containing the x and y position at which the debug string is drawn. By default, it draws just beneath the FPS counter at the top left corner of the screen. |
+| `debugFontPath`            | string  | `"fonts/Acetate-Mono-Bold"`        | The path to the font to use for displaying the debug string.                                                                                                        |
 
 ### Drawing Options
 
-| Setting                   | Type         | Default  | Description                                                                                                                                              |
-| ------------------------- | ------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `color`                   | {r, g, b, a} | cyan 85% | A table containing RGB values ([0,255]) and an alpha value ([0,1]) describing the color used for debug drawing.                                          |
-| `lineWidth`               | number       | `1`      | The default line width set for the debug drawing graphics context.                                                                                       |
-| `CenterRadius`            | number       | `2`      | The radius of the dot drawn when `drawCenters` is true.                                                                                                  |
-| `orientationOrbScale`     | number       | `0.5`    | Orientation orbs are drawn in proportion to the sprite they belong to. This setting describes their _diameter_ with respect to their shortest dimension. |
-| `minOrientationOrbRadius` | number       | `10`     | This minimum radius at which the orbs are drawn for smaller sprites, for clarity.                                                                        |
-| `onlyDrawRotatedOrbs`     | boolean      | `true`   | Draw orientation orbs only for sprites which have a non-zero rotation.                                                                                   |
+| Setting                   | Type      | Default  | Description                                                                                                                                                     |
+| ------------------------- | --------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `color`                   | {r,g,b,a} | cyan 75% | A table containing RGB values ([0,255]) and an alpha value ([0,1]) describing the color used for debug drawing.                                                 |
+| `lineWidth`               | number    | `1`      | The default line width set for the debug drawing graphics context.                                                                                              |
+| `centerRadius`            | number    | `2`      | The radius of the dot drawn when `drawCenters` is true.                                                                                                         |
+| `orientationOrbScale`     | number    | `0.5`    | Orientation orbs are drawn in proportion to the sprite they belong to. This setting describes their _diameter_ with respect to the sprite's shortest dimension. |
+| `minOrientationOrbRadius` | number    | `10`     | The minimum radius at which the orbs are drawn for smaller sprites, to aid clarity.                                                                             |
+| `onlyDrawRotatedOrbs`     | boolean   | `true`   | Draw orientation orbs only for sprites which have a non-zero rotation. This helps keeps the view uncluttered when sprites aren't being rotated.                 |
 
 ### Setting Focus
 
@@ -292,10 +289,10 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
     the Acetate files are included in the directory, and that you've imported Acetate via the
     correct path relative to your source file.
 
-2.  **Keyboard handler.** Acetate implements Playdate's `keyPressed` handler, which provides
+2.  **Keyboard handler.** Acetate implements the `playdate.keyPressed` function, which provides
     shortcuts for, among other things, toggling its debug overlay. If you implement the
     `keyPressed` handler yourself, it will override Acetate's. In this case, you can call
-    Acetate's key press handler manually from your own:
+    Acetate's from your own:
 
     ```lua
     function playdate.keyPressed(key)
@@ -305,10 +302,9 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
     end
     ```
 
-3.  **Debug draw.** Acetate implements Playdate's `debugDraw` function in order to render into
+3.  **Debug draw.** Acetate implements the `playdate.debugDraw` function in order to render into
     the debug layer of the simulator. If you implement the `debugDraw` function yourself, it
-    will override Acetate's. In this case, you can call Acetate's `debugDraw` function
-    manually from your own:
+    will override Acetate's. In this case, you can call Acetate's from your own:
     ```lua
     function playdate.debugDraw()
         -- let Acetate do its own debug drawing
@@ -316,9 +312,9 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
         -- perform additional debug drawing here
     end
     ```
-    Note you may not need to implement `debugDraw` yourself if you leverage Acetate's support
-    for implementing `debugDraw` within your individual sprite classes. (You will, however,
-    need to do your own debug drawing for any debugging not associated with sprites.)
+    Note that you may not need to implement `playdate.debugDraw` yourself if you leverage Acetate's
+    support for implementing `debugDraw` within your individual sprite classes. (You will, however,
+    need to do your own debug drawing for anything not associated with sprites.)
 
 ## License
 
