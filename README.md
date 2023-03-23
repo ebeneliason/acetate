@@ -333,9 +333,9 @@ The following settings are available:
 | `toggleCustomDrawKey`   | character | `"m"`   | Key used to toggle use of custo[M] sprite `debugDraw` functions.                |
 | `toggleFPSKey`          | character | `"f"`   | Key used to toggle [F]PS display on/off.                                        |
 | `toggleSpriteCountKey`  | character | `"n"`   | Key used to toggle display of the total sprite count.                           |
-| `toggleDebugString`     | character | `"/"`   | Toggle debug string display [?] while focused a single sprite.                  |
-| `cycleForwardKey`       | character | `"."`   | Key used to cycle forward [>] through sprites, one by one.                      |
-| `cycleBackwardKey`      | character | `","`   | Key used to cycle backward [<] through sprites, one by one.                     |
+| `toggleDebugString`     | character | `"?"`   | Key used to toggle debug string display while focused a single sprite.          |
+| `cycleForwardKey`       | character | `">"`   | Key used to cycle forward through sprites, one by one.                          |
+| `cycleBackwardKey`      | character | `"<"`   | Key used to cycle backward through sprites, one by one.                         |
 | `togglePauseKey`        | character | `"p"`   | Key used to [P]ause/unpause the game while in debug mode.                       |
 | `captureScreenshotKey`  | character | `"q"`   | Key used to [Q]uick-capture a screenshot.                                       |
 
