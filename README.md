@@ -60,6 +60,8 @@ end
     import '../toyboxes/toyboxes.lua'
     ```
 
+5.  Move the `Acetate-Mono-*.fnt` files into your `source/fonts/` folder.
+
 ## Usage
 
 ### Introduction
