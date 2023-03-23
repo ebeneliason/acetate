@@ -339,7 +339,7 @@ The following settings are available:
 | `togglePauseKey`        | character | `"p"`   | Key used to [P]ause/unpause the game while in debug mode.                       |
 | `captureScreenshotKey`  | character | `"q"`   | Key used to [Q]uick-capture a screenshot.                                       |
 
-### Troubleshooting
+## Troubleshooting
 
 If you can't activate Acetate debug mode for your app in the simulator, check the following:
 
