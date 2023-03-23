@@ -28,7 +28,7 @@ _Playdate is a registered trademark of [Panic](https://panic.com)._
 
 1. Clone this repo into your project folder (e.g. inside `source`).
 2. Import it into your project within your `main.lua` file.
-3. Move the `Acetate-Mono-Bold.fnt` file into your `source/fonts/` folder.
+3. Move the `Acetate-Mono-*.fnt` files into your `source/fonts/` folder.
 
 You can wrap the `import` statement in a condition to ensure it only loads in the simulator:
 
