@@ -18,6 +18,8 @@ the built-in functionality for debug drawing, adding:
 6.  Keyboard shortcuts for toggling debug mode and various visualization options
 7.  Settings that let you decide how it looks and behaves
 
+![Acetate debug visualizations](./resources/screenshots/acetate_debugging_screenshots.png?raw=true)
+
 _Playdate is a registered trademark of [Panic](https://panic.com)._
 
 ## Installation
@@ -95,8 +97,8 @@ Acetate prepares the graphics context for you automatically:
 -   The drawing offset will be set according to the position of your sprite, so you can do all
     drawing relative to your sprite (just like in your `draw` function).
 
-Anything you draw within this function will be appear in debug mode. You can toggle your custom
-debug drawing on/off using the `m` key, or set `Acetate.customDebugDrawing` to `true` or `false`
+Anything you draw within this function will appear in debug mode. You can toggle your custom
+debug drawing on/off using the `M` key, or set `Acetate.customDebugDrawing` to `true` or `false`
 from within your code.
 
 ### Reusing Acetate's Built-in Debug Visualizations
@@ -132,8 +134,8 @@ Acetate allows you to cycle through sprites in the display list using the `,` an
 to see debug visualizations for one at a time. A debug string for the focused sprite is also shown
 (the debug string can be toggled with the `/` key).
 
-You can also focus a sprite programmatically. This makes it easy to reveal initiate debugging at the
-right time, for the right sprite.
+You can also focus a sprite programmatically. This makes it easy to initiate visual debugging at
+the right time and for the right sprite.
 
 ```lua
 Acetate.setFocus(mySprite)
@@ -147,14 +149,14 @@ Acetate displays a debug string for the focused sprite while debug mode is activ
 string indicates the size and position of the sprite. You can modify the debug string format to
 include the most useful information for your use case in two ways:
 
-1.  **Set the default.** Modify the `Acetate.defaultDebugStringFormat` setting to change the
-    debug string shown for all of your sprites.
+1.  **Change the default.** Modify the `Acetate.defaultDebugFormatString` to change the debug
+    string shown for all of your sprites.
 
 2.  **Set custom strings.** Set the `debugFormatString` or `debugString` properties directly on
-    your sprites, such as in their `init` functions. The former behaves just like the default debug
-    string, performing substitutions as described in the table below. The latter will display the
-    provided string verbatim, which is slightly more performant at the cost of having to format the
-    string yourself.
+    your sprites, such as in their `init` functions. `debugFormatString` behaves just like the
+    `defaultDebugFormatString`, with substitutions as described in the table below. The value of
+    `debugString` will be displayed verbatim, which is slightly more performant at the cost of
+    having to format the entire string yourself.
 
 All substitution patterns begin with a dollar sign (`$`) followed by either one or two alphabetical
 characters. They are case sensitive.
@@ -182,26 +184,70 @@ characters. They are case sensitive.
 | `$v`    | Visibility as "VISIBLE" or "INVISIBLE"       |
 | `$z`    | Z-index                                      |
 
+### Debug Names for Sprites
+
+If you have just a small bit of custom identifying information you'd like to display &mdash; say,
+the number of a pin in a bowling pin rack, or the name of a particular character &mdash; but
+otherwise wish to use the default debug string settings, you can set the sprite's `debugName`
+property. If set, its value will be used instead of the default `className` of the sprite when
+cycling through sprites in debug mode. For instance:
+
+```lua
+function Pin:init(number)
+    Pin.super.init(self)
+    self.number = number
+    self.debugName = "Pin " .. number
+    -- more initialization
+end
+```
+
 ### Keyboard Shortcuts
 
 Acetate provides a number of keyboard shortcuts. You're welcome to change any of these shortcuts
 to fit your preference, or avoid conflict with other `keyPress` handlers defined elsewhere. Edit
 the settings object or override the defaults in your project e.g. `Acetate.toggleDebugKey = "0"`.
 
-| Key | Function                                                                            |
-| --- | ----------------------------------------------------------------------------------- |
-| D   | Toggle Acetate's visual [D]ebugging mode on/off                                     |
-| C   | Toggle drawing of sprite [C]enters while in debug mode                              |
-| B   | toggle drawing of sprite [B]ounds while in debug mode                               |
-| V   | toggle drawing of sprite orientation [V]ectors while in debug mode                  |
-| X   | toggle drawing of sprite colli[X]ion rects while in debug mode                      |
-| Z   | toggle debug drawing of invi[Z]ible sprites while in debug mode                     |
-| M   | toggle the use of custo[M] `debugDraw` functions defined in your own sprites        |
-| F   | toggle the [F]PS display on/off                                                     |
-| /   | toggle display of the debug string [?] while focused on an individual sprite        |
-| .   | cycle forward [>] through sprites to focus them one by one and show additional info |
-| ,   | cycle backward [<] through sprites                                                  |
-| P   | [P]ause/unpause the game while in debug mode                                        |
+| Key | Function                                                                        |
+| --- | ------------------------------------------------------------------------------- |
+| D   | Toggle Acetate's visual [D]ebugging mode on/off                                 |
+| C   | Toggle drawing of sprite [C]enters while in debug mode                          |
+| B   | toggle drawing of sprite [B]ounds while in debug mode                           |
+| V   | toggle drawing of sprite orientation [V]ectors while in debug mode              |
+| X   | toggle drawing of sprite colli[X]ion rects while in debug mode                  |
+| Z   | toggle debug drawing of invi[Z]ible sprites while in debug mode                 |
+| M   | toggle the use of custo[M] `debugDraw` functions defined in your own sprites    |
+| F   | toggle the [F]PS display on/off                                                 |
+| N   | toggle the total sprite count on/off                                            |
+| ?   | toggle display of the debug string while focused on an individual sprite        |
+| >   | cycle forward through sprites to focus them one by one and show additional info |
+| <   | cycle backward through sprites                                                  |
+| P   | [P]ause/unpause the game while in debug mode                                    |
+| Q   | [Q]uick-capture a screenshot of either the full screen or the focused sprite.   |
+
+### Screenshots
+
+Acetate also provides a shortcut for capturing instantaneous screenshots from the simulator. While
+not strictly a debug feature, it's certainly a useful tool to have in your workflow. Capture
+a screenshot by pressing the `Q` key at any time (even outside debug mode), or from within your
+code:
+
+```lua
+Acetate.captureFullScreenshot([path, filename])
+```
+
+_NOTE: Acetate's debug layer will not appear in screenshots._
+
+You can provide a destination path and filename, or let Acetate name it with a timestamp and save
+it to the currently configured `Acetate.defaultScreenshotPath`. This is `~/Desktop` by default, but
+may be changed in `settings.lua` or from within your app.
+
+If you are focused on an individual sprite while in debug mode when you activate the capture
+shortcut, Acetate will capture an image of just that sprite, rather than the full screen. You can
+also capture a screenshot of an individual sprite with:
+
+```lua
+Acetate.captureSpriteScreenshot(sprite, [path, filename])
+```
 
 ## Settings
 
@@ -234,17 +280,6 @@ The following settings are available:
 | `drawCollideRects`   | boolean | `false` | Whether collision rects are drawn for all sprites while debug mode is enabled.           |
 | `customDebugDrawing` | boolean | `true`  | Whether custom debug drawing, implemented in sprite `debugDraw` functions, is performed. |
 
-### Debug Text
-
-| Setting                    | Type    | Default                            | Description                                                                                                                                                         |
-| -------------------------- | ------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `showFPS`                  | boolean | `true`                             | Whether to show the current FPS (frames per second).                                                                                                                |
-| `showFPSAlways`            | boolean | `false`                            | Whether to show the FPS (frames per second) even while debug mode isn't enabled.                                                                                    |
-| `showDebugString`          | boolean | `true`                             | Whether the debug string is shown while focused on a single sprite in debug mode.                                                                                   |
-| `defaultDebugStringFormat` | string  | `"$n\nX: $x\nY: $y\nW: $w\nH: $h"` | The debug string format used for any sprites which don't define their own. See [Debug String Formats](#formatting-debug-strings) for details.                       |
-| `debugStringPosition`      | {x,y}   | `{2, 14}`                          | A table containing the x and y position at which the debug string is drawn. By default, it draws just beneath the FPS counter at the top left corner of the screen. |
-| `debugFontPath`            | string  | `"fonts/Acetate-Mono-Bold"`        | The path to the font to use for displaying the debug string.                                                                                                        |
-
 ### Drawing Options
 
 | Setting                   | Type      | Default  | Description                                                                                                                                                     |
@@ -256,13 +291,34 @@ The following settings are available:
 | `minOrientationOrbRadius` | number    | `10`     | The minimum radius at which the orbs are drawn for smaller sprites, to aid clarity.                                                                             |
 | `onlyDrawRotatedOrbs`     | boolean   | `true`   | Draw orientation orbs only for sprites which have a non-zero rotation. This helps keeps the view uncluttered when sprites aren't being rotated.                 |
 
+### Debug Text
+
+| Setting                    | Type    | Default                               | Description                                                                                                                                                         |
+| -------------------------- | ------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `showFPS`                  | boolean | `true`                                | Whether to show the current FPS (frames per second).                                                                                                                |
+| `FPSPersists`              | boolean | `false`                               | Whether to show the FPS (frames per second) even while debug mode isn't enabled.                                                                                    |
+| `showSpriteCount`          | boolean | `true`                                | Whether to show the total number of sprites.                                                                                                                        |
+| `spriteCountPersists`      | boolean | `false`                               | Whether to show the total number of sprites even while debug mode isn't enabled.                                                                                    |
+| `showDebugString`          | boolean | `true`                                | Whether the debug string is shown while focused on a single sprite in debug mode.                                                                                   |
+| `defaultDebugFormatString` | string  | `"$n\nX: $x\nY: $y\nW: $w\nH: $h"`    | The format used for the debug string for any sprites which don't define their own. See [Debug String Formats](#formatting-debug-strings) for details.               |
+| `alwaysShowSpriteNames`    | boolean | `true`                                | Whether to display the highlighted sprite's name even while the debug string is hidden.                                                                             |
+| `debugStringPosition`      | {x,y}   | `{2, 2}`                              | A table containing the x and y position at which the debug string is drawn. By default, it draws just beneath the FPS counter at the top left corner of the screen. |
+| `debugFontPath`            | string  | `"fonts/Acetate-Mono-Bold-Condensed"` | The path to the font to use for displaying the debug string.                                                                                                        |
+
 ### Setting Focus
 
 | Setting                 | Type    | Default | Description                                                                                                           |
 | ----------------------- | ------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
 | `focusedSprite`         | sprite  | `nil`   | The sprite that is currently focused for debug drawing. You can set this directly or call `Acetate.setFocus(sprite)`. |
-| `unfocusOnDisable`      | boolean | `true`  | When true, Acetate will revert to debug drawing for all sprites the next time it is enabled.                          |
-| `debugInvisibleSprites` | boolean | `false` | Whether to perform debug drawing for sprites which are made invisible via `setVisible(false)`.                        |
+| `retainFocusOnDisable`  | boolean | `true`  | When true, the focused sprite will remain focused the next time debug mode is entered.                                |
+| `focusInvisibleSprites` | boolean | `false` | Whether to perform debug drawing for and allow focusing of sprites which are made invisible via `setVisible(false)`.  |
+
+### Screenshots
+
+| Setting                    | Type    | Default       | Description                                                                                                                               |
+| -------------------------- | ------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `defaultScreenshotPath`    | string  | `"~/Desktop"` | The default location that all screenshots are saved unless otherwise specified.                                                           |
+| `spriteScreenshotsEnabled` | boolean | true          | Whether the capture will contain only the sprite image, not the full screen, if taken while in debug mode and focused on a single sprite. |
 
 ### Keyboard Shortcuts
 
@@ -275,11 +331,13 @@ The following settings are available:
 | `toggleCollideRectsKey` | character | `"x"`   | Key used to toggle drawing of sprite colli[X]ion rects while in debug mode.     |
 | `toggleInvisiblesKey`   | character | `"z"`   | Key used to toggle debug drawing of invi[Z]ible sprites while in debug mode.    |
 | `toggleCustomDrawKey`   | character | `"m"`   | Key used to toggle use of custo[M] sprite `debugDraw` functions.                |
-| `toggleFPSDisplay`      | character | `"f"`   | Key used to toggle [F]PS display on/off.                                        |
-| `toggleDebugString`     | character | `"/"`   | Key used to toggle debug string display [?] while focused a single sprite.      |
+| `toggleFPSKey`          | character | `"f"`   | Key used to toggle [F]PS display on/off.                                        |
+| `toggleSpriteCountKey`  | character | `"n"`   | Key used to toggle display of the total sprite count.                           |
+| `toggleDebugString`     | character | `"/"`   | Toggle debug string display [?] while focused a single sprite.                  |
 | `cycleForwardKey`       | character | `"."`   | Key used to cycle forward [>] through sprites, one by one.                      |
 | `cycleBackwardKey`      | character | `","`   | Key used to cycle backward [<] through sprites, one by one.                     |
 | `togglePauseKey`        | character | `"p"`   | Key used to [P]ause/unpause the game while in debug mode.                       |
+| `captureScreenshotKey`  | character | `"q"`   | Key used to [Q]uick-capture a screenshot.                                       |
 
 ### Troubleshooting
 
