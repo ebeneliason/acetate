@@ -18,7 +18,7 @@ the built-in functionality for debug drawing, adding:
 6.  Keyboard shortcuts for toggling debug mode and various visualization options
 7.  Settings that let you decide how it looks and behaves
 
-![Acetate debug visualizations](./resources/screenshots/acetate_debugging_screenshots.png?raw=true)
+![Acetate debug visualizations](./resources/screenshots/acetate_debug_layers.png?raw=true)
 
 _Playdate is a registered trademark of [Panic](https://panic.com)._
 
