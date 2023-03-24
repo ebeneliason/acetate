@@ -80,8 +80,6 @@ end
 
 -- implement our debug drawing method, deferring to other sprites as appropriate
 
-Acetate.debugFont = Acetate.debugFontPath and gfx.font.new(Acetate.debugFontPath) or gfx.getSystemFont(gfx.font.kVariantBold)
-
 function Acetate.debugDraw()
     -- call the wrapped debugDraw version, if present
     if Acetate._debugDraw then Acetate._debugDraw() end
@@ -190,6 +188,26 @@ if playdate.debugDraw then
 end
 playdate.debugDraw = Acetate.debugDraw
 
+-- load the debug font
+function Acetate.loadDebugFont()
+
+    if Acetate.debugFontPath then
+        -- check the canonical fonts directory first
+        Acetate.debugFont = gfx.font.new(Acetate.debugFontPath)
+        if Acetate.debugFont then return end
+
+        -- check the toybox assets directory next
+        local toyboxAssetsDir = "toybox_assets/github-dot-com/ebeneliason/acetate/"
+        Acetate.debugFont = gfx.font.new(toyboxAssetsDir .. Acetate.debugFontPath)
+        if Acetate.debugFont then return end
+    end
+
+    -- use the system font as a fallback
+    print("WARNING: Acetate fonts could not be found. Falling back to system font.")
+    print("Please double-check your `debugFontPath` setting and font file installations.")
+    Acetate.debugFont = gfx.getSystemFont(gfx.font.kVariantBold)
+end
+Acetate.loadDebugFont()
 
 -- perform debug string substitutions using the format string specified by the sprite,
 -- if provided, and our default format string otherwise. By necessity, this needs to

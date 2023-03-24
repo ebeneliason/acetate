@@ -18,7 +18,7 @@ the built-in functionality for debug drawing, adding:
 6.  Keyboard shortcuts for toggling debug mode and various visualization options
 7.  Settings that let you decide how it looks and behaves
 
-![Acetate debug visualizations](./resources/screenshots/acetate_debug_layers.png?raw=true)
+![Acetate debug visualizations](./screenshots/acetate_debug_layers.png?raw=true)
 
 _Playdate is a registered trademark of [Panic](https://panic.com)._
 
@@ -50,7 +50,7 @@ end
 3.  Add Acetate to your project
 
     ```console
-    toybox add ebeneliason/acetate
+    toybox add acetate
     toybox update
     ```
 
@@ -59,8 +59,6 @@ end
     ```lua
     import '../toyboxes/toyboxes.lua'
     ```
-
-5.  Move the `Acetate-Mono-*.fnt` files into your `source/fonts/` folder.
 
 ## Usage
 
