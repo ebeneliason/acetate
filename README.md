@@ -101,6 +101,15 @@ Anything you draw within this function will appear in debug mode. You can toggle
 debug drawing on/off using the `M` key, or set `Acetate.customDebugDrawing` to `true` or `false`
 from within your code.
 
+NOTE: Because fonts are rendered as images and tend to be black-on-white, regular use of `drawText`
+variants will likely not appear. To draw text in `debugDraw`, change the image drawing mode so
+that your text will render in `kColorWhite` as follows:
+
+```lua
+gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+Acetate.debugFont:drawText("This text will render in the debug layer!", x, y)
+```
+
 ### Reusing Acetate's Built-in Debug Visualizations
 
 Acetate provides a handful of extensions to the sprite class specifically designed for drawing
