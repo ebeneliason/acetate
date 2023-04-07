@@ -23,13 +23,13 @@ end
 function gfx.sprite:drawOrientation()
     local x, y = self:getLocalCenter()
     local degrees = self:getRotation()
-    local length = math.max(Acetate.minOrientationOrbRadius, math.min(
+    local radius = math.max(Acetate.minOrientationOrbRadius, math.min(
         self.width * Acetate.orientationOrbScale / 2,
         self.height * Acetate.orientationOrbScale / 2))
-    gfx.drawCircleAtPoint(x, y, length)
+    gfx.drawCircleAtPoint(x, y, radius)
     gfx.drawLine(x, y,
-        x + length * math.cos(math.rad(degrees)),
-        y + length * math.sin(math.rad(degrees)))
+        x + radius * math.cos(math.rad(degrees)),
+        y + radius * math.sin(math.rad(degrees)))
 end
 
 -- sprite extensions for determining local and world centers
