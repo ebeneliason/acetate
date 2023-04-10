@@ -113,14 +113,11 @@ function Acetate.debugDraw()
 
         -- show shortcuts or shortcut hint if there are no focused sprites
         if sprites and not Acetate.focusedSprite then
-            gfx.pushContext()
-            gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
             if Acetate.showShortcuts then
                 s = s .. Acetate.shortcutString()
             else
                 s = s .. "? for help"
             end
-            gfx.popContext()
         end
 
         -- loop over all the sprites
