@@ -109,31 +109,28 @@ end
 
 -- return a multi-line string listing all available shortcuts
 function Acetate.shortcutString()
-    if Acetate.showShortcuts then
-        -- special cases for a few shortcuts with mnemonics pertaining to the shift-keyed symbol
-        local cycleBackwardKey =         Acetate.cycleBackwardKey:gsub(",",  "<")
-        local cycleForwardKey =           Acetate.cycleForwardKey:gsub("%.", ">")
-        local toggleDebugStringKey = Acetate.toggleDebugStringKey:gsub("/",  "?")
+    -- special cases for a few shortcuts with mnemonics pertaining to the shift-keyed symbol
+    local cycleBackwardKey =         Acetate.cycleBackwardKey:gsub(",",  "<")
+    local cycleForwardKey =           Acetate.cycleForwardKey:gsub("%.", ">")
+    local toggleDebugStringKey = Acetate.toggleDebugStringKey:gsub("/",  "?")
 
-        local shortcutString =
-            "[" .. Acetate.toggleCentersKey      .. "] centers\n" ..
-            "[" .. Acetate.toggleBoundsKey       .. "] bounds\n" ..
-            "[" .. Acetate.toggleOrientationsKey .. "] orientations\n" ..
-            "[" .. Acetate.toggleCollideRectsKey .. "] collide rects\n" ..
-            "[" .. Acetate.toggleInvisiblesKey   .. "] invisible sprites\n" ..
-            "[" .. Acetate.toggleCustomDrawKey   .. "] custom debug draws\n" ..
-            "[" .. toggleDebugStringKey          .. "] sprite info\n" ..
-            "[" .. Acetate.toggleFPSKey   .. "] FPS\n" ..
-            "[" .. Acetate.toggleSpriteCountKey  .. "] sprite count\n" ..
-            "\n"..
-            "[" .. cycleForwardKey               .. "] Next\n" ..
-            "[" .. cycleBackwardKey              .. "] Back\n" ..
-            "\n"..
-            "[" .. Acetate.togglePauseKey        .. "] Pause\n" ..
-            "[" .. Acetate.captureScreenshotKey  .. "] Screenshot\n" ..
-            "[?] Help\n"
+    local shortcutString =
+        "[" .. Acetate.toggleCentersKey      .. "] centers\n" ..
+        "[" .. Acetate.toggleBoundsKey       .. "] bounds\n" ..
+        "[" .. Acetate.toggleOrientationsKey .. "] orientations\n" ..
+        "[" .. Acetate.toggleCollideRectsKey .. "] collide rects\n" ..
+        "[" .. Acetate.toggleInvisiblesKey   .. "] invisible sprites\n" ..
+        "[" .. Acetate.toggleCustomDrawKey   .. "] custom debug draws\n" ..
+        "[" .. toggleDebugStringKey          .. "] sprite info\n" ..
+        "[" .. Acetate.toggleFPSKey   .. "] FPS\n" ..
+        "[" .. Acetate.toggleSpriteCountKey  .. "] sprite count\n" ..
+        "\n"..
+        "[" .. cycleForwardKey               .. "] Next\n" ..
+        "[" .. cycleBackwardKey              .. "] Back\n" ..
+        "\n"..
+        "[" .. Acetate.togglePauseKey        .. "] Pause\n" ..
+        "[" .. Acetate.captureScreenshotKey  .. "] Screenshot\n" ..
+        "[?] Help\n"
 
-        return shortcutString
-    end
+    return shortcutString
 end
-
