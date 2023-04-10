@@ -37,7 +37,7 @@ Acetate = {
     showDebugString = true,            -- whether to show informative text when a single sprite is focused sprite
     defaultDebugStringFormat =         -- comment and/or reorder lines below to adjust the format; see
                                        -- `formatDebugStringForSprite` for additional substitution options
-        "$n   \n"     ..               --    class name
+        "$n   \n"     ..               --    class name or `debugName` if provided
         "X: $x\n"     ..               --    X position
         "Y: $y\n"     ..               --    Y position
         "W: $w\n"     ..               --    width

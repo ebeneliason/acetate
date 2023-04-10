@@ -113,10 +113,10 @@ Acetate.debugFont:drawText("This text will render in the debug layer!", x, y)
 ### Reusing Acetate's Built-in Debug Visualizations
 
 Acetate provides a handful of extensions to the sprite class specifically designed for drawing
-debug info for common sprite properties. You can toggle these on/off globally using the keyboard
-shortcuts or Acetate settings, but occasionally you'll want certain features for particular types
-of sprites and not others. For example, you might want to show orientation orbs _only_ for
-sprites which rotate within your game.
+debug info for common sprite properties. You can toggle these on/off globally using the
+[keyboard shortcuts](#keyboard-shortcuts) or Acetate [settings](#settings), but occasionally
+you'll want certain features for particular types of sprites and not others. For example, you might
+want to show orientation orbs _only_ for sprites which rotate within your game.
 
 You can call any of Acetate's debug draw functions from your own sprite's `debugDraw` function so
 that they appear even when they are turned off globally.
@@ -172,10 +172,10 @@ characters. They are case sensitive.
 
 | Pattern | Substitution                                 |
 | ------- | -------------------------------------------- |
-| `$n`    | Class name                                   |
+| `$n`    | Class name, or `debugName` if provided       |
 | `$p`    | Position coordinate in the form `(x, y)`     |
-| `$x`    | Y position                                   |
-| `$y`    | X position                                   |
+| `$x`    | X position                                   |
+| `$y`    | Y position                                   |
 | `$w`    | Width                                        |
 | `$h`    | Height                                       |
 | `$c`    | Center coordinate in local sprite space      |
@@ -216,22 +216,22 @@ Acetate provides a number of keyboard shortcuts. You're welcome to change any of
 to fit your preference, or avoid conflict with other `keyPress` handlers defined elsewhere. Edit
 the settings object or override the defaults in your project e.g. `Acetate.toggleDebugKey = "0"`.
 
-| Key | Function                                                                        |
-| --- | ------------------------------------------------------------------------------- |
-| D   | Toggle Acetate's visual [D]ebugging mode on/off                                 |
-| C   | Toggle drawing of sprite [C]enters while in debug mode                          |
-| B   | toggle drawing of sprite [B]ounds while in debug mode                           |
-| V   | toggle drawing of sprite orientation [V]ectors while in debug mode              |
-| X   | toggle drawing of sprite colli[X]ion rects while in debug mode                  |
-| Z   | toggle debug drawing of invi[Z]ible sprites while in debug mode                 |
-| M   | toggle the use of custo[M] `debugDraw` functions defined in your own sprites    |
-| F   | toggle the [F]PS display on/off                                                 |
-| N   | toggle the total sprite count on/off                                            |
-| ?   | toggle display of the debug string while focused on an individual sprite        |
-| >   | cycle forward through sprites to focus them one by one and show additional info |
-| <   | cycle backward through sprites                                                  |
-| P   | [P]ause/unpause the game while in debug mode                                    |
-| Q   | [Q]uick-capture a screenshot of either the full screen or the focused sprite.   |
+| Key | Function                                                                     |
+| --- | ---------------------------------------------------------------------------- |
+| D   | Toggle Acetate's visual [D]ebugging mode on/off                              |
+| C   | Toggle drawing of sprite [C]enters while in debug mode                       |
+| B   | Toggle drawing of sprite [B]ounds while in debug mode                        |
+| V   | Toggle drawing of sprite orientation [V]ectors while in debug mode           |
+| X   | Toggle drawing of sprite colli[X]ion rects while in debug mode               |
+| Z   | Toggle debug drawing of invi[Z]ible sprites while in debug mode              |
+| M   | Toggle the use of custo[M] `debugDraw` functions defined in your own sprites |
+| F   | Toggle the [F]PS display on/off                                              |
+| N   | Toggle the total sprite count on/off                                         |
+| /   | [?] Toggle display of the debug string while focused on an individual sprite |
+| ,   | [<] Cycle forward through sprites to focus them one by one                   |
+| .   | [>] Cycle backward through sprites                                           |
+| P   | [P]ause/unpause the game while in debug mode                                 |
+| Q   | [Q]uick-capture a screenshot of either the full screen or the focused sprite |
 
 ### Screenshots
 

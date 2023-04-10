@@ -236,7 +236,7 @@ function Acetate.formatDebugStringForSprite(sprite)
     local n      = sprite.debugName or sprite.className
 
                                                        -- SUBSTITUTION KEY
-    s = s:gsub("$n",  ""  .. n)                        -- $n  | sprite class name
+    s = s:gsub("$n",  ""  .. n)                        -- $n  | sprite class name or `debugName`
     s = s:gsub("$p",  "(" .. x .. "," .. y .. ")")     -- $p  | position coord
     s = s:gsub("$x",  ""  .. x)                        -- $x  | x position
     s = s:gsub("$y",  ""  .. y)                        -- $y  | y position
