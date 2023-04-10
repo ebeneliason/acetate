@@ -57,6 +57,7 @@ function Acetate.toggleEnabled()
 end
 
 function Acetate.pause()
+    if Acetate.paused then return end
     Acetate.paused = true
     playdate.gameWillPause()
     playdate.stop()
@@ -64,6 +65,7 @@ function Acetate.pause()
 end
 
 function Acetate.unpause()
+    if not Acetate.paused then return end
     Acetate.paused = false
     playdate.gameWillResume()
     playdate.start()
