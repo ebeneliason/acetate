@@ -9,6 +9,11 @@ function Acetate.keyPressed(key)
     if key == Acetate.toggleDebugModeKey then
         Acetate.toggleEnabled()
 
+    -- allow pausing to enter debug mode
+    elseif key == Acetate.togglePauseKey then
+        Acetate.enable()
+        Acetate.togglePause()
+
     -- FPS may be toggled outside debug mode
     elseif key == Acetate.toggleFPSKey then
         Acetate.showFPS = not Acetate.showFPS
@@ -49,9 +54,6 @@ function Acetate.keyPressed(key)
 
         elseif Acetate.keyMatch(key, Acetate.cycleBackwardKey) then
             Acetate.cycleFocusBackward()
-
-        elseif key == Acetate.togglePauseKey then
-            Acetate.togglePause()
 
         elseif Acetate.keyMatch(key, "?") and not Acetate.focusedSprite then
             Acetate.showShortcuts = not Acetate.showShortcuts

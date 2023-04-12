@@ -230,7 +230,7 @@ the settings object or override the defaults in your project e.g. `Acetate.toggl
 | /   | [?] Toggle display of the debug string while focused on an individual sprite |
 | ,   | [<] Cycle forward through sprites to focus them one by one                   |
 | .   | [>] Cycle backward through sprites                                           |
-| P   | [P]ause/unpause the game while in debug mode                                 |
+| P   | [P]ause/unpause the game for/while debugging.                                |
 | Q   | [Q]uick-capture a screenshot of either the full screen or the focused sprite |
 
 ### Screenshots
