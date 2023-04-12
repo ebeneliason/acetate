@@ -59,17 +59,18 @@ end
 function Acetate.pause()
     if Acetate.paused then return end
     Acetate.paused = true
-    playdate.gameWillPause()
-    playdate.stop()
-    playdate.inputHandlers.push({}, true) -- block inputs
+    playdate.gameWillPause() -- let the game prepare
+    playdate.inputHandlers.push({}, true) -- block all inputs
+    Acetate.updateHandlerRef = playdate.update -- cease calls to update fn
+    playdate.update = function() end -- no-op
 end
 
 function Acetate.unpause()
     if not Acetate.paused then return end
     Acetate.paused = false
-    playdate.gameWillResume()
-    playdate.start()
+    playdate.gameWillResume() -- let the game prepare
     playdate.inputHandlers.pop() -- unblock inputs
+    playdate.update = Acetate.updateHandlerRef -- restore update fn
 end
 
 function Acetate.togglePause()
@@ -105,7 +106,7 @@ function Acetate.debugDraw()
         end
     end
 
-    -- abort if debug drawing isn't enabled
+    -- do debug drawing only if enabled
     if Acetate.enabled then
 
         -- refocus or release if current focus is invisible or no longer displayed
@@ -169,13 +170,6 @@ function Acetate.debugDraw()
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         Acetate.debugFont:drawText(s, Acetate.debugStringPosition.x, Acetate.debugStringPosition.y)
     gfx.popContext()
-
-
-    -- our trick to update the debug drawing requires re-pausing
-    if Acetate.paused then
-        playdate.update = Acetate.updateHandlerRef
-        playdate.stop()
-    end
 end
 
 -- install our `debugDraw` function if not already defined, storing a reference to

@@ -70,15 +70,6 @@ function Acetate.keyPressed(key)
     if Acetate.focusedSprite then
         Acetate.showShortcuts = false
     end
-
-    -- play a little trick to get the debug layer to redraw properly while Playdate is paused
-    if Acetate.paused then
-        -- suspend the main update loop by temporarily installing a no-op function, which
-        -- prevents the actual update logic from running while we unpause for one tick
-        Acetate.updateHandlerRef = playdate.update
-        playdate.update = function() end -- no-op
-        playdate.start() -- we'll call `stop()` in `Acetate.debugDraw()`…
-    end
 end
 
 -- install our `keyPressed` function if not already defined, storing a reference to
