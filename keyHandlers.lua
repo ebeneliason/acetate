@@ -72,15 +72,6 @@ function Acetate.keyPressed(key)
     end
 end
 
--- install our `keyPressed` function if not already defined, storing a reference to
--- any previously defined function which we'll call to preserve its behavior
-if playdate.keyPressed then
-    print("NOTE: Acetate is wrapping an existing `playdate.keyPressed` function.")
-    print("That function will still be called to preserve its functionality.")
-    Acetate._keyPressed = playdate.keyPressed
-end
-playdate.keyPressed = Acetate.keyPressed
-
 -- acknowledge alternate symbols that match our intended mnemonics for a few keys
 function Acetate.altSymbolForKey(key)
     symbolPairs = {

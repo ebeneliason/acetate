@@ -33,6 +33,33 @@ local geom <const> = playdate.geometry
 
 -- state management functions
 
+function Acetate.init()
+    if not playdate.isSimulator then
+        print("NOTE: Skipping initialization of Acetate outside simulator.")
+        return
+    end
+
+    Acetate.loadDebugFont()
+
+    -- install our `debugDraw` function if not already defined, storing a reference to
+    -- any previously defined function which we'll call to preserve its behavior
+    if playdate.debugDraw then
+        print("NOTE: Acetate is wrapping an existing `playdate.debugDraw` function.")
+        print("That function will still be called to preserve its functionality.")
+        Acetate._debugDraw = playdate.debugDraw
+    end
+    playdate.debugDraw = Acetate.debugDraw
+
+    -- install our `keyPressed` function if not already defined, storing a reference to
+    -- any previously defined function which we'll call to preserve its behavior
+    if playdate.keyPressed then
+        print("NOTE: Acetate is wrapping an existing `playdate.keyPressed` function.")
+        print("That function will still be called to preserve its functionality.")
+        Acetate._keyPressed = playdate.keyPressed
+    end
+    playdate.keyPressed = Acetate.keyPressed
+end
+
 function Acetate.enable()
     if Acetate.enabled then return end
     Acetate.enabled = true
@@ -172,14 +199,6 @@ function Acetate.debugDraw()
     gfx.popContext()
 end
 
--- install our `debugDraw` function if not already defined, storing a reference to
--- any previously defined function which we'll call to preserve its behavior
-if playdate.debugDraw then
-    print("NOTE: Acetate is wrapping an existing `playdate.debugDraw` function.")
-    print("That function will still be called to preserve its functionality.")
-    Acetate._debugDraw = playdate.debugDraw
-end
-playdate.debugDraw = Acetate.debugDraw
 
 -- load the debug font
 function Acetate.loadDebugFont()
@@ -200,7 +219,6 @@ function Acetate.loadDebugFont()
     print("Please double-check your `debugFontPath` setting and font file installations.")
     Acetate.debugFont = gfx.getSystemFont(gfx.font.kVariantBold)
 end
-Acetate.loadDebugFont()
 
 -- perform debug string substitutions using the format string specified by the sprite,
 -- if provided, and our default format string otherwise. By necessity, this needs to
@@ -256,3 +274,5 @@ function Acetate.formatDebugStringForSprite(sprite)
     return s
 end
 
+-- Acetate is auto-initialized on import
+Acetate.init()
