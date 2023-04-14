@@ -11,7 +11,7 @@ function Acetate.setFocus(sprite)
             return
         end
     end
-    print("Unable to focus " .. self.className .. " sprite. Have you called add()?")
+    print("Unable to focus " .. sprite.className .. " sprite. Have you called add()?")
 end
 
 -- release focus, returning to drawing debug vizualizations for all sprites
@@ -97,7 +97,7 @@ function Acetate.updateFocus()
 
     -- if the focused sprite is no longer displayed, release focus
     local sprites = playdate.graphics.sprite.getAllSprites()
-    for i, sprite in ipairs(sprites) do
+    for _, sprite in ipairs(sprites) do
         if Acetate.focusedSprite == sprite then return end
     end
     Acetate.focusedSprite = nil

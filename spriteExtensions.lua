@@ -6,6 +6,7 @@ local gfx <const> = playdate.graphics
 -- debug drawing, coordinate conversions, and debug focus handling.
 
 -- sprite extensions for drawing debug visualizations
+-- luacheck: ignore 142 (indirectly setting undefined field of global)
 
 function gfx.sprite:drawBounds()
     gfx.drawRect(0, 0, self.width, self.height)

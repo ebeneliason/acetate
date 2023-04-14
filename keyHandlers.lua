@@ -73,14 +73,14 @@ function Acetate.keyPressed(key)
 end
 
 -- acknowledge alternate symbols that match our intended mnemonics for a few keys
-function Acetate.altSymbolForKey(key)
-    symbolPairs = {
-        {",",  "<"},
-        {".",  ">"},
-        {"/",  "?"},
-    }
+local symbolPairs = {
+    {",",  "<"},
+    {".",  ">"},
+    {"/",  "?"},
+}
 
-    for i, symbolPair in ipairs(symbolPairs) do
+function Acetate.altSymbolForKey(key)
+    for _, symbolPair in ipairs(symbolPairs) do
         local a, b = table.unpack(symbolPair)
         if a == key then return b end
         if b == key then return a end

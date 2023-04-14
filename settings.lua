@@ -24,15 +24,15 @@ Acetate = {
     orientationOrbScale = 0.5,         -- diameter of orientation orb relative to sprite's shortest dimension
     onlyDrawRotatedOrbs = true,        -- only draw orientation orbs for sprites with non-zero rotation
     customDebugDrawing = true,         -- whether to call `debugDraw` on any sprites which define it
-    
+
     -- DEBUG TEXT
 
     showFPS = false,                   -- whether to display the current FPS
     FPSPersists = true,                -- whether to display the current FPS when not in debug mode
 
-    showSpriteCount = false,           -- whether to display the total number of sprites (when not focused on a particular one)
+    showSpriteCount = false,           -- whether to display the total number of sprites (when not focused on just one)
     spriteCountPersists = true,        -- whether to display the total number of sprites when not in debug mode
-    alwaysShowSpriteNames = true,      -- whether to display the highlighted sprite's name even while the debug string is hidden
+    alwaysShowSpriteNames = true,      -- whether to display the focused sprite's name when the debug string is hidden
 
     showDebugString = true,            -- whether to show informative text when a single sprite is focused sprite
     defaultDebugStringFormat =         -- comment and/or reorder lines below to adjust the format; see
@@ -91,9 +91,9 @@ Acetate = {
     -- SPRITE FOCUS
 
     focusedSprite = nil,               -- the sprite focused via `makeDebugFocus()`, or nil when debugging all sprites
-    retainFocusOnDisable = true,       -- whether the focused sprite will remain focused the next time debug mode is entered
+    retainFocusOnDisable = true,       -- whether the focused sprite will be focused the next time debug mode is entered
     focusInvisibleSprites = false,     -- whether invisible sprites can be focused (and debug visualizations drawn)
-    animateBoundsForFocus = true,      -- when true, the bounds of the focused sprite will appear as an animated dotted line
+    animateBoundsForFocus = true,      -- when true, the bounds of the focused sprite will appear as animated dashes
 
     -- GENERAL STATE
     enabled = false,                   -- whether debug drawing is on/off

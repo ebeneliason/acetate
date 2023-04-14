@@ -9,7 +9,6 @@ import "screenshots"
 import "../toyboxes/toyboxes.lua"
 
 local gfx <const> = playdate.graphics
-local geom <const> = playdate.geometry
 
 -- the animated dotted line effect used for selection bounds
 local marchingAnts = EasyPattern {
@@ -35,7 +34,7 @@ local marchingAnts = EasyPattern {
 -- they are focused in debug mode, e.g.
 --
 -- self.debugString = "My custom debug string"
--- 
+--
 -- NOTE: while you must import Acetate somewhere, e.g. main.lua, you needn't import it in
 -- your individual sprite classes.
 
@@ -131,7 +130,7 @@ function Acetate.debugDraw()
 
     -- show FPS as appropriate
     if Acetate.showFPS and (Acetate.FPSPersists or Acetate.enabled) then
-        local fps = playdate.getFPS()
+        local fps = playdate.getFPS() -- luacheck: ignore
         s = s .. (Acetate.enabled and (fps .. " FPS\n") or (fps .. "\n"))
     end
 
@@ -158,7 +157,7 @@ function Acetate.debugDraw()
         end
 
         -- loop over all the sprites
-        for i, sprite in ipairs(sprites) do
+        for _, sprite in ipairs(sprites) do
             -- only debug draw for visible sprites depending on our setting
             if Acetate.focusInvisibleSprites or sprite:isVisible() then
                 -- debug draw all sprites, or only the sprite at the matching index
@@ -258,7 +257,7 @@ function Acetate.formatDebugStringForSprite(sprite)
     local u      = sprite:updatesEnabled()
     local t      = sprite:getTag()
     local z      = sprite:getZIndex()
-    local f      = playdate.getFPS()
+    local f      = playdate.getFPS() -- luacheck: ignore
     local num    = #playdate.graphics.sprite.getAllSprites()
     local n      = sprite.debugName or sprite.className
 
