@@ -1,0 +1,8 @@
+{
+    "toyboxes": {
+        "github.com/ebeneliason/easy-pattern": "1"
+    },
+    "installed": {
+        "github.com/ebeneliason/easy-pattern": "1.2.0"
+    }
+}

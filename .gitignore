@@ -41,3 +41,7 @@ luac.out
 
 # MacOS
 **/.DS_Store
+
+# toybox.py
+toyboxes
+toybox_assets

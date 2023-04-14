@@ -6,8 +6,17 @@ import "focusHandling"
 import "spriteExtensions"
 import "screenshots"
 
+import "../toyboxes/toyboxes.lua"
+
 local gfx <const> = playdate.graphics
 local geom <const> = playdate.geometry
+
+-- the animated dotted line effect used for selection bounds
+local marchingAnts = EasyPattern {
+    ditherType = gfx.image.kDitherTypeDiagonalLine,
+    xPhaseDuration = 0.25,
+    color = gfx.kColorWhite, -- debug color
+}
 
 -- USAGE:
 --
@@ -164,7 +173,13 @@ function Acetate.debugDraw()
                         gfx.setColor(gfx.kColorWhite) -- white is the debug color
 
                         -- draw built-in debug visualizations, if enabled
-                        if Acetate.drawBounds then sprite:drawBounds() end
+                        if Acetate.drawBounds then
+                            if Acetate.animateBoundsForFocus and Acetate.focusedSprite == sprite then
+                                gfx.setPattern(marchingAnts:apply())
+                            end
+                            sprite:drawBounds()
+                            gfx.setColor(gfx.kColorWhite)
+                        end
                         if Acetate.drawCenters then sprite:drawCenter() end
                         if Acetate.drawCollideRects then sprite:drawCollideRect() end
                         if Acetate.drawOrientations then
