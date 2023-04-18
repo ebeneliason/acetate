@@ -94,7 +94,9 @@ end
 function Acetate.pause()
     if Acetate.paused then return end
     Acetate.paused = true
-    playdate.gameWillPause() -- let the game prepare
+    if playdate.gameWillPause then
+        playdate.gameWillPause() -- let the game prepare
+    end
     playdate.inputHandlers.push({}, true) -- block all inputs
     Acetate.updateHandlerRef = playdate.update -- cease calls to update fn
     playdate.update = function() end -- no-op
@@ -103,7 +105,9 @@ end
 function Acetate.unpause()
     if not Acetate.paused then return end
     Acetate.paused = false
-    playdate.gameWillResume() -- let the game prepare
+    if playdate.gameWillResume then
+        playdate.gameWillResume() -- let the game prepare
+    end
     playdate.inputHandlers.pop() -- unblock inputs
     playdate.update = Acetate.updateHandlerRef -- restore update fn
 end
