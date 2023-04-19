@@ -101,7 +101,6 @@ function TestSettings:testDefaults()
     lu.assertEquals(Acetate.spriteScreenshotsEnabled, true)
     lu.assertEquals(Acetate.defaultScreenshotPath, "~/Desktop")
 
-    lu.assertEquals(Acetate.focusedSprite, nil)
     lu.assertEquals(Acetate.retainFocusOnDisable, true)
     lu.assertEquals(Acetate.focusInvisibleSprites, false)
     lu.assertEquals(Acetate.animateBoundsForFocus, true)

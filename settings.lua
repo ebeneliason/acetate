@@ -93,7 +93,6 @@ Acetate.defaults = {
 
     -- SPRITE FOCUS
 
-    focusedSprite = nil,               -- the sprite focused via `makeDebugFocus()`, or nil when debugging all sprites
     retainFocusOnDisable = true,       -- whether the focused sprite will be focused the next time debug mode is entered
     focusInvisibleSprites = false,     -- whether invisible sprites can be focused (and debug visualizations drawn)
     animateBoundsForFocus = true,      -- when true, the bounds of the focused sprite will appear as animated dashes

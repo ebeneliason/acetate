@@ -347,12 +347,11 @@ The following settings are available:
 
 ### Setting Focus
 
-| Setting                 | Type    | Default | Description                                                                                                           |
-| ----------------------- | ------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
-| `focusedSprite`         | sprite  | `nil`   | The sprite that is currently focused for debug drawing. You can set this directly or call `Acetate.setFocus(sprite)`. |
-| `retainFocusOnDisable`  | boolean | `true`  | When true, the focused sprite will remain focused the next time debug mode is entered.                                |
-| `focusInvisibleSprites` | boolean | `false` | Whether to perform debug drawing for and allow focusing of sprites which are made invisible via `setVisible(false)`.  |
-| `animateBoundsForFocus` | boolean | `true`. | When true, the bounds of the focused sprite will appear as an animated "marching ants" dotted line                    |
+| Setting                 | Type    | Default | Description                                                                                                          |
+| ----------------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------------------- |
+| `retainFocusOnDisable`  | boolean | `true`  | When true, the focused sprite will remain focused the next time debug mode is entered.                               |
+| `focusInvisibleSprites` | boolean | `false` | Whether to perform debug drawing for and allow focusing of sprites which are made invisible via `setVisible(false)`. |
+| `animateBoundsForFocus` | boolean | `true`. | When true, the bounds of the focused sprite will appear as an animated "marching ants" dotted line                   |
 
 ### Screenshots
 
