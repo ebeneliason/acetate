@@ -156,6 +156,30 @@ function TestSettings:testRestoreDefaults()
     end
 end
 
+function TestSettings:testDebugDrawFunctionWrapping()
+    playdate.debugDraw = setFlag()
+    local orig = playdate.debugDraw
+    Acetate.init()
+    -- validate that a new debugDraw function was installed
+    lu.assertNotEquals(playdate.debugDraw, orig)
+    -- call the new function
+    playdate.debugDraw()
+    -- validate that the origionl debugDraw function got called
+    lu.assertIsTrue(getFlag())
+end
+
+function TestSettings:testKeyPressedFunctionWrapping()
+    playdate.keyPressed = setFlag()
+    local orig = playdate.keyPressed
+    Acetate.init()
+    -- validate that a new keyPressed function was installed
+    lu.assertNotEquals(playdate.keyPressed, orig)
+    -- call the new function
+    playdate.keyPressed("-")
+    -- validate that the origionl keyPressed function got called
+    lu.assertIsTrue(getFlag())
+end
+
 
 TestKeyHandlers = {}
 

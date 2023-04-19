@@ -58,23 +58,24 @@ function Acetate.init(config)
     -- load the font used for displaying debug strings
     Acetate.loadDebugFont()
 
-    -- install our `debugDraw` function if not already defined, storing a reference to
-    -- any previously defined function which we'll call to preserve its behavior
-    if playdate.debugDraw then
+    -- install our `debugDraw` function, storing a reference to any previously defined
+    -- function which we'll still call to preserve its behavior
+    if playdate.debugDraw and playdate.debugDraw ~= Acetate.debugDraw then
         print("NOTE: Acetate is wrapping an existing `playdate.debugDraw` function.")
         print("That function will still be called to preserve its functionality.")
         Acetate._debugDraw = playdate.debugDraw
     end
     playdate.debugDraw = Acetate.debugDraw
 
-    -- install our `keyPressed` function if not already defined, storing a reference to
-    -- any previously defined function which we'll call to preserve its behavior
-    if playdate.keyPressed then
+    -- install our `keyPressed` function, storing a reference to any previously defined
+    -- function which we'll still call to preserve its behavior
+    if playdate.keyPressed  and playdate.keyPressed ~= Acetate.keyPressed then
         print("NOTE: Acetate is wrapping an existing `playdate.keyPressed` function.")
         print("That function will still be called to preserve its functionality.")
         Acetate._keyPressed = playdate.keyPressed
     end
     playdate.keyPressed = Acetate.keyPressed
+    print("NOTE: Press [" .. Acetate.toggleDebugModeKey .. "] to activate Acetate debug mode.")
 end
 
 function Acetate.loadConfig(config)

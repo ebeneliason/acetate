@@ -5,6 +5,9 @@
 -- settings.lua or setting them from within your project, e.g. `Acetate.toggleDebugModeKey = "1"`.
 
 function Acetate.keyPressed(key)
+    -- call the wrapped keyPressed handler, if present
+    if Acetate._keyPressed then Acetate._keyPressed() end
+
     -- toggle debug mode
     if key == Acetate.toggleDebugModeKey then
         Acetate.toggleEnabled()
