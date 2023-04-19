@@ -3,6 +3,12 @@
 
 -- pick the sprite to show debug visualizations for exclusively
 function Acetate.setFocus(sprite)
+    if not sprite:isVisible() and not Acetate.focusInvisibleSprites then
+        print("Unable to focus " .. sprite.className .. " sprite as it's currently invisible. "
+            .."Set Acetate.focusInvisibleSprites to true to focus invisible sprites.")
+        return
+    end
+
     local sprites = playdate.graphics.sprite.getAllSprites()
     for _, s in ipairs(sprites) do
         if s == sprite then
