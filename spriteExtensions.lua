@@ -33,12 +33,13 @@ function gfx.sprite:drawOrientation()
         y + radius * math.sin(math.rad(degrees)))
 end
 
--- sprite extensions for determining local and world centers
+-- sprite extensions for determining local and world origins and centers
 
 function gfx.sprite:getWorldCenter()
-    local cx, cy = self:getCenter()
-    local x = self.x - self.width * cx
-    local y = self.y - self.height * cy
+    local cx, cy = self:getLocalCenter()
+    local bx, by = self:getBounds()
+    local x = bx + cx
+    local y = by + cy
     return x, y
 end
 
@@ -47,4 +48,15 @@ function gfx.sprite:getLocalCenter()
     local x = cx * self.width
     local y = cy * self.height
     return x, y
+end
+
+function gfx.sprite:getWorldOrigin()
+    -- this is just a proxy for the first two bounds values
+    local x, y = self:getBounds()
+    return x, y
+end
+
+function gfx.sprite:getLocalOrigin()
+    local cx, cy = self:getCenter()
+    return -cx * self.width, -cy * self.height
 end

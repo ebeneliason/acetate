@@ -178,10 +178,16 @@ characters. They are case sensitive.
 | `$y`    | Y position                                   |
 | `$w`    | Width                                        |
 | `$h`    | Height                                       |
-| `$c`    | Center coordinate in local sprite space      |
+| `$rc`   | Local relative center point, e.g. (0.5, 0.5) |
+| `$o`    | Origin coordinate (top left) in local space  |
+| `$ox`   | Local origin X position                      |
+| `$oy`   | Local origin Y position                      |
+| `$O`    | Origin coordinate in world space             |
+| `$Ox`   | Local origin X position                      |
+| `$Oy`   | Local origin Y position                      |
+| `$c`    | Center coordinate in local space             |
 | `$cx`   | Local center X position                      |
 | `$cy`   | Local center Y position                      |
-| `$co`   | Local center relative offset e.g. (0.5, 0.5) |
 | `$C`    | Center coordinate in world space             |
 | `$Cx`   | World center X position                      |
 | `$Cy`   | World center Y position                      |

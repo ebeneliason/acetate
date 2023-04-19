@@ -254,7 +254,9 @@ function Acetate.formatDebugStringForSprite(sprite)
     local w,  h  = sprite:getSize()
     local cx, cy = sprite:getLocalCenter()
     local Cx, Cy = sprite:getWorldCenter()
-    local ox, oy = sprite:getCenter()
+    local rx, ry = sprite:getCenter()
+    local ox, oy = sprite:getLocalOrigin()
+    local Ox, Oy = sprite:getWorldOrigin()
     local r      = sprite:getRotation()
     local v      = sprite:isVisible()
     local sc     = sprite:getScale()
@@ -272,7 +274,13 @@ function Acetate.formatDebugStringForSprite(sprite)
     s = s:gsub("$y",  ""  .. y)                        -- $y  | y position
     s = s:gsub("$w",  ""  .. w)                        -- $w  | width
     s = s:gsub("$h",  ""  .. h)                        -- $h  | height
-    s = s:gsub("$co", "(" .. ox .. "," .. oy .. ")")   -- $o  | relative offset center
+    s = s:gsub("$rc", "(" .. rx .. "," .. ry .. ")")   -- $rc | local relative center
+    s = s:gsub("$ox", ""  .. ox)                       -- $ox | local origin x position
+    s = s:gsub("$oy", ""  .. oy)                       -- $oy | local origin y position
+    s = s:gsub("$o",  ""  .. ox .. "," .. oy .. ")")   -- $o  | local origin coord
+    s = s:gsub("$Ox", ""  .. Ox)                       -- $Ox | world origin x position
+    s = s:gsub("$Oy", ""  .. Oy)                       -- $Oy | world origin y position
+    s = s:gsub("$O",  ""  .. Ox .. "," .. Oy .. ")")   -- $O  | world origin coord
     s = s:gsub("$cx", ""  .. cx)                       -- $cx | local center x position
     s = s:gsub("$cy", "(" .. cy)                       -- $cy | local center y position
     s = s:gsub("$c",  "(" .. cx .. "," .. cy .. ")")   -- $c  | local center coord
