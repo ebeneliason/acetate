@@ -1,4 +1,4 @@
-import "../Acetate.lua"
+import "../acetate.lua"
 import "CoreLibs/object"
 import "CoreLibs/sprites"
 
@@ -32,134 +32,134 @@ for i = 1, 9 do
 end
 
 -- We have to initialize it before we can run tests
-Acetate.init()
+acetate.init()
 
 
 TestContext = {}
 
 function TestContext:testOnlyInitializedInSimulator()
     if playdate.isSimulator then
-        lu.assertEquals(Acetate.keyPressed, playdate.keyPressed)
-        lu.assertEquals(Acetate.debugDraw, playdate.debugDraw)
-        lu.assertNotNil(Acetate.debugFont)
-        lu.assertNotNil(Acetate.drawCenters)
+        lu.assertEquals(acetate.keyPressed, playdate.keyPressed)
+        lu.assertEquals(acetate.debugDraw, playdate.debugDraw)
+        lu.assertNotNil(acetate.debugFont)
+        lu.assertNotNil(acetate.drawCenters)
     else
-        lu.assertNotEquals(Acetate.keyPressed, playdate.keyPressed)
-        lu.assertNotEquals(Acetate.debugDraw, playdate.debugDraw)
-        lu.assertIsNil(Acetate.debugFont)
-        lu.assertIsNil(Acetate.drawCenters)
+        lu.assertNotEquals(acetate.keyPressed, playdate.keyPressed)
+        lu.assertNotEquals(acetate.debugDraw, playdate.debugDraw)
+        lu.assertIsNil(acetate.debugFont)
+        lu.assertIsNil(acetate.drawCenters)
     end
 end
 
 TestSettings = {}
 
 function TestSettings:testDefaults()
-    Acetate.init()
+    acetate.init()
 
-    lu.assertEquals(Acetate.drawCenters, true)
-    lu.assertEquals(Acetate.drawBounds, true)
-    lu.assertEquals(Acetate.drawOrientations, true)
-    lu.assertEquals(Acetate.drawCollideRects, false)
+    lu.assertEquals(acetate.drawCenters, true)
+    lu.assertEquals(acetate.drawBounds, true)
+    lu.assertEquals(acetate.drawOrientations, true)
+    lu.assertEquals(acetate.drawCollideRects, false)
 
-    lu.assertEquals(Acetate.color, {0, 255, 255, 0.75})
-    lu.assertEquals(Acetate.lineWidth, 1)
+    lu.assertEquals(acetate.color, {0, 255, 255, 0.75})
+    lu.assertEquals(acetate.lineWidth, 1)
 
-    lu.assertEquals(Acetate.centerRadius, 2)
-    lu.assertEquals(Acetate.minOrientationOrbRadius, 10)
-    lu.assertEquals(Acetate.orientationOrbScale, 0.5)
-    lu.assertEquals(Acetate.onlyDrawRotatedOrbs, true)
-    lu.assertEquals(Acetate.customDebugDrawing, true)
+    lu.assertEquals(acetate.centerRadius, 2)
+    lu.assertEquals(acetate.minOrientationOrbRadius, 10)
+    lu.assertEquals(acetate.orientationOrbScale, 0.5)
+    lu.assertEquals(acetate.onlyDrawRotatedOrbs, true)
+    lu.assertEquals(acetate.customDebugDrawing, true)
 
-    lu.assertEquals(Acetate.showFPS, false)
-    lu.assertEquals(Acetate.FPSPersists, true)
+    lu.assertEquals(acetate.showFPS, false)
+    lu.assertEquals(acetate.FPSPersists, true)
 
-    lu.assertEquals(Acetate.showSpriteCount, false)
-    lu.assertEquals(Acetate.spriteCountPersists, true)
-    lu.assertEquals(Acetate.alwaysShowSpriteNames, true)
+    lu.assertEquals(acetate.showSpriteCount, false)
+    lu.assertEquals(acetate.spriteCountPersists, true)
+    lu.assertEquals(acetate.alwaysShowSpriteNames, true)
 
-    lu.assertEquals(Acetate.showDebugString, true)
-    lu.assertEquals(Acetate.defaultDebugStringFormat, "$n   \nX: $x\nY: $y\nW: $w\nH: $h\n")
-    lu.assertEquals(Acetate.debugStringPosition, { x=2, y=2 })
-    lu.assertEquals(Acetate.debugFontPath, "fonts/Acetate-Mono-Bold-Condensed")
-    lu.assertEquals(Acetate.showShortcuts, false)
+    lu.assertEquals(acetate.showDebugString, true)
+    lu.assertEquals(acetate.defaultDebugStringFormat, "$n   \nX: $x\nY: $y\nW: $w\nH: $h\n")
+    lu.assertEquals(acetate.debugStringPosition, { x=2, y=2 })
+    lu.assertEquals(acetate.debugFontPath, "fonts/Acetate-Mono-Bold-Condensed")
+    lu.assertEquals(acetate.showShortcuts, false)
 
-    lu.assertEquals(Acetate.toggleDebugModeKey    , "d")
-    lu.assertEquals(Acetate.toggleCentersKey      , "c")
-    lu.assertEquals(Acetate.toggleBoundsKey       , "b")
-    lu.assertEquals(Acetate.toggleOrientationsKey , "v")
-    lu.assertEquals(Acetate.toggleCollideRectsKey , "x")
-    lu.assertEquals(Acetate.toggleInvisiblesKey   , "z")
-    lu.assertEquals(Acetate.toggleCustomDrawKey   , "m")
-    lu.assertEquals(Acetate.toggleFPSKey          , "f")
-    lu.assertEquals(Acetate.toggleSpriteCountKey  , "n")
-    lu.assertEquals(Acetate.toggleDebugStringKey  , "?")
-    lu.assertEquals(Acetate.cycleForwardKey       , ">")
-    lu.assertEquals(Acetate.cycleBackwardKey      , "<")
-    lu.assertEquals(Acetate.togglePauseKey        , "p")
-    lu.assertEquals(Acetate.captureScreenshotKey  , "q")
+    lu.assertEquals(acetate.toggleDebugModeKey    , "d")
+    lu.assertEquals(acetate.toggleCentersKey      , "c")
+    lu.assertEquals(acetate.toggleBoundsKey       , "b")
+    lu.assertEquals(acetate.toggleOrientationsKey , "v")
+    lu.assertEquals(acetate.toggleCollideRectsKey , "x")
+    lu.assertEquals(acetate.toggleInvisiblesKey   , "z")
+    lu.assertEquals(acetate.toggleCustomDrawKey   , "m")
+    lu.assertEquals(acetate.toggleFPSKey          , "f")
+    lu.assertEquals(acetate.toggleSpriteCountKey  , "n")
+    lu.assertEquals(acetate.toggleDebugStringKey  , "?")
+    lu.assertEquals(acetate.cycleForwardKey       , ">")
+    lu.assertEquals(acetate.cycleBackwardKey      , "<")
+    lu.assertEquals(acetate.togglePauseKey        , "p")
+    lu.assertEquals(acetate.captureScreenshotKey  , "q")
 
-    lu.assertEquals(Acetate.spriteScreenshotsEnabled, true)
-    lu.assertEquals(Acetate.defaultScreenshotPath, "~/Desktop")
+    lu.assertEquals(acetate.spriteScreenshotsEnabled, true)
+    lu.assertEquals(acetate.defaultScreenshotPath, "~/Desktop")
 
-    lu.assertEquals(Acetate.retainFocusOnDisable, true)
-    lu.assertEquals(Acetate.focusInvisibleSprites, false)
-    lu.assertEquals(Acetate.animateBoundsForFocus, true)
+    lu.assertEquals(acetate.retainFocusOnDisable, true)
+    lu.assertEquals(acetate.focusInvisibleSprites, false)
+    lu.assertEquals(acetate.animateBoundsForFocus, true)
 
-    lu.assertEquals(Acetate.enabled, false)
-    lu.assertEquals(Acetate.paused, false)
-    lu.assertEquals(Acetate.autoPause, false)
+    lu.assertEquals(acetate.enabled, false)
+    lu.assertEquals(acetate.paused, false)
+    lu.assertEquals(acetate.autoPause, false)
 
-    Acetate.debugStringPosition.x = 123
-    lu.assertNotEquals(Acetate.debugStringPosition.x, Acetate.defaults.debugStringPosition.x)
+    acetate.debugStringPosition.x = 123
+    lu.assertNotEquals(acetate.debugStringPosition.x, acetate.defaults.debugStringPosition.x)
 end
 
 function TestSettings:testCanOverrideDefaults()
     -- initialize with custom settings
-    Acetate.init({
+    acetate.init({
         drawCenters = false,
         lineWidth = 2,
         captureScreenshotKey = "0"
     })
 
     -- confirm the overridden values are set properly
-    lu.assertIsFalse(Acetate.drawCenters)
-    lu.assertEquals(Acetate.lineWidth, 2)
-    lu.assertEquals(Acetate.captureScreenshotKey, "0")
+    lu.assertIsFalse(acetate.drawCenters)
+    lu.assertEquals(acetate.lineWidth, 2)
+    lu.assertEquals(acetate.captureScreenshotKey, "0")
 
     -- confirm all other defaults are set properly
-    for k, v in pairs(Acetate.defaults) do
+    for k, v in pairs(acetate.defaults) do
         if k ~= "drawCenters" and k ~= "lineWidth" and k ~= "captureScreenshotKey" then
-            lu.assertEquals(Acetate[k], v)
+            lu.assertEquals(acetate[k], v)
         end
     end
 end
 
 function TestSettings:testRestoreDefaults()
     -- initialize with custom settings
-    Acetate.init({
+    acetate.init({
         drawCenters = false,
         lineWidth = 2,
         captureScreenshotKey = "0"
     })
 
     -- confirm the overridden values are set properly
-    lu.assertIsFalse(Acetate.drawCenters)
-    lu.assertEquals(Acetate.lineWidth, 2)
-    lu.assertEquals(Acetate.captureScreenshotKey, "0")
+    lu.assertIsFalse(acetate.drawCenters)
+    lu.assertEquals(acetate.lineWidth, 2)
+    lu.assertEquals(acetate.captureScreenshotKey, "0")
 
     -- restore defaults
-    Acetate.restoreDefaults()
+    acetate.restoreDefaults()
 
     -- confirm all defaults are set properly
-    for k, v in pairs(Acetate.defaults) do
-        lu.assertEquals(Acetate[k], v)
+    for k, v in pairs(acetate.defaults) do
+        lu.assertEquals(acetate[k], v)
     end
 end
 
 function TestSettings:testDebugDrawFunctionWrapping()
     playdate.debugDraw = setFlag()
     local orig = playdate.debugDraw
-    Acetate.init()
+    acetate.init()
     -- validate that a new debugDraw function was installed
     lu.assertNotEquals(playdate.debugDraw, orig)
     -- call the new function
@@ -171,7 +171,7 @@ end
 function TestSettings:testKeyPressedFunctionWrapping()
     playdate.keyPressed = setFlag()
     local orig = playdate.keyPressed
-    Acetate.init()
+    acetate.init()
     -- validate that a new keyPressed function was installed
     lu.assertNotEquals(playdate.keyPressed, orig)
     -- call the new function
@@ -185,189 +185,189 @@ TestKeyHandlers = {}
 
 local mockedFns = {}
 function TestKeyHandlers:setUp()
-    mockedFns.cycleFocusForward = Acetate.cycleFocusForward
-    mockedFns.cycleFocusBackward = Acetate.cycleFocusBackward
-    mockedFns.captureScreenshot = Acetate.captureScreenshot
+    mockedFns.cycleFocusForward = acetate.cycleFocusForward
+    mockedFns.cycleFocusBackward = acetate.cycleFocusBackward
+    mockedFns.captureScreenshot = acetate.captureScreenshot
 end
 
 function TestKeyHandlers:tearDown()
-    Acetate.cycleFocusForward = mockedFns.cycleFocusForward
-    Acetate.cycleFocusBackward = mockedFns.cycleFocusBackward
-    Acetate.captureScreenshot = mockedFns.captureScreenshot
+    acetate.cycleFocusForward = mockedFns.cycleFocusForward
+    acetate.cycleFocusBackward = mockedFns.cycleFocusBackward
+    acetate.captureScreenshot = mockedFns.captureScreenshot
 end
 
 function TestKeyHandlers:testDebugToggle()
-    Acetate.disable()
-    Acetate.keyPressed(Acetate.toggleDebugModeKey)
-    lu.assertEquals(Acetate.enabled, true)
+    acetate.disable()
+    acetate.keyPressed(acetate.toggleDebugModeKey)
+    lu.assertEquals(acetate.enabled, true)
 end
 
 function TestKeyHandlers:testPauseToggle()
-    Acetate.unpause()
-    Acetate.keyPressed(Acetate.togglePauseKey)
-    lu.assertEquals(Acetate.paused, true)
+    acetate.unpause()
+    acetate.keyPressed(acetate.togglePauseKey)
+    lu.assertEquals(acetate.paused, true)
 end
 
 function TestKeyHandlers:testFPSToggle()
-    Acetate.showFPS = false
-    Acetate.keyPressed(Acetate.toggleFPSKey)
-    lu.assertEquals(Acetate.showFPS, true)
+    acetate.showFPS = false
+    acetate.keyPressed(acetate.toggleFPSKey)
+    lu.assertEquals(acetate.showFPS, true)
 end
 
 function TestKeyHandlers:testSpriteCountToggle()
-    Acetate.showSpriteCount = false
-    Acetate.keyPressed(Acetate.toggleSpriteCountKey)
-    lu.assertEquals(Acetate.showSpriteCount, true)
+    acetate.showSpriteCount = false
+    acetate.keyPressed(acetate.toggleSpriteCountKey)
+    lu.assertEquals(acetate.showSpriteCount, true)
 end
 
 function TestKeyHandlers:testScreenshotKey()
-    Acetate.captureScreenshot = setFlag()
-    Acetate.keyPressed(Acetate.captureScreenshotKey)
+    acetate.captureScreenshot = setFlag()
+    acetate.keyPressed(acetate.captureScreenshotKey)
     lu.assertIsTrue(getFlag())
 end
 
 function TestKeyHandlers:testKeysInactiveWhileDisabled()
-    lu.assertEquals(Acetate.enabled, false)
+    lu.assertEquals(acetate.enabled, false)
 
     local before
 
-    before = Acetate.drawCenters
-    Acetate.keyPressed(Acetate.toggleCentersKey)
-    lu.assertEquals(Acetate.drawCenters, before)
+    before = acetate.drawCenters
+    acetate.keyPressed(acetate.toggleCentersKey)
+    lu.assertEquals(acetate.drawCenters, before)
 
-    before = Acetate.drawBounds
-    Acetate.keyPressed(Acetate.toggleBoundsKey)
-    lu.assertEquals(Acetate.drawBounds, before)
+    before = acetate.drawBounds
+    acetate.keyPressed(acetate.toggleBoundsKey)
+    lu.assertEquals(acetate.drawBounds, before)
 
-    before = Acetate.drawOrientations
-    Acetate.keyPressed(Acetate.toggleOrientationsKey)
-    lu.assertEquals(Acetate.drawOrientations, before)
+    before = acetate.drawOrientations
+    acetate.keyPressed(acetate.toggleOrientationsKey)
+    lu.assertEquals(acetate.drawOrientations, before)
 
-    before = Acetate.drawCollideRects
-    Acetate.keyPressed(Acetate.toggleCollideRectsKey)
-    lu.assertEquals(Acetate.drawCollideRects, before)
+    before = acetate.drawCollideRects
+    acetate.keyPressed(acetate.toggleCollideRectsKey)
+    lu.assertEquals(acetate.drawCollideRects, before)
 
-    before = Acetate.focusInvisibleSprites
-    Acetate.keyPressed(Acetate.toggleInvisiblesKey)
-    lu.assertEquals(Acetate.focusInvisibleSprites, before)
+    before = acetate.focusInvisibleSprites
+    acetate.keyPressed(acetate.toggleInvisiblesKey)
+    lu.assertEquals(acetate.focusInvisibleSprites, before)
 
-    before = Acetate.customDebugDrawing
-    Acetate.keyPressed(Acetate.toggleCustomDrawKey)
-    lu.assertEquals(Acetate.customDebugDrawing, before)
+    before = acetate.customDebugDrawing
+    acetate.keyPressed(acetate.toggleCustomDrawKey)
+    lu.assertEquals(acetate.customDebugDrawing, before)
 
-    before = Acetate.drawCollideRects
-    Acetate.keyPressed(Acetate.toggleCollideRectsKey)
-    lu.assertEquals(Acetate.drawCollideRects, before)
+    before = acetate.drawCollideRects
+    acetate.keyPressed(acetate.toggleCollideRectsKey)
+    lu.assertEquals(acetate.drawCollideRects, before)
 
-    before = Acetate.showDebugString
-    Acetate.keyPressed(Acetate.toggleDebugStringKey)
-    lu.assertEquals(Acetate.showDebugString, before)
+    before = acetate.showDebugString
+    acetate.keyPressed(acetate.toggleDebugStringKey)
+    lu.assertEquals(acetate.showDebugString, before)
 
-    before = Acetate.showShortcuts
-    Acetate.keyPressed("?")
-    lu.assertEquals(Acetate.showShortcuts, before)
+    before = acetate.showShortcuts
+    acetate.keyPressed("?")
+    lu.assertEquals(acetate.showShortcuts, before)
 
-    Acetate.cycleFocusForward = setFlag()
-    Acetate.keyPressed(Acetate.cycleForwardKey)
+    acetate.cycleFocusForward = setFlag()
+    acetate.keyPressed(acetate.cycleForwardKey)
     lu.assertIsFalse(getFlag())
 
-    Acetate.cycleFocusBackward = setFlag()
-    Acetate.keyPressed(Acetate.cycleBackwardKey)
+    acetate.cycleFocusBackward = setFlag()
+    acetate.keyPressed(acetate.cycleBackwardKey)
     lu.assertIsFalse(getFlag())
 end
 
 function TestKeyHandlers:testKeysActiveWhileEnabled()
-    Acetate.enable()
-    lu.assertIsTrue(Acetate.enabled)
+    acetate.enable()
+    lu.assertIsTrue(acetate.enabled)
 
     local before
 
-    before = Acetate.drawCenters
-    Acetate.keyPressed(Acetate.toggleCentersKey)
-    lu.assertNotEquals(Acetate.drawCenters, before)
+    before = acetate.drawCenters
+    acetate.keyPressed(acetate.toggleCentersKey)
+    lu.assertNotEquals(acetate.drawCenters, before)
 
-    before = Acetate.drawBounds
-    Acetate.keyPressed(Acetate.toggleBoundsKey)
-    lu.assertNotEquals(Acetate.drawBounds, before)
+    before = acetate.drawBounds
+    acetate.keyPressed(acetate.toggleBoundsKey)
+    lu.assertNotEquals(acetate.drawBounds, before)
 
-    before = Acetate.drawOrientations
-    Acetate.keyPressed(Acetate.toggleOrientationsKey)
-    lu.assertNotEquals(Acetate.drawOrientations, before)
+    before = acetate.drawOrientations
+    acetate.keyPressed(acetate.toggleOrientationsKey)
+    lu.assertNotEquals(acetate.drawOrientations, before)
 
-    before = Acetate.drawCollideRects
-    Acetate.keyPressed(Acetate.toggleCollideRectsKey)
-    lu.assertNotEquals(Acetate.drawCollideRects, before)
+    before = acetate.drawCollideRects
+    acetate.keyPressed(acetate.toggleCollideRectsKey)
+    lu.assertNotEquals(acetate.drawCollideRects, before)
 
-    before = Acetate.focusInvisibleSprites
-    Acetate.keyPressed(Acetate.toggleInvisiblesKey)
-    lu.assertNotEquals(Acetate.focusInvisibleSprites, before)
+    before = acetate.focusInvisibleSprites
+    acetate.keyPressed(acetate.toggleInvisiblesKey)
+    lu.assertNotEquals(acetate.focusInvisibleSprites, before)
 
-    before = Acetate.customDebugDrawing
-    Acetate.keyPressed(Acetate.toggleCustomDrawKey)
-    lu.assertNotEquals(Acetate.customDebugDrawing, before)
+    before = acetate.customDebugDrawing
+    acetate.keyPressed(acetate.toggleCustomDrawKey)
+    lu.assertNotEquals(acetate.customDebugDrawing, before)
 
-    before = Acetate.drawCollideRects
-    Acetate.keyPressed(Acetate.toggleCollideRectsKey)
-    lu.assertNotEquals(Acetate.drawCollideRects, before)
+    before = acetate.drawCollideRects
+    acetate.keyPressed(acetate.toggleCollideRectsKey)
+    lu.assertNotEquals(acetate.drawCollideRects, before)
 
-    Acetate.focusedSprite = nil
+    acetate.focusedSprite = nil
 
     -- this shouldn't change unless there's a focused sprite
-    before = Acetate.showDebugString
-    Acetate.keyPressed(Acetate.toggleDebugStringKey)
-    lu.assertEquals(Acetate.showDebugString, before)
+    before = acetate.showDebugString
+    acetate.keyPressed(acetate.toggleDebugStringKey)
+    lu.assertEquals(acetate.showDebugString, before)
 
     -- this should only change when there's a focused sprite
-    before = Acetate.showShortcuts
-    Acetate.keyPressed("?")
-    lu.assertNotEquals(Acetate.showShortcuts, before)
+    before = acetate.showShortcuts
+    acetate.keyPressed("?")
+    lu.assertNotEquals(acetate.showShortcuts, before)
 
     -- give ourselves a focus (any truthy value works)
-    Acetate.focusedSprite = true
+    acetate.focusedSprite = true
 
     -- this should only change when there's a focused sprite
-    before = Acetate.showDebugString
-    Acetate.keyPressed(Acetate.toggleDebugStringKey)
-    lu.assertNotEquals(Acetate.showDebugString, before)
+    before = acetate.showDebugString
+    acetate.keyPressed(acetate.toggleDebugStringKey)
+    lu.assertNotEquals(acetate.showDebugString, before)
 
     -- this shouldn't change if there's a focused sprite
-    before = Acetate.showShortcuts
-    Acetate.keyPressed("?")
-    lu.assertEquals(Acetate.showShortcuts, before)
+    before = acetate.showShortcuts
+    acetate.keyPressed("?")
+    lu.assertEquals(acetate.showShortcuts, before)
 
-    Acetate.cycleFocusForward = setFlag()
-    Acetate.keyPressed(Acetate.cycleForwardKey)
+    acetate.cycleFocusForward = setFlag()
+    acetate.keyPressed(acetate.cycleForwardKey)
     lu.assertIsTrue(getFlag())
 
-    Acetate.cycleFocusBackward = setFlag()
-    Acetate.keyPressed(Acetate.cycleBackwardKey)
+    acetate.cycleFocusBackward = setFlag()
+    acetate.keyPressed(acetate.cycleBackwardKey)
     lu.assertIsTrue(getFlag())
 end
 
 function TestKeyHandlers:testAltSymbolForKey()
-    lu.assertEquals(Acetate.altSymbolForKey(","), "<")
-    lu.assertEquals(Acetate.altSymbolForKey("<"), ",")
+    lu.assertEquals(acetate.altSymbolForKey(","), "<")
+    lu.assertEquals(acetate.altSymbolForKey("<"), ",")
 
-    lu.assertEquals(Acetate.altSymbolForKey("."), ">")
-    lu.assertEquals(Acetate.altSymbolForKey(">"), ".")
+    lu.assertEquals(acetate.altSymbolForKey("."), ">")
+    lu.assertEquals(acetate.altSymbolForKey(">"), ".")
 
-    lu.assertEquals(Acetate.altSymbolForKey("/"), "?")
-    lu.assertEquals(Acetate.altSymbolForKey("?"), "/")
+    lu.assertEquals(acetate.altSymbolForKey("/"), "?")
+    lu.assertEquals(acetate.altSymbolForKey("?"), "/")
 end
 
 function TestKeyHandlers:testKeyMatch()
-    lu.assertIsTrue(Acetate.keyMatch(",", "<"))
-    lu.assertIsTrue(Acetate.keyMatch("<", ","))
+    lu.assertIsTrue(acetate.keyMatch(",", "<"))
+    lu.assertIsTrue(acetate.keyMatch("<", ","))
 
-    lu.assertIsTrue(Acetate.keyMatch(".", ">"))
-    lu.assertIsTrue(Acetate.keyMatch(">", "."))
+    lu.assertIsTrue(acetate.keyMatch(".", ">"))
+    lu.assertIsTrue(acetate.keyMatch(">", "."))
 
-    lu.assertIsTrue(Acetate.keyMatch("/", "?"))
-    lu.assertIsTrue(Acetate.keyMatch("?", "/"))
+    lu.assertIsTrue(acetate.keyMatch("/", "?"))
+    lu.assertIsTrue(acetate.keyMatch("?", "/"))
 end
 
 function TestKeyHandlers:testShortcutStringAdaptsToSettings()
-    local shortcutString = Acetate.shortcutString()
+    local shortcutString = acetate.shortcutString()
 
     lu.assertNotNil(shortcutString:match("%[c%] centers"))
     lu.assertNotNil(shortcutString:match("%[b%] bounds"))
@@ -383,21 +383,21 @@ function TestKeyHandlers:testShortcutStringAdaptsToSettings()
     lu.assertNotNil(shortcutString:match("%[<%] Back"))
     lu.assertNotNil(shortcutString:match("%[q%] Screenshot"))
 
-    Acetate.toggleCentersKey      = "1"
-    Acetate.toggleBoundsKey       = "2"
-    Acetate.toggleOrientationsKey = "3"
-    Acetate.toggleCollideRectsKey = "4"
-    Acetate.toggleInvisiblesKey   = "5"
-    Acetate.toggleCustomDrawKey   = "6"
-    Acetate.toggleDebugStringKey  = "7"
-    Acetate.toggleFPSKey          = "8"
-    Acetate.toggleSpriteCountKey  = "9"
-    Acetate.togglePauseKey        = "0"
-    Acetate.cycleForwardKey       = "]"
-    Acetate.cycleBackwardKey      = "["
-    Acetate.captureScreenshotKey  = "~"
+    acetate.toggleCentersKey      = "1"
+    acetate.toggleBoundsKey       = "2"
+    acetate.toggleOrientationsKey = "3"
+    acetate.toggleCollideRectsKey = "4"
+    acetate.toggleInvisiblesKey   = "5"
+    acetate.toggleCustomDrawKey   = "6"
+    acetate.toggleDebugStringKey  = "7"
+    acetate.toggleFPSKey          = "8"
+    acetate.toggleSpriteCountKey  = "9"
+    acetate.togglePauseKey        = "0"
+    acetate.cycleForwardKey       = "]"
+    acetate.cycleBackwardKey      = "["
+    acetate.captureScreenshotKey  = "~"
 
-    shortcutString = Acetate.shortcutString()
+    shortcutString = acetate.shortcutString()
 
     lu.assertNotNil(shortcutString:match("%[1%] centers"))
     lu.assertNotNil(shortcutString:match("%[2%] bounds"))
@@ -431,137 +431,137 @@ function TestFocusHandling:tearDown()
 end
 
 function TestFocusHandling:testFocusSprite()
-    Acetate.focusedSprite = nil
-    Acetate.setFocus(sprites[1])
-    lu.assertEquals(Acetate.focusedSprite, sprites[1])
-    Acetate.setFocus(sprites[2])
-    lu.assertEquals(Acetate.focusedSprite, sprites[2])
-    Acetate.setFocus(sprites[3])
-    lu.assertEquals(Acetate.focusedSprite, sprites[3])
+    acetate.focusedSprite = nil
+    acetate.setFocus(sprites[1])
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+    acetate.setFocus(sprites[2])
+    lu.assertEquals(acetate.focusedSprite, sprites[2])
+    acetate.setFocus(sprites[3])
+    lu.assertEquals(acetate.focusedSprite, sprites[3])
 end
 
 function TestFocusHandling:testFocusForInvisibleSprites()
-    Acetate.focusedSprite = nil
+    acetate.focusedSprite = nil
     sprites[1]:setVisible(false)
 
-    Acetate.focusInvisibleSprites = false
-    Acetate.setFocus(sprites[1])
-    lu.assertIsNil(Acetate.focusedSprite)
+    acetate.focusInvisibleSprites = false
+    acetate.setFocus(sprites[1])
+    lu.assertIsNil(acetate.focusedSprite)
 
-    Acetate.focusInvisibleSprites = true
-    Acetate.setFocus(sprites[1])
-    lu.assertEquals(Acetate.focusedSprite, sprites[1])
+    acetate.focusInvisibleSprites = true
+    acetate.setFocus(sprites[1])
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
 end
 
 function TestFocusHandling:testFocusForUnaddedSprites()
     local s = gfx.sprite.new()
-    Acetate.focusedSprite = nil
-    Acetate.setFocus(s)
-    lu.assertIsNil(Acetate.focusedSprite)
+    acetate.focusedSprite = nil
+    acetate.setFocus(s)
+    lu.assertIsNil(acetate.focusedSprite)
 end
 
 function TestFocusHandling:releaseFocus()
-    Acetate.setFocus(sprites[3])
-    assertEquals(Acetate.focusedSprite, sprites[3])
-    Acetate.releaseFocus()
-    lu.assertIsNil(Acetate.focusedSprite)
+    acetate.setFocus(sprites[3])
+    assertEquals(acetate.focusedSprite, sprites[3])
+    acetate.releaseFocus()
+    lu.assertIsNil(acetate.focusedSprite)
 end
 
 function TestFocusHandling:testCycleFocusForward()
-    Acetate.focusedSprite = nil
+    acetate.focusedSprite = nil
 
     -- cycles through all sprites
-    lu.assertEquals(Acetate.focusedSprite, nil)
-    Acetate.cycleFocusForward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[1])
-    Acetate.cycleFocusForward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[2])
-    Acetate.cycleFocusForward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[3])
-    Acetate.cycleFocusForward()
-    lu.assertEquals(Acetate.focusedSprite, nil)
+    lu.assertEquals(acetate.focusedSprite, nil)
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, sprites[2])
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, sprites[3])
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, nil)
 
     -- skips invisible sprites when appropriate
     sprites[2]:setVisible(false)
-    Acetate.focusInvisibleSprites = false
+    acetate.focusInvisibleSprites = false
 
-    lu.assertEquals(Acetate.focusedSprite, nil)
-    Acetate.cycleFocusForward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[1])
-    Acetate.cycleFocusForward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[3])
-    Acetate.cycleFocusForward()
-    lu.assertEquals(Acetate.focusedSprite, nil)
+    lu.assertEquals(acetate.focusedSprite, nil)
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, sprites[3])
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, nil)
 
     -- focuses invisible sprites when appropriate
-    Acetate.focusInvisibleSprites = true
+    acetate.focusInvisibleSprites = true
 
-    lu.assertEquals(Acetate.focusedSprite, nil)
-    Acetate.cycleFocusForward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[1])
-    Acetate.cycleFocusForward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[2])
-    Acetate.cycleFocusForward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[3])
-    Acetate.cycleFocusForward()
-    lu.assertEquals(Acetate.focusedSprite, nil)
+    lu.assertEquals(acetate.focusedSprite, nil)
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, sprites[2])
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, sprites[3])
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, nil)
 end
 
 function TestFocusHandling:testCycleFocusBackward()
-    Acetate.focusedSprite = nil
+    acetate.focusedSprite = nil
     
     -- cycles through all sprites
-    lu.assertEquals(Acetate.focusedSprite, nil)
-    Acetate.cycleFocusBackward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[3])
-    Acetate.cycleFocusBackward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[2])
-    Acetate.cycleFocusBackward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[1])
-    Acetate.cycleFocusBackward()
-    lu.assertEquals(Acetate.focusedSprite, nil)
+    lu.assertEquals(acetate.focusedSprite, nil)
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, sprites[3])
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, sprites[2])
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, nil)
 
     -- skips invisible sprites when appropriate
     sprites[2]:setVisible(false)
-    Acetate.focusInvisibleSprites = false
+    acetate.focusInvisibleSprites = false
 
-    lu.assertEquals(Acetate.focusedSprite, nil)
-    Acetate.cycleFocusBackward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[3])
-    Acetate.cycleFocusBackward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[1])
-    Acetate.cycleFocusBackward()
-    lu.assertEquals(Acetate.focusedSprite, nil)
+    lu.assertEquals(acetate.focusedSprite, nil)
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, sprites[3])
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, nil)
 
     -- focuses invisible sprites when appropriate
-    Acetate.focusInvisibleSprites = true
+    acetate.focusInvisibleSprites = true
 
-    lu.assertEquals(Acetate.focusedSprite, nil)
-    Acetate.cycleFocusBackward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[3])
-    Acetate.cycleFocusBackward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[2])
-    Acetate.cycleFocusBackward()
-    lu.assertEquals(Acetate.focusedSprite, sprites[1])
-    Acetate.cycleFocusBackward()
-    lu.assertEquals(Acetate.focusedSprite, nil)
+    lu.assertEquals(acetate.focusedSprite, nil)
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, sprites[3])
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, sprites[2])
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, nil)
 end
 
 function TestFocusHandling:updateFocus()
 
     -- focus updates when made invisible
-    Acetate.focusedSprite = sprites[2]
-    lu.assertEquals(Acetate.focusedSprite, sprites[2])
+    acetate.focusedSprite = sprites[2]
+    lu.assertEquals(acetate.focusedSprite, sprites[2])
     sprites[2]:setVisible(false)
-    Acetate.updateFocus()
-    lu.assertIsNil(Acetate.focusedSprite)
+    acetate.updateFocus()
+    lu.assertIsNil(acetate.focusedSprite)
 
     -- focus updates when removed
-    Acetate.focusedSprite = sprites[3]
-    lu.assertEquals(Acetate.focusedSprite, sprites[3])
+    acetate.focusedSprite = sprites[3]
+    lu.assertEquals(acetate.focusedSprite, sprites[3])
     sprites[3]:remove()
-    Acetate.updateFocus()
-    lu.assertIsNil(Acetate.focusedSprite)
+    acetate.updateFocus()
+    lu.assertIsNil(acetate.focusedSprite)
 end
 
 
@@ -621,13 +621,13 @@ end
 TestScreenshots = {}
 
 function TestScreenshots:setUp()
-    Acetate.defaultScreenshotPath = "/tmp"
+    acetate.defaultScreenshotPath = "/tmp"
 end
 
 function TestScreenshots:testScreenshot()
     -- fullscreen screenshots should always work
-    Acetate.focusedSprite = nil
-    local ret = Acetate.captureScreenshot()
+    acetate.focusedSprite = nil
+    local ret = acetate.captureScreenshot()
     lu.assertIsTrue(ret)
 
     local s = S()
@@ -636,22 +636,22 @@ function TestScreenshots:testScreenshot()
     s.draw = nil
 
     -- no draw function
-    Acetate.setFocus(s)
-    ret = Acetate.captureScreenshot()
+    acetate.setFocus(s)
+    ret = acetate.captureScreenshot()
     lu.assertIsFalse(ret)
 
     s.draw = setFlag()
     s:setSize(0,0)
 
     -- invalid bitmap size
-    Acetate.setFocus(s)
-    ret = Acetate.captureScreenshot()
+    acetate.setFocus(s)
+    ret = acetate.captureScreenshot()
     lu.assertIsFalse(ret)
 
     s:setSize(5,5)
 
     -- success case
-    Acetate.setFocus(s)
-    ret = Acetate.captureSpriteScreenshot(s)
+    acetate.setFocus(s)
+    ret = acetate.captureSpriteScreenshot(s)
     lu.assertIsTrue(ret)
 end

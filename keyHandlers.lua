@@ -1,77 +1,77 @@
 
 -- Acetate is controlled via keyboard shortcuts. If you or another utility you use in your project
--- already implement `playdate.keyPressed`, be sure to call `Acetate.keyPressed` yourself. You may
+-- already implement `playdate.keyPressed`, be sure to call `acetate.keyPressed` yourself. You may
 -- also remap the keys for any shortcuts to avoid conflict or suit your needs, by editing them in
--- settings.lua or setting them from within your project, e.g. `Acetate.toggleDebugModeKey = "1"`.
+-- settings.lua or setting them from within your project, e.g. `acetate.toggleDebugModeKey = "1"`.
 
-function Acetate.keyPressed(key)
+function acetate.keyPressed(key)
     -- call the wrapped keyPressed handler, if present
-    if Acetate._keyPressed then Acetate._keyPressed() end
+    if acetate._keyPressed then acetate._keyPressed() end
 
     -- toggle debug mode
-    if key == Acetate.toggleDebugModeKey then
-        Acetate.toggleEnabled()
+    if key == acetate.toggleDebugModeKey then
+        acetate.toggleEnabled()
 
     -- allow pausing to enter debug mode
-    elseif key == Acetate.togglePauseKey then
-        Acetate.enable()
-        Acetate.togglePause()
+    elseif key == acetate.togglePauseKey then
+        acetate.enable()
+        acetate.togglePause()
 
     -- FPS may be toggled outside debug mode
-    elseif key == Acetate.toggleFPSKey then
-        Acetate.showFPS = not Acetate.showFPS
+    elseif key == acetate.toggleFPSKey then
+        acetate.showFPS = not acetate.showFPS
 
     -- sprite count may be toggled outside debug mode
-    elseif key == Acetate.toggleSpriteCountKey then
-        Acetate.showSpriteCount = not Acetate.showSpriteCount
+    elseif key == acetate.toggleSpriteCountKey then
+        acetate.showSpriteCount = not acetate.showSpriteCount
 
     -- screenshots are allowed outside debug mode
-    elseif key == Acetate.captureScreenshotKey then
-        Acetate.captureScreenshot()
+    elseif key == acetate.captureScreenshotKey then
+        acetate.captureScreenshot()
     end
 
     -- the rest of these only apply in debug mode
-    if Acetate.enabled then
+    if acetate.enabled then
 
         -- toggle debug mode settings
-        if key == Acetate.toggleCentersKey then
-            Acetate.drawCenters = not Acetate.drawCenters
+        if key == acetate.toggleCentersKey then
+            acetate.drawCenters = not acetate.drawCenters
 
-        elseif key == Acetate.toggleBoundsKey then
-            Acetate.drawBounds = not Acetate.drawBounds
+        elseif key == acetate.toggleBoundsKey then
+            acetate.drawBounds = not acetate.drawBounds
 
-        elseif key == Acetate.toggleOrientationsKey then
-            Acetate.drawOrientations = not Acetate.drawOrientations
+        elseif key == acetate.toggleOrientationsKey then
+            acetate.drawOrientations = not acetate.drawOrientations
 
-        elseif key == Acetate.toggleCollideRectsKey then
-            Acetate.drawCollideRects = not Acetate.drawCollideRects
+        elseif key == acetate.toggleCollideRectsKey then
+            acetate.drawCollideRects = not acetate.drawCollideRects
 
-        elseif key == Acetate.toggleInvisiblesKey then
-            Acetate.focusInvisibleSprites = not Acetate.focusInvisibleSprites
+        elseif key == acetate.toggleInvisiblesKey then
+            acetate.focusInvisibleSprites = not acetate.focusInvisibleSprites
 
-        elseif key == Acetate.toggleCustomDrawKey then
-            Acetate.customDebugDrawing = not Acetate.customDebugDrawing
+        elseif key == acetate.toggleCustomDrawKey then
+            acetate.customDebugDrawing = not acetate.customDebugDrawing
 
-        elseif Acetate.keyMatch(key, Acetate.cycleForwardKey) then
-            Acetate.cycleFocusForward()
+        elseif acetate.keyMatch(key, acetate.cycleForwardKey) then
+            acetate.cycleFocusForward()
 
-        elseif Acetate.keyMatch(key, Acetate.cycleBackwardKey) then
-            Acetate.cycleFocusBackward()
+        elseif acetate.keyMatch(key, acetate.cycleBackwardKey) then
+            acetate.cycleFocusBackward()
 
-        elseif Acetate.keyMatch(key, "?") and not Acetate.focusedSprite then
-            Acetate.showShortcuts = not Acetate.showShortcuts
+        elseif acetate.keyMatch(key, "?") and not acetate.focusedSprite then
+            acetate.showShortcuts = not acetate.showShortcuts
 
-        elseif Acetate.keyMatch(key, Acetate.toggleDebugStringKey) then
-            if Acetate.focusedSprite then
-                Acetate.showDebugString = not Acetate.showDebugString
+        elseif acetate.keyMatch(key, acetate.toggleDebugStringKey) then
+            if acetate.focusedSprite then
+                acetate.showDebugString = not acetate.showDebugString
             end
         end
 
     end
 
     -- hide the shortcuts if needed
-    if Acetate.focusedSprite then
-        Acetate.showShortcuts = false
+    if acetate.focusedSprite then
+        acetate.showShortcuts = false
     end
 end
 
@@ -82,7 +82,7 @@ local symbolPairs = {
     {"/",  "?"},
 }
 
-function Acetate.altSymbolForKey(key)
+function acetate.altSymbolForKey(key)
     for _, symbolPair in ipairs(symbolPairs) do
         local a, b = table.unpack(symbolPair)
         if a == key then return b end
@@ -90,34 +90,30 @@ function Acetate.altSymbolForKey(key)
     end
 end
 
-function Acetate.keyMatch(a, b)
-    return a == b or a == Acetate.altSymbolForKey(b)
+function acetate.keyMatch(a, b)
+    return a == b or a == acetate.altSymbolForKey(b)
 end
 
 -- return a multi-line string listing all available shortcuts
-function Acetate.shortcutString()
-    -- special cases for a few shortcuts with mnemonics pertaining to the shift-keyed symbol
-    local cycleBackwardKey =         Acetate.cycleBackwardKey:gsub(",",  "<")
-    local cycleForwardKey =           Acetate.cycleForwardKey:gsub("%.", ">")
-    local toggleDebugStringKey = Acetate.toggleDebugStringKey:gsub("/",  "?")
-
+function acetate.shortcutString()
     local shortcutString =
-        "[" .. Acetate.toggleCentersKey      .. "] centers\n" ..
-        "[" .. Acetate.toggleBoundsKey       .. "] bounds\n" ..
-        "[" .. Acetate.toggleOrientationsKey .. "] orientations\n" ..
-        "[" .. Acetate.toggleCollideRectsKey .. "] collide rects\n" ..
-        "[" .. Acetate.toggleInvisiblesKey   .. "] invisible sprites\n" ..
-        "[" .. Acetate.toggleCustomDrawKey   .. "] custom debug draws\n" ..
-        "[" .. toggleDebugStringKey          .. "] sprite info\n" ..
-        "[" .. Acetate.toggleFPSKey          .. "] FPS\n" ..
-        "[" .. Acetate.toggleSpriteCountKey  .. "] sprite count\n" ..
+        "[" .. acetate.toggleCentersKey      .. "] centers\n" ..
+        "[" .. acetate.toggleBoundsKey       .. "] bounds\n" ..
+        "[" .. acetate.toggleOrientationsKey .. "] orientations\n" ..
+        "[" .. acetate.toggleCollideRectsKey .. "] collide rects\n" ..
+        "[" .. acetate.toggleInvisiblesKey   .. "] invisible sprites\n" ..
+        "[" .. acetate.toggleCustomDrawKey   .. "] custom debug draws\n" ..
+        "[" .. acetate.toggleDebugStringKey  .. "] sprite info\n" ..
+        "[" .. acetate.toggleFPSKey          .. "] FPS\n" ..
+        "[" .. acetate.toggleSpriteCountKey  .. "] sprite count\n" ..
         "\n"..
-        "[" .. cycleForwardKey               .. "] Next\n" ..
-        "[" .. cycleBackwardKey              .. "] Back\n" ..
+        "[" .. acetate.cycleForwardKey       .. "] Next\n" ..
+        "[" .. acetate.cycleBackwardKey      .. "] Back\n" ..
         "\n"..
-        "[" .. Acetate.togglePauseKey        .. "] Pause\n" ..
-        "[" .. Acetate.captureScreenshotKey  .. "] Screenshot\n" ..
+        "[" .. acetate.togglePauseKey        .. "] Pause\n" ..
+        "[" .. acetate.captureScreenshotKey  .. "] Screenshot\n" ..
         "[?] Help\n"
+    print(shortcutString)
 
     return shortcutString
 end

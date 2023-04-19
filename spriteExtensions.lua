@@ -18,15 +18,15 @@ end
 
 function gfx.sprite:drawCenter()
     local x, y = self:getLocalCenter()
-    gfx.fillCircleAtPoint(x, y, Acetate.centerRadius)
+    gfx.fillCircleAtPoint(x, y, acetate.centerRadius)
 end
 
 function gfx.sprite:drawOrientation()
     local x, y = self:getLocalCenter()
     local degrees = self:getRotation()
-    local radius = math.max(Acetate.minOrientationOrbRadius, math.min(
-        self.width * Acetate.orientationOrbScale / 2,
-        self.height * Acetate.orientationOrbScale / 2))
+    local radius = math.max(acetate.minOrientationOrbRadius, math.min(
+        self.width * acetate.orientationOrbScale / 2,
+        self.height * acetate.orientationOrbScale / 2))
     gfx.drawCircleAtPoint(x, y, radius)
     gfx.drawLine(x, y,
         x + radius * math.cos(math.rad(degrees)),

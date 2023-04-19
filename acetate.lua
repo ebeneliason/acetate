@@ -2,7 +2,7 @@ import "CoreLibs/graphics"
 import "../toyboxes/toyboxes.lua"
 
 -- define the Acetate namespace before importing our settings and function definitions
-Acetate = {}
+acetate = {}
 
 import "settings"
 import "keyHandlers"
@@ -41,140 +41,142 @@ local marchingAnts = EasyPattern {
 -- your individual sprite classes.
 
 
--- state management functions
+-- initialization logic
 
-function Acetate.init(config)
+function acetate.init(config)
     if not playdate.isSimulator then
         print("NOTE: Skipping initialization of Acetate outside simulator.")
         return
     end
 
     -- load defaults first, then optionally override via an optional custom config
-    Acetate.restoreDefaults()
+    acetate.restoreDefaults()
     if config then
-        Acetate.loadConfig(config)
+        acetate.loadConfig(config)
     end
 
     -- load the font used for displaying debug strings
-    Acetate.loadDebugFont()
+    acetate.loadDebugFont()
 
     -- install our `debugDraw` function, storing a reference to any previously defined
     -- function which we'll still call to preserve its behavior
-    if playdate.debugDraw and playdate.debugDraw ~= Acetate.debugDraw then
+    if playdate.debugDraw and playdate.debugDraw ~= acetate.debugDraw then
         print("NOTE: Acetate is wrapping an existing `playdate.debugDraw` function.")
         print("That function will still be called to preserve its functionality.")
-        Acetate._debugDraw = playdate.debugDraw
+        acetate._debugDraw = playdate.debugDraw
     end
-    playdate.debugDraw = Acetate.debugDraw
+    playdate.debugDraw = acetate.debugDraw
 
     -- install our `keyPressed` function, storing a reference to any previously defined
     -- function which we'll still call to preserve its behavior
-    if playdate.keyPressed  and playdate.keyPressed ~= Acetate.keyPressed then
+    if playdate.keyPressed  and playdate.keyPressed ~= acetate.keyPressed then
         print("NOTE: Acetate is wrapping an existing `playdate.keyPressed` function.")
         print("That function will still be called to preserve its functionality.")
-        Acetate._keyPressed = playdate.keyPressed
+        acetate._keyPressed = playdate.keyPressed
     end
-    playdate.keyPressed = Acetate.keyPressed
-    print("NOTE: Press [" .. Acetate.toggleDebugModeKey .. "] to activate Acetate debug mode.")
+    playdate.keyPressed = acetate.keyPressed
+    print("NOTE: Press [" .. acetate.toggleDebugModeKey .. "] to activate Acetate debug mode.")
 end
 
-function Acetate.loadConfig(config)
+function acetate.loadConfig(config)
     for k, v in pairs(config) do
-        Acetate[k] = type(v) == "table" and table.deepcopy(v) or v
+        acetate[k] = type(v) == "table" and table.deepcopy(v) or v
     end
 end
 
-function Acetate.restoreDefaults()
-    Acetate.loadConfig(Acetate.defaults)
+function acetate.restoreDefaults()
+    acetate.loadConfig(acetate.defaults)
 end
 
-function Acetate.enable()
-    if Acetate.enabled then return end
-    Acetate.enabled = true
-    if Acetate.autoPause then Acetate.pause() end
+-- state management functions
+
+function acetate.enable()
+    if acetate.enabled then return end
+    acetate.enabled = true
+    if acetate.autoPause then acetate.pause() end
 end
 
-function Acetate.disable()
-    if not Acetate.enabled then return end
-    Acetate.enabled = false
-    if not Acetate.retainFocusOnDisable then
-        Acetate.focusedSprite = nil
+function acetate.disable()
+    if not acetate.enabled then return end
+    acetate.enabled = false
+    if not acetate.retainFocusOnDisable then
+        acetate.focusedSprite = nil
     end
-    if Acetate.paused then Acetate.unpause() end
+    if acetate.paused then acetate.unpause() end
 end
 
-function Acetate.toggleEnabled()
-    if Acetate.enabled then
-        Acetate.disable()
+function acetate.toggleEnabled()
+    if acetate.enabled then
+        acetate.disable()
     else
-        Acetate.enable()
+        acetate.enable()
     end
 end
 
-function Acetate.pause()
-    if Acetate.paused then return end
-    Acetate.paused = true
+function acetate.pause()
+    if acetate.paused then return end
+    acetate.paused = true
     if playdate.gameWillPause then
         playdate.gameWillPause() -- let the game prepare
     end
     playdate.inputHandlers.push({}, true) -- block all inputs
-    Acetate.updateHandlerRef = playdate.update -- cease calls to update fn
+    acetate.updateHandlerRef = playdate.update -- cease calls to update fn
     playdate.update = function() end -- no-op
 end
 
-function Acetate.unpause()
-    if not Acetate.paused then return end
-    Acetate.paused = false
+function acetate.unpause()
+    if not acetate.paused then return end
+    acetate.paused = false
     if playdate.gameWillResume then
         playdate.gameWillResume() -- let the game prepare
     end
     playdate.inputHandlers.pop() -- unblock inputs
-    playdate.update = Acetate.updateHandlerRef -- restore update fn
+    playdate.update = acetate.updateHandlerRef -- restore update fn
 end
 
-function Acetate.togglePause()
-    if Acetate.paused then
-        Acetate.unpause()
+function acetate.togglePause()
+    if acetate.paused then
+        acetate.unpause()
     else
-        Acetate.pause()
+        acetate.pause()
     end
 end
 
 -- implement our debug drawing method, deferring to other sprites as appropriate
 
-function Acetate.debugDraw()
+function acetate.debugDraw()
     -- call the wrapped debugDraw version, if present
-    if Acetate._debugDraw then Acetate._debugDraw() end
+    if acetate._debugDraw then acetate._debugDraw() end
 
     -- this is slightly inefficient, but it avoids needing a setter
-    playdate.setDebugDrawColor(table.unpack(Acetate.color))
+    playdate.setDebugDrawColor(table.unpack(acetate.color))
 
     local sprites = playdate.graphics.sprite.getAllSprites()
     local s = ""
 
     -- show FPS as appropriate
-    if Acetate.showFPS and (Acetate.FPSPersists or Acetate.enabled) then
+    if acetate.showFPS and (acetate.FPSPersists or acetate.enabled) then
         local fps = playdate.getFPS() -- luacheck: ignore
-        s = s .. (Acetate.enabled and (fps .. " FPS\n") or (fps .. "\n"))
+        s = s .. (acetate.enabled and (fps .. " FPS\n") or (fps .. "\n"))
     end
 
     -- show sprite count as appropriate
-    if Acetate.showSpriteCount and (Acetate.spriteCountPersists or Acetate.enabled) then
-        if not Acetate.focusedSprite or not Acetate.enabled then
-            s = s .. (Acetate.enabled and (#sprites .. " SPRITES\n") or (#sprites .. "\n"))
+    if acetate.showSpriteCount and (acetate.spriteCountPersists or acetate.enabled) then
+        if not acetate.focusedSprite or not acetate.enabled then
+            s = s .. (acetate.enabled and (#sprites .. " SPRITES\n") or (#sprites .. "\n"))
         end
     end
 
     -- do debug drawing only if enabled
-    if Acetate.enabled then
+    if acetate.enabled then
 
         -- refocus or release if current focus is invisible or no longer displayed
-        Acetate.updateFocus()
+        acetate.updateFocus()
 
         -- show shortcuts or shortcut hint if there are no focused sprites
-        if sprites and not Acetate.focusedSprite then
-            if Acetate.showShortcuts then
-                s = s .. Acetate.shortcutString()
+        if sprites and not acetate.focusedSprite then
+            if acetate.showShortcuts then
+                s = s .. acetate.shortcutString()
             else
                 s = s .. "? for help"
             end
@@ -183,44 +185,44 @@ function Acetate.debugDraw()
         -- loop over all the sprites
         for _, sprite in ipairs(sprites) do
             -- only debug draw for visible sprites depending on our setting
-            if Acetate.focusInvisibleSprites or sprite:isVisible() then
+            if acetate.focusInvisibleSprites or sprite:isVisible() then
                 -- debug draw all sprites, or only the sprite at the matching index
-                if Acetate.focusedSprite == nil or Acetate.focusedSprite == sprite then
+                if acetate.focusedSprite == nil or acetate.focusedSprite == sprite then
 
                     -- time to draw
                     gfx.pushContext()
                         -- determine the draw offset for the sprite and set useful defaults
                         local x, y = sprite:getBounds()
                         gfx.setDrawOffset(x, y)
-                        gfx.setLineWidth(Acetate.lineWidth)
+                        gfx.setLineWidth(acetate.lineWidth)
                         gfx.setColor(gfx.kColorWhite) -- white is the debug color
 
                         -- draw built-in debug visualizations, if enabled
-                        if Acetate.drawBounds then
-                            if Acetate.animateBoundsForFocus and Acetate.focusedSprite == sprite then
+                        if acetate.drawBounds then
+                            if acetate.animateBoundsForFocus and acetate.focusedSprite == sprite then
                                 gfx.setPattern(marchingAnts:apply())
                             end
                             sprite:drawBounds()
                             gfx.setColor(gfx.kColorWhite)
                         end
-                        if Acetate.drawCenters then sprite:drawCenter() end
-                        if Acetate.drawCollideRects then sprite:drawCollideRect() end
-                        if Acetate.drawOrientations then
-                            if not Acetate.onlyDrawRotatedOrbs or sprite:getRotation() ~= 0 then
+                        if acetate.drawCenters then sprite:drawCenter() end
+                        if acetate.drawCollideRects then sprite:drawCollideRect() end
+                        if acetate.drawOrientations then
+                            if not acetate.onlyDrawRotatedOrbs or sprite:getRotation() ~= 0 then
                                 sprite:drawOrientation()
                             end
                         end
 
                         -- handle any sprites with custom `debugDraw` functions defined
-                        if Acetate.customDebugDrawing and sprite.debugDraw then
+                        if acetate.customDebugDrawing and sprite.debugDraw then
                             sprite:debugDraw()
                         end
 
                         -- show the info string if a single sprite is focused
-                        if Acetate.focusedSprite then
-                            if Acetate.showDebugString then
-                                s = s .. Acetate.formatDebugStringForSprite(sprite)
-                            elseif Acetate.alwaysShowSpriteNames then
+                        if acetate.focusedSprite then
+                            if acetate.showDebugString then
+                                s = s .. acetate.formatDebugStringForSprite(sprite)
+                            elseif acetate.alwaysShowSpriteNames then
                                 s = s .. (sprite.debugName or sprite.className)
                             end
                         end
@@ -233,42 +235,42 @@ function Acetate.debugDraw()
     -- lastly, show the debug string we've built up
     gfx.pushContext()
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-        Acetate.debugFont:drawText(s, Acetate.debugStringPosition.x, Acetate.debugStringPosition.y)
+        acetate.debugFont:drawText(s, acetate.debugStringPosition.x, acetate.debugStringPosition.y)
     gfx.popContext()
 end
 
 
 -- load the debug font
-function Acetate.loadDebugFont()
+function acetate.loadDebugFont()
 
-    if Acetate.debugFontPath then
+    if acetate.debugFontPath then
         -- check the canonical fonts directory first
-        Acetate.debugFont = gfx.font.new(Acetate.debugFontPath)
-        if Acetate.debugFont then return end
+        acetate.debugFont = gfx.font.new(acetate.debugFontPath)
+        if acetate.debugFont then return end
 
         -- check the toybox assets directory next
         local toyboxAssetsDir = "toybox_assets/github-dot-com/ebeneliason/acetate/"
-        Acetate.debugFont = gfx.font.new(toyboxAssetsDir .. Acetate.debugFontPath)
-        if Acetate.debugFont then return end
+        acetate.debugFont = gfx.font.new(toyboxAssetsDir .. acetate.debugFontPath)
+        if acetate.debugFont then return end
     end
 
     -- use the system font as a fallback
     print("WARNING: Acetate fonts could not be found. Falling back to system font.")
     print("Please double-check your `debugFontPath` setting and font file installations.")
-    Acetate.debugFont = gfx.getSystemFont(gfx.font.kVariantBold)
+    acetate.debugFont = gfx.getSystemFont(gfx.font.kVariantBold)
 end
 
 -- perform debug string substitutions using the format string specified by the sprite,
 -- if provided, and our default format string otherwise. By necessity, this needs to
 -- happen every frame, even though it's somewhat inefficient.
 
-function Acetate.formatDebugStringForSprite(sprite)
+function acetate.formatDebugStringForSprite(sprite)
     -- if the sprite provides a pre-formatted string, just return it
     if sprite.debugString then return sprite.debugString end
 
     -- use the format string specified by the sprite, if provided, falling back to
     -- the default format string otherwise
-    local s = sprite.debugStringFormat or Acetate.defaultDebugStringFormat
+    local s = sprite.debugStringFormat or acetate.defaultDebugStringFormat
 
     local x,  y  = sprite.x, sprite.y
     local w,  h  = sprite:getSize()

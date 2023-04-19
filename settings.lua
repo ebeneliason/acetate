@@ -1,11 +1,11 @@
 
 -- This file specifies Acetate's default settings. You can duplicate this file, change any values
 -- as you like, and then import it into your project and provide it as an argument when calling
--- `Acetate.init()`. Just be sure to replace `Acetate.defaults` with a custom name of your choosing
+-- `acetate.init()`. Just be sure to replace `acetate.defaults` with a custom name of your choosing
 -- to avoid inadvertently overriding the actual defaults, then use that name in the call to `init`.
 
 
-Acetate.defaults = {
+acetate.defaults = {
 
     -- BUILT-IN DEBUG VISUALIZATIONS
 

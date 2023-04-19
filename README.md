@@ -31,13 +31,13 @@ _Playdate is a registered trademark of [Panic](https://panic.com)._
 3.  Import it into your project within your `main.lua` file.
 
     ```lua
-    import 'Acetate/Acetate'
+    import 'Acetate/acetate'
     ```
 
 4.  Initialize it for use.
 
     ```lua
-    Acetate.init()
+    acetate.init()
     ```
 
 ### Using [`toybox.py`](https://toyboxpy.io/)
@@ -65,7 +65,7 @@ _Playdate is a registered trademark of [Panic](https://panic.com)._
 5.  Lastly, be sure to initialize it.
 
     ```lua
-    Acetate.init()
+    acetate.init()
     ```
 
 ## Usage
@@ -106,7 +106,7 @@ Acetate prepares the graphics context for you automatically:
     drawing relative to your sprite (just like in your `draw` function).
 
 Anything you draw within this function will appear in debug mode. You can toggle your custom
-debug drawing on/off using the `M` key, or set `Acetate.customDebugDrawing` to `true` or `false`
+debug drawing on/off using the `M` key, or set `acetate.customDebugDrawing` to `true` or `false`
 from within your code.
 
 NOTE: Because fonts are rendered as images and tend to be black-on-white, regular use of `drawText`
@@ -115,7 +115,7 @@ that your text will render in `kColorWhite` as follows:
 
 ```lua
 gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-Acetate.debugFont:drawText("This text will render in the debug layer!", x, y)
+acetate.debugFont:drawText("This text will render in the debug layer!", x, y)
 ```
 
 ### Reusing Acetate's Built-in Debug Visualizations
@@ -155,7 +155,7 @@ You can also focus a sprite programmatically. This makes it easy to initiate vis
 the right time and for the right sprite.
 
 ```lua
-Acetate.setFocus(mySprite)
+acetate.setFocus(mySprite)
 ```
 
 If Acetate's debug mode isn't active when you call this function, it will be enabled automatically.
@@ -166,7 +166,7 @@ Acetate displays a debug string for the focused sprite while debug mode is activ
 string indicates the size and position of the sprite. You can modify the debug string format to
 include the most useful information for your use case in two ways:
 
-1.  **Change the default.** Modify the `Acetate.defaultDebugFormatString` to change the debug
+1.  **Change the default.** Modify the `acetate.defaultDebugFormatString` to change the debug
     string shown for all of your sprites.
 
 2.  **Set custom strings.** Set the `debugFormatString` or `debugString` properties directly on
@@ -229,7 +229,7 @@ end
 
 Acetate provides a number of keyboard shortcuts. You're welcome to change any of these shortcuts
 to fit your preference, or avoid conflict with other `keyPress` handlers defined elsewhere. Edit
-the settings object or override the defaults in your project e.g. `Acetate.toggleDebugKey = "0"`.
+the settings object or override the defaults in your project e.g. `acetate.toggleDebugKey = "0"`.
 
 | Key | Function                                                                     |
 | --- | ---------------------------------------------------------------------------- |
@@ -256,13 +256,13 @@ a screenshot by pressing the `Q` key at any time (even outside debug mode), or f
 code:
 
 ```lua
-Acetate.captureFullScreenshot([path, filename])
+acetate.captureFullScreenshot([path, filename])
 ```
 
 _NOTE: Acetate's debug layer will not appear in screenshots._
 
 You can provide a destination path and filename, or let Acetate name it with a timestamp and save
-it to the currently configured `Acetate.defaultScreenshotPath`. This is `~/Desktop` by default, but
+it to the currently configured `acetate.defaultScreenshotPath`. This is `~/Desktop` by default, but
 may be changed in `settings.lua` or from within your app.
 
 If you are focused on an individual sprite while in debug mode when you activate the capture
@@ -270,7 +270,7 @@ shortcut, Acetate will capture an image of just that sprite, rather than the ful
 also capture a screenshot of an individual sprite with:
 
 ```lua
-Acetate.captureSpriteScreenshot(sprite, [path, filename])
+acetate.captureSpriteScreenshot(sprite, [path, filename])
 ```
 
 ## Settings
@@ -281,7 +281,7 @@ experience. You can change the configuration in one of several ways:
 1.  **Override at `init`.** You can override any defaults by passing named arguments to init:
 
     ```lua
-    Acetate.init {
+    acetate.init {
         autoPause = true,
         debugColor = {0, 255, 0, 0.8},
         -- as many as you like
@@ -294,11 +294,11 @@ experience. You can change the configuration in one of several ways:
     pass the named config object to `init`:
 
     ```lua
-    Acetate.init(myAcetateSettings)
+    acetate.init(myAcetateSettings)
     ```
 
 3.  **Set individual values.** You can also override individual settings from within your app at
-    runtime following initialization, e.g. `Acetate.color = {0, 255, 0, 0.8}` and so on.
+    runtime following initialization, e.g. `acetate.color = {0, 255, 0, 0.8}` and so on.
 
 The following settings are available:
 
@@ -306,8 +306,8 @@ The following settings are available:
 
 | Setting     | Type    | Default | Description                                                                                                                          |
 | ----------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `enabled`   | boolean | `false` | Indicates when Acetate debug mode is active. Do not set this directly; call `Acetate.enable()` or `Acetate.disable()` instead.       |
-| `paused`    | boolean | `false` | Indicates when the app is paused during debug mode. Do not set this directly; call `Acetate.pause()` or `Acetate.unpause()` instead. |
+| `enabled`   | boolean | `false` | Indicates when Acetate debug mode is active. Do not set this directly; call `acetate.enable()` or `acetate.disable()` instead.       |
+| `paused`    | boolean | `false` | Indicates when the app is paused during debug mode. Do not set this directly; call `acetate.pause()` or `acetate.unpause()` instead. |
 | `autoPause` | boolean | `false` | Indicates whether the app should pause automatically when entering debug mode.                                                       |
 
 ### Debug Visualizations
@@ -395,7 +395,7 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
     ```lua
     function playdate.keyPressed(key)
         -- let Acetate handle any debug key presses
-        Acetate.keyPressed(key)
+        acetate.keyPressed(key)
         -- perform your own key handling here
     end
     ```
@@ -406,7 +406,7 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
     ```lua
     function playdate.debugDraw()
         -- let Acetate do its own debug drawing
-        Acetate.debugDraw()
+        acetate.debugDraw()
         -- perform additional debug drawing here
     end
     ```
