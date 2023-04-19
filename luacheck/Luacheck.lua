@@ -10,7 +10,7 @@
 
 return {
     globals = {
-        Acetate = {
+        acetate = {
             fields = {
                 super = {
                     fields = {
@@ -20,6 +20,9 @@ return {
                 },
                 className = {},
                 init = {},
+                restoreDefaults = {},
+                loadConfig = {},
+                defaults = {},
                 loadDebugFont = {},
                 debugFontPath = {},
                 debugFont = {
