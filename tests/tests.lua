@@ -54,7 +54,7 @@ end
 TestSettings = {}
 
 function TestSettings:testDefaults()
-    -- TODO: need a way to restore defaults before this test
+    Acetate.init()
 
     lu.assertEquals(Acetate.drawCenters, true)
     lu.assertEquals(Acetate.drawBounds, true)
@@ -112,6 +112,49 @@ function TestSettings:testDefaults()
 
     Acetate.debugStringPosition.x = 123
     lu.assertNotEquals(Acetate.debugStringPosition.x, Acetate.defaults.debugStringPosition.x)
+end
+
+function TestSettings:testCanOverrideDefaults()
+    -- initialize with custom settings
+    Acetate.init({
+        drawCenters = false,
+        lineWidth = 2,
+        captureScreenshotKey = "0"
+    })
+
+    -- confirm the overridden values are set properly
+    lu.assertIsFalse(Acetate.drawCenters)
+    lu.assertEquals(Acetate.lineWidth, 2)
+    lu.assertEquals(Acetate.captureScreenshotKey, "0")
+
+    -- confirm all other defaults are set properly
+    for k, v in pairs(Acetate.defaults) do
+        if k ~= "drawCenters" and k ~= "lineWidth" and k ~= "captureScreenshotKey" then
+            lu.assertEquals(Acetate[k], v)
+        end
+    end
+end
+
+function TestSettings:testRestoreDefaults()
+    -- initialize with custom settings
+    Acetate.init({
+        drawCenters = false,
+        lineWidth = 2,
+        captureScreenshotKey = "0"
+    })
+
+    -- confirm the overridden values are set properly
+    lu.assertIsFalse(Acetate.drawCenters)
+    lu.assertEquals(Acetate.lineWidth, 2)
+    lu.assertEquals(Acetate.captureScreenshotKey, "0")
+
+    -- restore defaults
+    Acetate.restoreDefaults()
+
+    -- confirm all defaults are set properly
+    for k, v in pairs(Acetate.defaults) do
+        lu.assertEquals(Acetate[k], v)
+    end
 end
 
 

@@ -1,11 +1,11 @@
 
--- This file specifies Acetate's default settings. You can change these here directly, or modify
--- them from anywhere in your project, e.g. Acetate.color = {0, 255, 0, 0.5}. Take particular
--- note of the `defaultDebugStringFormat`, which you can adjust to provide the info most relevant
--- to your use case. You can also define a custom `debugString` or `debugStringFormat` property
--- on your individual sprite classes for additional flexibility.
+-- This file specifies Acetate's default settings. You can duplicate this file, change any values
+-- as you like, and then import it into your project and provide it as an argument when calling
+-- `Acetate.init()`. Just be sure to replace `Acetate.defaults` with a custom name of your choosing
+-- to avoid inadvertently overriding the actual defaults, then use that name in the call to `init`.
 
-Acetate = {
+
+Acetate.defaults = {
 
     -- BUILT-IN DEBUG VISUALIZATIONS
 
@@ -48,9 +48,12 @@ Acetate = {
         -- "S: $sx\n"    ..            --    scale
         -- "C: $C\n"     ..            --    world center coord
         -- "C: $c\n"     ..            --    local center coord
-        -- "O: $co\n"    ..            --    local center relative offset e.g. (0.5, 0.5)
+        -- "C: $co\n"    ..            --    local center relative offset e.g. (0.5, 0.5)
+        -- "O: $O\n"     ..            --    world origin coord
+        -- "O: $o\n"     ..            --    local origin coord
         -- "T: $t\n"     ..            --    tag
         -- "Z: $z\n"     ..            --    z-index
+        -- "$q\n"        ..            --    opaqueness
         -- "$v\n"        ..            --    visibility
         -- "$u"          ..            --    updates enabled
         -- "$f FPS\n"    ..            --    current FPS

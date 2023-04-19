@@ -1,12 +1,14 @@
 import "CoreLibs/graphics"
+import "../toyboxes/toyboxes.lua"
+
+-- define the Acetate namespace before importing our settings and function definitions
+Acetate = {}
 
 import "settings"
 import "keyHandlers"
 import "focusHandling"
 import "spriteExtensions"
 import "screenshots"
-
-import "../toyboxes/toyboxes.lua"
 
 local gfx <const> = playdate.graphics
 
@@ -41,12 +43,19 @@ local marchingAnts = EasyPattern {
 
 -- state management functions
 
-function Acetate.init()
+function Acetate.init(config)
     if not playdate.isSimulator then
         print("NOTE: Skipping initialization of Acetate outside simulator.")
         return
     end
 
+    -- load defaults first, then optionally override via an optional custom config
+    Acetate.restoreDefaults()
+    if config then
+        Acetate.loadConfig(config)
+    end
+
+    -- load the font used for displaying debug strings
     Acetate.loadDebugFont()
 
     -- install our `debugDraw` function if not already defined, storing a reference to
@@ -66,6 +75,16 @@ function Acetate.init()
         Acetate._keyPressed = playdate.keyPressed
     end
     playdate.keyPressed = Acetate.keyPressed
+end
+
+function Acetate.loadConfig(config)
+    for k, v in pairs(config) do
+        Acetate[k] = type(v) == "table" and table.deepcopy(v) or v
+    end
+end
+
+function Acetate.restoreDefaults()
+    Acetate.loadConfig(Acetate.defaults)
 end
 
 function Acetate.enable()
@@ -300,6 +319,3 @@ function Acetate.formatDebugStringForSprite(sprite)
 
     return s
 end
-
--- Acetate is auto-initialized on import
-Acetate.init()

@@ -26,17 +26,19 @@ _Playdate is a registered trademark of [Panic](https://panic.com)._
 
 ### Installing Manually
 
-1. Clone this repo into your project folder (e.g. inside `source`).
-2. Import it into your project within your `main.lua` file.
-3. Move the `Acetate-Mono-*.fnt` files into your `source/fonts/` folder.
+1.  Clone this repo into your project folder (e.g. inside `source`).
+2.  Move the `Acetate-Mono-*.fnt` files into your `source/fonts/` folder.
+3.  Import it into your project within your `main.lua` file.
 
-You can wrap the `import` statement in a condition to ensure it only loads in the simulator:
+    ```lua
+    import 'Acetate/Acetate'
+    ```
 
-```lua
-if playdate.isSimulator then
-    import "acetate/Acetate" -- update path according to where you placed the directory
-end
-```
+4.  Initialize it for use.
+
+    ```lua
+    Acetate.init()
+    ```
 
 ### Using [`toybox.py`](https://toyboxpy.io/)
 
@@ -60,6 +62,12 @@ end
     import '../toyboxes/toyboxes.lua'
     ```
 
+5.  Lastly, be sure to initialize it.
+
+    ```lua
+    Acetate.init()
+    ```
+
 ## Usage
 
 ### Introduction
@@ -69,7 +77,7 @@ taking advantage of its features.
 
 1. Build and run your app in the Playdate Simulator.
 2. Press the `D` key on your keyboard to enter debug mode.
-3. Use `,` (<) and `.` (>) to cycle through individual sprites.
+3. Use `,` (`<`) and `.` (`>`) to cycle through individual sprites.
 4. Refer to the list of [keyboard shortcuts](#keyboard-shortcuts) below for additional options.
 
 Read on to learn how to implement custom debug drawing for your sprite classes and customize
@@ -268,13 +276,29 @@ Acetate.captureSpriteScreenshot(sprite, [path, filename])
 ## Settings
 
 Acetate's settings object allows you to change a wide array of options to configure the debugging
-experience. You can change the configuration in one of two ways:
+experience. You can change the configuration in one of several ways:
 
-1.  **Edit the file.** You can edit the `settings.lua` file in the Acetate directory of your project
-    to change the defaults that will apply when launching your app.
+1.  **Override at `init`.** You can override any defaults by passing named arguments to init:
 
-2.  **Set at runtime.** You can update the settings object directly at runtime from within your
-    app, e.g. `Acetate.color = {0, 255, 0, 0.8}` and so on.
+    ```lua
+    Acetate.init {
+        autoPause = true,
+        debugColor = {0, 255, 0, 0.8},
+        -- as many as you like
+    }
+    ```
+
+2.  **Create a custom config.** If you intend to change many settings, or just want to keep your
+    initialization code to a minimum, you can duplicate the `settings.lua` file, give the settings object
+    therein a unique name (e.g. `myAcetateSettings = { … }`, import that file in `main.lua`, and then
+    pass the named config object to `init`:
+
+    ```lua
+    Acetate.init(myAcetateSettings)
+    ```
+
+3.  **Set individual values.** You can also override individual settings from within your app at
+    runtime following initialization, e.g. `Acetate.color = {0, 255, 0, 0.8}` and so on.
 
 The following settings are available:
 
