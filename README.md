@@ -195,6 +195,7 @@ characters. They are case sensitive.
 | `$d`    | Rotation (degrees)                           |
 | `$s`    | Scale                                        |
 | `$t`    | Tag number                                   |
+| `$q`    | Opaqueness as "OPAQUE" or "TRANSPARENT"      |
 | `$u`    | Update status as "UPDATING" or "DISABLED"    |
 | `$v`    | Visibility as "VISIBLE" or "INVISIBLE"       |
 | `$z`    | Z-index                                      |

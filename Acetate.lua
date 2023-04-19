@@ -293,6 +293,7 @@ function Acetate.formatDebugStringForSprite(sprite)
     s = s:gsub("$t",  ""  .. t)                        -- $t  | tag number
     s = s:gsub("$u",  u and "UPDATING" or "DISABLED")  -- $u  | updates enabled
     s = s:gsub("$v",  v and "VISIBLE" or "INVISIBLE")  -- $v  | visibility
+    s = s:gsub("$q",  q and "OPAQUE" or "TRANSPARENT") -- $q  | opaqueness
     s = s:gsub("$z",  ""  .. z)                        -- $z  | z index
     s = s:gsub("$f",  ""  .. f)                        -- $f  | FPS
     s = s:gsub("$#",  ""  .. num)                      -- $#  | number of sprites
