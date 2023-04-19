@@ -13,8 +13,8 @@ local gfx <const> = playdate.graphics
 -- the animated dotted line effect used for selection bounds
 local marchingAnts = EasyPattern {
     ditherType = gfx.image.kDitherTypeDiagonalLine,
-    xPhaseDuration = 0.25,
-    color = gfx.kColorWhite, -- debug color
+    xDuration = 0.25,
+    bgColor = gfx.kColorWhite, -- debug color
 }
 
 -- USAGE:
