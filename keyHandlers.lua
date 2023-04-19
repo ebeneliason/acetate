@@ -106,7 +106,7 @@ function Acetate.shortcutString()
         "[" .. Acetate.toggleInvisiblesKey   .. "] invisible sprites\n" ..
         "[" .. Acetate.toggleCustomDrawKey   .. "] custom debug draws\n" ..
         "[" .. toggleDebugStringKey          .. "] sprite info\n" ..
-        "[" .. Acetate.toggleFPSKey   .. "] FPS\n" ..
+        "[" .. Acetate.toggleFPSKey          .. "] FPS\n" ..
         "[" .. Acetate.toggleSpriteCountKey  .. "] sprite count\n" ..
         "\n"..
         "[" .. cycleForwardKey               .. "] Next\n" ..

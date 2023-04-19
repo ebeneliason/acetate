@@ -8,10 +8,10 @@ local gfx <const> = playdate.graphics
 function Acetate.captureScreenshot()
     -- only capture sprite screenshots while a sprite is focused in debug mode
     if Acetate.enabled and Acetate.focusedSprite and Acetate.spriteScreenshotsEnabled then
-        Acetate.captureSpriteScreenshot(Acetate.focusedSprite)
+        return Acetate.captureSpriteScreenshot(Acetate.focusedSprite)
     -- the default
     else
-        Acetate.captureFullScreenshot()
+        return Acetate.captureFullScreenshot()
     end
 end
 
@@ -29,6 +29,7 @@ function Acetate.captureFullScreenshot(path, filename)
     -- save the image to disk
     playdate.simulator.writeToFile(screenshot, fullPath)
     print("Saved screenshot to " .. fullPath)
+    return true
 end
 
 -- capture a screenshot of the specified sprite
@@ -36,7 +37,12 @@ function Acetate.captureSpriteScreenshot(sprite, path, filename)
     -- abort if there's no sprite to capture
     if not sprite then
         print("Failed to capture sprite screenshot. No sprite provided.")
-        return
+        return false
+    end
+
+    if sprite.width <= 0 or sprite.height <= 0 then
+        print("Can't capture a screenshot of a sprite with 0 area. Set a valid width and height.")
+        return false
     end
 
     -- set up the output path
@@ -47,7 +53,7 @@ function Acetate.captureSpriteScreenshot(sprite, path, filename)
     local fullPath = path .. filename
 
     -- produce the image of the sprite
-    local screenshot = sprite:getImage() -- images supercede draw()
+    local screenshot = sprite:getImage() -- images supersede draw()
     if not screenshot then
         if sprite.draw then
             screenshot = gfx.image.new(sprite.width, sprite.height)
@@ -56,10 +62,12 @@ function Acetate.captureSpriteScreenshot(sprite, path, filename)
             gfx.unlockFocus()
         else
             print("Failed to capture sprite screenshot. No image set or draw() function provided.")
+            return false
         end
     end
 
     -- save the image to disk
     playdate.simulator.writeToFile(screenshot, fullPath)
     print("Saved sprite screenshot to " .. fullPath)
+    return true
 end

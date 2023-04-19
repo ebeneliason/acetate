@@ -45,3 +45,6 @@ luac.out
 # toybox.py
 toyboxes
 toybox_assets
+
+# Playdate
+*.pdx
