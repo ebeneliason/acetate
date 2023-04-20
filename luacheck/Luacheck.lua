@@ -1,4 +1,9 @@
--- Acetate globals
+-- acetate globals
+--
+-- Luacheck support is provided for only for acetate itself (not tests). To run it,
+-- install `luacheck` via `luarocks`, then from the top level Acetate directory:
+--
+--     % luacheck *.lua
 --
 -- This file can also be used with toyboxpy (https://toyboxpy.io):
 --
