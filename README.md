@@ -390,6 +390,8 @@ The following settings are available:
 
 ## Troubleshooting
 
+### I can't enable the acetate debug layer.
+
 If you can't activate Acetate debug mode for your app in the simulator, check the following:
 
 1.  **Installation.** Be sure you've followed the installation instructions properly, that all
@@ -409,6 +411,9 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
     end
     ```
 
+    If acetate keyboard handling interferes with your own, you can modify the keyboard shortcuts
+    with custom settings, including the key used to enable/disble the acetate debug layer.
+
 3.  **Debug draw.** Acetate implements the `playdate.debugDraw` function in order to render into
     the debug layer of the simulator. If you implement the `debugDraw` function yourself, it
     will override Acetate's. In this case, you can call Acetate's from your own:
@@ -425,17 +430,19 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
     support for implementing `debugDraw` within your individual sprite classes. (You will, however,
     need to do your own debug drawing for anything not associated with sprites.)
 
-4.  **Device Crashes** Acetate is not initialized on-device. Attempting to access its members
-    or call its functions outside the simulator will cause Playdate to crash. You can do so
-    safely from within any _functions_ you write (e.g. `debugString`, `debugDraw`, etc.) or within
-    key handlers, as these will only be called within the simulator. Any access outside these
-    functions should be wrapped within a check to ensure acetate has been initialized:
+### Help, my app keeps crashing on Playdate hardware!
 
-    ```
-    if acetate.initialized then
-        -- safe to access acetate members here, for example to call `acetate.setFocus(mySprite)`
-    end
-    ```
+Acetate is not initialized on-device. Attempting to access its members or call its functions outside
+the simulator will cause Playdate to crash. You can do so safely from within any _functions_ you write
+(e.g. `debugString()`, `debugDraw()`, etc.) or within key handlers, as these will only be called inside
+the simulator. Any access outside these contexts should be wrapped within a check to ensure acetate
+has been initialized:
+
+```
+if acetate.initialized then
+    -- safe to access acetate members here, for example to call `acetate.setFocus(mySprite)`
+end
+```
 
 ## License
 
