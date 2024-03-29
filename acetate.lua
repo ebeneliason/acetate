@@ -32,10 +32,11 @@ local marchingAnts = EasyPattern {
 
 -- The line width will be set to 1 and the color set to kColorWhite (the color used for
 -- all debug drawing) so you needn't set these yourself unless you want to change them.
--- Sprites can also define a custom debug string, or a debug string format, to be shown when
--- they are focused in debug mode, e.g.
+-- Sprites can also define a custom debug string to be shown when they are focused, e.g.
 --
--- self.debugString = "My custom debug string"
+-- function MySprite:debugString()
+--     return "My custom debug string"
+-- end
 --
 -- NOTE: while you must import Acetate somewhere, e.g. main.lua, you needn't import it in
 -- your individual sprite classes.
@@ -268,12 +269,23 @@ end
 -- happen every frame, even though it's somewhat inefficient.
 
 function acetate.formatDebugStringForSprite(sprite)
-    -- if the sprite provides a pre-formatted string, just return it
-    if sprite.debugString then return sprite.debugString end
+    local s, performSubstitutions
+
+    -- check to see if the sprite provides a custom debug string
+    if sprite.debugString then
+        if type(sprite.debugString) == "function" then
+            s, performSubstitutions = sprite:debugString()
+            -- if no formatting is required, just return it
+            if not performSubstitutions then return s end
+        else
+            -- legacy support
+            return sprite.debugString
+        end
+    end
 
     -- use the format string specified by the sprite, if provided, falling back to
     -- the default format string otherwise
-    local s = sprite.debugStringFormat or acetate.defaultDebugStringFormat
+    s = s or sprite.debugStringFormat or acetate.defaultDebugStringFormat
 
     local x,  y  = sprite.x, sprite.y
     local w,  h  = sprite:getSize()
@@ -295,24 +307,26 @@ function acetate.formatDebugStringForSprite(sprite)
 
                                                        -- SUBSTITUTION KEY
     s = s:gsub("$n",  ""  .. n)                        -- $n  | sprite class name or `debugName`
-    s = s:gsub("$p",  "(" .. x .. "," .. y .. ")")     -- $p  | position coord
+    s = s:gsub("$p",  "(" .. x .. ", " .. y .. ")")    -- $p  | position coord
     s = s:gsub("$x",  ""  .. x)                        -- $x  | x position
     s = s:gsub("$y",  ""  .. y)                        -- $y  | y position
     s = s:gsub("$w",  ""  .. w)                        -- $w  | width
     s = s:gsub("$h",  ""  .. h)                        -- $h  | height
-    s = s:gsub("$rc", "(" .. rx .. "," .. ry .. ")")   -- $rc | local relative center
+    s = s:gsub("$rx", ""  .. rx)                       -- $rx | local relative horizontal center
+    s = s:gsub("$ry", ""  .. ry)                       -- $ry | local relative vertical center
+    s = s:gsub("$rc", "(" .. rx .. ", " .. ry .. ")")  -- $rc | local relative center
     s = s:gsub("$ox", ""  .. ox)                       -- $ox | local origin x position
     s = s:gsub("$oy", ""  .. oy)                       -- $oy | local origin y position
-    s = s:gsub("$o",  ""  .. ox .. "," .. oy .. ")")   -- $o  | local origin coord
+    s = s:gsub("$o",  "(" .. ox .. ", " .. oy .. ")")  -- $o  | local origin coord
     s = s:gsub("$Ox", ""  .. Ox)                       -- $Ox | world origin x position
     s = s:gsub("$Oy", ""  .. Oy)                       -- $Oy | world origin y position
-    s = s:gsub("$O",  ""  .. Ox .. "," .. Oy .. ")")   -- $O  | world origin coord
+    s = s:gsub("$O",  "(" .. Ox .. ", " .. Oy .. ")")  -- $O  | world origin coord
     s = s:gsub("$cx", ""  .. cx)                       -- $cx | local center x position
-    s = s:gsub("$cy", "(" .. cy)                       -- $cy | local center y position
-    s = s:gsub("$c",  "(" .. cx .. "," .. cy .. ")")   -- $c  | local center coord
+    s = s:gsub("$cy", ""  .. cy)                       -- $cy | local center y position
+    s = s:gsub("$c",  "(" .. cx .. ", " .. cy .. ")")  -- $c  | local center coord
     s = s:gsub("$Cx", ""  .. Cx)                       -- $Cx | world center x position
-    s = s:gsub("$Cy", "(" .. Cy)                       -- $Cy | world center y position
-    s = s:gsub("$C",  "(" .. Cx .. "," .. Cy .. ")")   -- $C  | world center coord
+    s = s:gsub("$Cy", ""  .. Cy)                       -- $Cy | world center y position
+    s = s:gsub("$C",  "(" .. Cx .. ", " .. Cy .. ")")  -- $C  | world center coord
     s = s:gsub("$d",  ""  .. r)                        -- $d  | rotation (deg)
     s = s:gsub("$r",  ""  .. math.rad(r))              -- $r  | rotation (rad)
     s = s:gsub("$s",  ""  .. sc)                       -- $s  | scale

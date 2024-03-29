@@ -166,14 +166,20 @@ Acetate displays a debug string for the focused sprite while debug mode is activ
 string indicates the size and position of the sprite. You can modify the debug string format to
 include the most useful information for your use case in two ways:
 
-1.  **Change the default.** Modify the `acetate.defaultDebugFormatString` to change the debug
+1.  **Change the default.** Modify the `acetate.defaultDebugStringFormat` to change the debug
     string shown for all of your sprites.
 
-2.  **Set custom strings.** Set the `debugFormatString` or `debugString` properties directly on
-    your sprites, such as in their `init` functions. `debugFormatString` behaves just like the
-    `defaultDebugFormatString`, with substitutions as described in the table below. The value of
-    `debugString` will be displayed verbatim, which is slightly more performant at the cost of
-    having to format the entire string yourself.
+2.  **Set custom strings.** Implement the `debugString(string, [performSubtitutions])` function on your
+    sprite. You can provide a fully formatted string, or include substitution patterns as shown in the
+    table below, passing `true` for the optional second parameter.
+
+    ```lua
+    function MySprite:debugString()
+        local s
+        -- construct `s` using any properties belonging to your sprite you'd like to see while debugging
+        return s, true
+    end
+    ```
 
 All substitution patterns begin with a dollar sign (`$`) followed by either one or two alphabetical
 characters. They are case sensitive.
@@ -186,6 +192,8 @@ characters. They are case sensitive.
 | `$y`    | Y position                                   |
 | `$w`    | Width                                        |
 | `$h`    | Height                                       |
+| `$rx`   | Local relative horizontal center             |
+| `$ry`   | Local relative vertical center               |
 | `$rc`   | Local relative center point, e.g. (0.5, 0.5) |
 | `$o`    | Origin coordinate (top left) in local space  |
 | `$ox`   | Local origin X position                      |

@@ -28,10 +28,17 @@ function getFlag(key)
     return flags[key or "default"]
 end
 
+-- random number conveniences
+function rnd(n) return n and math.random(n) or math.random() end
+function rndN(n) return math.random(1, n) end
+function rnd100() return rndN(100) end
+function rnd1K() return rndN(1000) end
+function rndBool() return rnd() > 0.5 and true or false end
+
 -- a list of random numbers
-local rnd = {}
+local rnds = {}
 for i = 1, 9 do
-    rnd[i] = math.random()
+    rnds[i] = rnd1K()
 end
 
 -- We have to initialize it before we can run tests
@@ -270,6 +277,248 @@ function TestDrawing:TestDrawBounds()
     acetate.debugDraw()
     lu.assertIsFalse(getFlag("drawBounds"))
     lu.assertIsTrue(getFlag("debugDraw"))
+end
+
+TestDebugStrings = {}
+
+function TestDebugStrings:setUp()
+end
+
+function TestDebugStrings:tearDown()
+    playdate.graphics.sprite.removeAll()
+end
+
+function TestDebugStrings:testDefaultDebugString()
+    acetate.init()
+
+    local s = S()
+    s:moveTo(rnds[1], rnds[2])
+    s:setSize(rnds[3], rnds[4])
+
+    local x, y = s:getPosition()
+    local w, h = s:getSize()
+
+    -- default debug strings work for basic sprites
+    local str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "S   \n"   ..
+        "X: " .. x .. "\n"     ..
+        "Y: " .. y .. "\n"     ..
+        "W: " .. w .. "\n"     ..
+        "H: " .. h .. "\n"
+    )
+end
+
+function TestDebugStrings:testDebugName()
+    acetate.init()
+
+    local s = S()
+    s:moveTo(rnds[1], rnds[2])
+    s:setSize(rnds[3], rnds[4])
+
+    local x, y = s:getPosition()
+    local w, h = s:getSize()
+
+    -- custom debug name is used in formatted debug string
+    s.debugName = "Foo"
+    local str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "Foo   \n"   ..
+        "X: " .. x .. "\n"     ..
+        "Y: " .. y .. "\n"     ..
+        "W: " .. w .. "\n"     ..
+        "H: " .. h .. "\n"
+    )
+end
+
+function TestDebugStrings:testLegacyDebugString()
+    acetate.init()
+
+    local s = S()
+    s:moveTo(rnds[1], rnds[2])
+    s:setSize(rnds[3], rnds[4])
+
+    -- test that custom debugString is used
+    s.debugString = "Custom String"
+    local str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "Custom String")
+end
+
+function TestDebugStrings:testLegacyDebugStringFormat()
+    acetate.init()
+
+    local s = S()
+    s:moveTo(rnds[1], rnds[2])
+    s:setSize(rnds[3], rnds[4])
+
+    -- test that custom debugStringFormat is used
+    s.debugStringFormat = "($x, $y), $w x $h"
+
+    local x, y = s:getPosition()
+    local w, h = s:getSize()
+    local str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "(" .. x .. ", " .. y .. "), " .. w .. " x " .. h .. "")
+end
+
+function TestDebugStrings:testDebugStringFunction()
+    acetate.init()
+
+    local s = S()
+    s:moveTo(rnds[1], rnds[2])
+    s:setSize(rnds[3], rnds[4])
+
+    -- test that custom debugString is used and substituted
+    s.debugString = function()
+        return "($x, $y) should not be substituted"
+    end
+    local str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "($x, $y) should not be substituted")
+end
+
+function TestDebugStrings:testDebugStringFunctionSubstitution()
+    acetate.init()
+
+    local s = S()
+    s:moveTo(rnds[1], rnds[2])
+    s:setSize(rnds[3], rnds[4])
+
+    local x, y = s:getPosition()
+    local w, h = s:getSize()
+
+    -- test that custom debugString is used
+    s.debugString = function()
+        return "($x, $y) should be substituted", true
+    end
+    local str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "(" .. x .. ", " .. y .. ") should be substituted")
+end
+
+function TestDebugStrings:testAllSubstitutions()
+    acetate.init()
+
+    local s = S()
+    s:moveTo(rnd100(), rnd100())
+    s:setSize(rnd100(), rnd100())
+    s:setCenter(rnd(), rnd())
+    s:setRotation(rnd100())
+    s:setScale(rnd100())
+    s:setTag(rnd100())
+    s:setZIndex(rnd100())
+    s.debugName = "foo"
+    s:add()
+
+    local x,  y  = s.x, s.y
+    local w,  h  = s:getSize()
+    local cx, cy = s:getLocalCenter()
+    local Cx, Cy = s:getWorldCenter()
+    local rx, ry = s:getCenter()
+    local ox, oy = s:getLocalOrigin()
+    local Ox, Oy = s:getWorldOrigin()
+    local r      = s:getRotation()
+    local sc     = s:getScale()
+    local t      = s:getTag()
+    local z      = s:getZIndex()
+    local fps    = playdate.getFPS() -- luacheck: ignore
+    local num    = #playdate.graphics.sprite.getAllSprites()
+    local n      = s.debugName or s.className
+
+    local str
+
+    -- test x, y
+    s.debugString = function() return "$x, $y", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, x .. ", " .. y)
+
+    -- test width and height
+    s.debugString = function() return "$w, $h", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, w .. ", " .. h)
+
+    -- test local center
+    s.debugString = function() return "[$cx, $cy], $c", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "[" .. cx .. ", " .. cy .. "], (" .. cx .. ", " .. cy .. ")")
+
+    -- test world center
+    s.debugString = function() return "[$Cx, $Cy], $C", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "[" .. Cx .. ", " .. Cy .. "], (" .. Cx .. ", " .. Cy .. ")")
+
+    -- test relative center
+    s.debugString = function() return "[$rx, $ry], $rc", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "[" .. rx .. ", " .. ry .. "], (" .. rx .. ", " .. ry .. ")")
+
+    -- test local origin
+    s.debugString = function() return "[$ox, $oy], $o", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "[" .. ox .. ", " .. oy .. "], (" .. ox .. ", " .. oy .. ")")
+
+    -- test world center
+    s.debugString = function() return "[$Ox, $Oy], $O", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "[" .. Ox .. ", " .. Oy .. "], (" .. Ox .. ", " .. Oy .. ")")
+
+    -- test rotation in both radians and degrees
+    s.debugString = function() return "$d, $r", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, r .. ", " .. math.rad(r))
+
+    -- test scale
+    s.debugString = function() return "$s", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, tostring(sc))
+
+    -- test tag
+    s.debugString = function() return "$t", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, tostring(t))
+
+    -- test z-index
+    s.debugString = function() return "$z", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, tostring(z))
+
+    -- test FPS
+    s.debugString = function() return "$f", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, tostring(fps))
+
+    -- test number of sprites
+    s.debugString = function() return "$#", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "1")
+
+    -- test name
+    s.debugString = function() return "$n", true end
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "foo")
+
+    -- test visibility
+    s.debugString = function() return "$v", true end
+    s:setVisible(false)
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "INVISIBLE")
+    s:setVisible(true)
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "VISIBLE")
+
+    -- test opacity
+    s.debugString = function() return "$q", true end
+    s:setOpaque(false)
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "TRANSPARENT")
+    s:setOpaque(true)
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "OPAQUE")
+
+    -- test updating
+    s.debugString = function() return "$u", true end
+    s:setUpdatesEnabled(true)
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "UPDATING")
+    s:setUpdatesEnabled(false)
+    str = acetate.formatDebugStringForSprite(s)
+    lu.assertEquals(str, "DISABLED")
+
 end
 
 
@@ -603,7 +852,7 @@ end
 
 function TestFocusHandling:testCycleFocusBackward()
     acetate.focusedSprite = nil
-    
+
     -- cycles through all sprites
     lu.assertEquals(acetate.focusedSprite, nil)
     acetate.cycleFocusBackward()
