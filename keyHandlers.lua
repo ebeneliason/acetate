@@ -113,7 +113,6 @@ function acetate.shortcutString()
         "[" .. acetate.togglePauseKey        .. "] Pause\n" ..
         "[" .. acetate.captureScreenshotKey  .. "] Screenshot\n" ..
         "[?] Help\n"
-    print(shortcutString)
 
     return shortcutString
 end
