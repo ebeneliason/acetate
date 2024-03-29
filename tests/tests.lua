@@ -61,11 +61,13 @@ function TestContext:testOnlyInitializedInSimulator()
     acetate.init()
 
     if playdate.isSimulator then
+        lu.assertTrue(acetate.initialized)
         lu.assertEquals(acetate.keyPressed, playdate.keyPressed)
         lu.assertEquals(acetate.debugDraw, playdate.debugDraw)
         lu.assertNotNil(acetate.debugFont)
         lu.assertNotNil(acetate.drawCenters)
     else
+        lu.assertNil(acetate.initialized)
         lu.assertNotEquals(acetate.keyPressed, playdate.keyPressed)
         lu.assertNotEquals(acetate.debugDraw, playdate.debugDraw)
         lu.assertIsNil(acetate.debugFont)
@@ -76,6 +78,7 @@ end
 TestSettings = {}
 
 function TestSettings:setUp()
+    if not playdate.isSimulator then lu.skip("Test invalid on device hardware") end
 end
 
 function TestSettings:tearDown()
@@ -217,6 +220,8 @@ end
 TestDrawing = {}
 
 function TestDrawing:setUp()
+    if not playdate.isSimulator then lu.skip("Test invalid on device hardware") end
+
     gfx.sprite.removeAll()
     acetate.enable()
     acetate.customOverridesDefaults = false
@@ -282,6 +287,7 @@ end
 TestDebugStrings = {}
 
 function TestDebugStrings:setUp()
+    if not playdate.isSimulator then lu.skip("Test invalid on device hardware") end
 end
 
 function TestDebugStrings:tearDown()
@@ -526,6 +532,10 @@ TestKeyHandlers = {}
 
 local mockedFns = {}
 function TestKeyHandlers:setUp()
+    if not playdate.isSimulator then lu.skip("Test invalid on device hardware") end
+
+    acetate.init(acetate.defaults)
+
     mockedFns.cycleFocusForward = acetate.cycleFocusForward
     mockedFns.cycleFocusBackward = acetate.cycleFocusBackward
     mockedFns.captureScreenshot = acetate.captureScreenshot
@@ -761,6 +771,8 @@ end
 TestFocusHandling = {}
 
 function TestFocusHandling:setUp()
+    if not playdate.isSimulator then lu.skip("Test invalid on device hardware") end
+
     gfx.sprite.removeAll()
     for i = 1, 3 do
         local s = S()
@@ -913,6 +925,8 @@ TestSpriteExtensions = {}
 local s
 
 function TestSpriteExtensions:setUp()
+    if not playdate.isSimulator then lu.skip("Test invalid on device hardware") end
+
     s = S()
     s:setSize(100, 100)
     s:setCenter(0.5, 0.5)
@@ -964,6 +978,7 @@ end
 TestScreenshots = {}
 
 function TestScreenshots:setUp()
+    if not playdate.isSimulator then lu.skip("Test invalid on device hardware") end
     acetate.defaultScreenshotPath = "/tmp"
 end
 

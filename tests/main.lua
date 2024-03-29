@@ -14,7 +14,7 @@ gfx.drawTextAligned("open console", 200, 132, cnt)
 luaunit.PRINT_TABLE_REF_IN_ERROR_MSG = true
 
 -- process the command line args (if any)
-local luaunit_args = {'--output', 'text', '--verbose', '-r'}
+local luaunit_args = {'--output', 'text', '--verbose', '-r', '3'}
 
 -- run the tests
 local returnValue = luaunit.LuaUnit.run(table.unpack(luaunit_args))

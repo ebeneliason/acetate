@@ -77,6 +77,10 @@ function acetate.init(config)
     end
     playdate.keyPressed = acetate.keyPressed
     print("NOTE: Press [" .. acetate.toggleDebugModeKey .. "] to activate Acetate debug mode.")
+
+    -- set a bool which can be checked to determine whether acetate is initialized
+    -- before attempting to access its members
+    acetate.initialized = true
 end
 
 function acetate.loadConfig(config)

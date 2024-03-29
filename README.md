@@ -420,9 +420,22 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
         -- perform additional debug drawing here
     end
     ```
+
     Note that you may not need to implement `playdate.debugDraw` yourself if you leverage Acetate's
     support for implementing `debugDraw` within your individual sprite classes. (You will, however,
     need to do your own debug drawing for anything not associated with sprites.)
+
+4.  **Device Crashes** Acetate is not initialized on-device. Attempting to access its members
+    or call its functions outside the simulator will cause Playdate to crash. You can do so
+    safely from within any _functions_ you write (e.g. `debugString`, `debugDraw`, etc.) or within
+    key handlers, as these will only be called within the simulator. Any access outside these
+    functions should be wrapped within a check to ensure acetate has been initialized:
+
+    ```
+    if acetate.initialized then
+        -- safe to access acetate members here, for example to call `acetate.setFocus(mySprite)`
+    end
+    ```
 
 ## License
 
