@@ -74,6 +74,7 @@ return {
                 drawOrientations = {},
                 drawCollideRects = {},
                 customDebugDrawing = {},
+                customOverridesDefaults = {},
                 onlyDrawRotatedOrbs = {},
                 lineWidth = {},
                 orientationOrbScale = {},

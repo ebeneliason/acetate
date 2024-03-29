@@ -14,6 +14,11 @@ acetate.defaults = {
     drawOrientations = true,           -- draw sprite orientation orbs
     drawCollideRects = false,          -- draw sprite collide rects
 
+    -- CUSTOM DEBUG VISUALIZATIONS
+
+    customDebugDrawing = true,         -- whether to call `debugDraw` on any sprites which define it
+    customOverridesDefaults = false,   -- whether custom debug drawing prevents built-in debug drawing for that sprite
+
     -- DRAWING OPTIONS
 
     color = {0, 255, 255, 0.75},       -- the color used for debug drawing (r, g, b, a)
@@ -23,7 +28,6 @@ acetate.defaults = {
     minOrientationOrbRadius = 10,      -- always draw orientation orbs at least this large, for clarity
     orientationOrbScale = 0.5,         -- diameter of orientation orb relative to sprite's shortest dimension
     onlyDrawRotatedOrbs = true,        -- only draw orientation orbs for sprites with non-zero rotation
-    customDebugDrawing = true,         -- whether to call `debugDraw` on any sprites which define it
 
     -- DEBUG TEXT
 

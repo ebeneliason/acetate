@@ -15,10 +15,13 @@ local sprites = {}
 -- a mock function which detects when it's been called
 local flags = {}
 
-function setFlag(key)
+function setFlag(key, verbose)
     key = key or "default"
     flags[key] = false
-    return function() flags[key] = true end
+    return function()
+        flags[key] = true
+        if verbose then print("FLAGGED: " .. key) end
+    end
 end
 
 function getFlag(key)
@@ -37,7 +40,19 @@ acetate.init()
 
 TestContext = {}
 
+function TestContext:setUp()
+end
+
+function TestContext:tearDown()
+    playdate.keyPressed = nil
+    playdate.debugDraw = nil
+    acetate._keyPressed = nil
+    acetate._debugDraw = nil
+end
+
 function TestContext:testOnlyInitializedInSimulator()
+    acetate.init()
+
     if playdate.isSimulator then
         lu.assertEquals(acetate.keyPressed, playdate.keyPressed)
         lu.assertEquals(acetate.debugDraw, playdate.debugDraw)
@@ -52,6 +67,16 @@ function TestContext:testOnlyInitializedInSimulator()
 end
 
 TestSettings = {}
+
+function TestSettings:setUp()
+end
+
+function TestSettings:tearDown()
+    playdate.keyPressed = nil
+    playdate.debugDraw = nil
+    acetate._keyPressed = nil
+    acetate._debugDraw = nil
+end
 
 function TestSettings:testDefaults()
     acetate.init()
@@ -69,6 +94,7 @@ function TestSettings:testDefaults()
     lu.assertEquals(acetate.orientationOrbScale, 0.5)
     lu.assertEquals(acetate.onlyDrawRotatedOrbs, true)
     lu.assertEquals(acetate.customDebugDrawing, true)
+    lu.assertEquals(acetate.customOverridesDefaults, false)
 
     lu.assertEquals(acetate.showFPS, false)
     lu.assertEquals(acetate.FPSPersists, true)
@@ -181,6 +207,72 @@ function TestSettings:testKeyPressedFunctionWrapping()
 end
 
 
+TestDrawing = {}
+
+function TestDrawing:setUp()
+    gfx.sprite.removeAll()
+    acetate.enable()
+    acetate.customOverridesDefaults = false
+end
+
+function TestDrawing:tearDown()
+    gfx.sprite.removeAll()
+end
+
+function TestDrawing:TestDrawCenters()
+    local s = S()
+    s:add()
+
+    -- draws when enabled
+    s.drawCenter = setFlag("drawCenter")
+    acetate.drawCenters = true
+    acetate.debugDraw()
+    lu.assertIsTrue(getFlag("drawCenter"))
+
+    -- doesn't draw when disabled
+    s.drawCenter = setFlag("drawCenter")
+    acetate.drawCenters = false
+    acetate.debugDraw()
+    lu.assertIsFalse(getFlag("drawCenter"))
+
+    -- doesn't draw when overridden
+    s.drawCenter = setFlag("drawCenter")
+    s.debugDraw = setFlag("debugDraw")
+    acetate.drawCenters = true
+    acetate.customOverridesDefaults = true
+    acetate.debugDraw()
+    lu.assertIsFalse(getFlag("drawCenter"))
+    lu.assertIsTrue(getFlag("debugDraw"))
+end
+
+function TestDrawing:TestDrawBounds()
+    gfx.sprite.removeAll()
+    local s = S()
+    s:add()
+
+    -- draws when enabled
+    s.drawBounds = setFlag("drawBounds")
+    acetate.drawBounds = true
+    acetate.debugDraw()
+    lu.assertIsTrue(getFlag("drawBounds"))
+
+    -- doesn't draw when disabled
+    s.drawBounds = setFlag("drawBounds")
+    acetate.drawBounds = false
+    acetate.debugDraw()
+    lu.assertIsFalse(getFlag("drawBounds"))
+
+    -- doesn't draw when overridden
+    s.drawBounds = setFlag("drawBounds")
+    s.debugDraw = setFlag("debugDraw")
+    acetate.drawBounds = true
+    acetate.customOverridesDefaults = true
+    acetate.debugDraw()
+    lu.assertIsFalse(getFlag("drawBounds"))
+    lu.assertIsTrue(getFlag("debugDraw"))
+end
+
+
 TestKeyHandlers = {}
 
 local mockedFns = {}
@@ -194,6 +286,7 @@ function TestKeyHandlers:tearDown()
     acetate.cycleFocusForward = mockedFns.cycleFocusForward
     acetate.cycleFocusBackward = mockedFns.cycleFocusBackward
     acetate.captureScreenshot = mockedFns.captureScreenshot
+    acetate.focusedSprite = nil
 end
 
 function TestKeyHandlers:testDebugToggle()
@@ -227,6 +320,7 @@ function TestKeyHandlers:testScreenshotKey()
 end
 
 function TestKeyHandlers:testKeysInactiveWhileDisabled()
+    acetate.disable()
     lu.assertEquals(acetate.enabled, false)
 
     local before

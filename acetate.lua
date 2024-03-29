@@ -197,19 +197,22 @@ function acetate.debugDraw()
                         gfx.setLineWidth(acetate.lineWidth)
                         gfx.setColor(gfx.kColorWhite) -- white is the debug color
 
-                        -- draw built-in debug visualizations, if enabled
-                        if acetate.drawBounds then
-                            if acetate.animateBoundsForFocus and acetate.focusedSprite == sprite then
-                                gfx.setPattern(marchingAnts:apply())
+                        -- draw built-in debug visualizations, if enabled and there's no custom override
+                        if not (acetate.customDebugDrawing and sprite.debugDraw and acetate.customOverridesDefaults)
+                        then
+                            if acetate.drawBounds then
+                                if acetate.animateBoundsForFocus and acetate.focusedSprite == sprite then
+                                    gfx.setPattern(marchingAnts:apply())
+                                end
+                                sprite:drawBounds()
+                                gfx.setColor(gfx.kColorWhite)
                             end
-                            sprite:drawBounds()
-                            gfx.setColor(gfx.kColorWhite)
-                        end
-                        if acetate.drawCenters then sprite:drawCenter() end
-                        if acetate.drawCollideRects then sprite:drawCollideRect() end
-                        if acetate.drawOrientations then
-                            if not acetate.onlyDrawRotatedOrbs or sprite:getRotation() ~= 0 then
-                                sprite:drawOrientation()
+                            if acetate.drawCenters then sprite:drawCenter() end
+                            if acetate.drawCollideRects then sprite:drawCollideRect() end
+                            if acetate.drawOrientations then
+                                if not acetate.onlyDrawRotatedOrbs or sprite:getRotation() ~= 0 then
+                                    sprite:drawOrientation()
+                                end
                             end
                         end
 

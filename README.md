@@ -312,13 +312,14 @@ The following settings are available:
 
 ### Debug Visualizations
 
-| Setting              | Type    | Default | Description                                                                              |
-| -------------------- | ------- | ------- | ---------------------------------------------------------------------------------------- |
-| `drawCenters`        | boolean | `true`  | Whether center points are drawn for all sprites while debug mode is enabled.             |
-| `drawBounds`         | boolean | `true`  | Whether bounding rects are drawn for all sprites while debug mode is enabled.            |
-| `drawOrientations`   | boolean | `true`  | Whether orientation orbs are drawn for all sprites while debug mode is enabled.          |
-| `drawCollideRects`   | boolean | `false` | Whether collision rects are drawn for all sprites while debug mode is enabled.           |
-| `customDebugDrawing` | boolean | `true`  | Whether custom debug drawing, implemented in sprite `debugDraw` functions, is performed. |
+| Setting                   | Type    | Default | Description                                                                             |
+| ------------------------- | ------- | ------- | --------------------------------------------------------------------------------------- |
+| `drawCenters`             | boolean | `true`  | Center points are shown for all sprites in debug mode when true.                        |
+| `drawBounds`              | boolean | `true`  | Bounding rects are shown for all sprites in debug mode when true.                       |
+| `drawOrientations`        | boolean | `true`  | Orientation orbs are shown for all sprites in debug mode when true.                     |
+| `drawCollideRects`        | boolean | `false` | Collision rects are shown for all sprites while debug mode is enabled.                  |
+| `customDebugDrawing`      | boolean | `true`  | Custom debug drawing (implemtented in sprite `debugDraw` functions) is shown when true. |
+| `customOverridesDefaults` | boolean | `false` | Built-in debug drawing is hidden for sprites with custom debug drawing when true.       |
 
 ### Drawing Options
 
@@ -403,6 +404,7 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
 3.  **Debug draw.** Acetate implements the `playdate.debugDraw` function in order to render into
     the debug layer of the simulator. If you implement the `debugDraw` function yourself, it
     will override Acetate's. In this case, you can call Acetate's from your own:
+
     ```lua
     function playdate.debugDraw()
         -- let Acetate do its own debug drawing
