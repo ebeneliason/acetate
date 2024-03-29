@@ -169,15 +169,15 @@ include the most useful information for your use case in two ways:
 1.  **Change the default.** Modify the `acetate.defaultDebugStringFormat` to change the debug
     string shown for all of your sprites.
 
-2.  **Set custom strings.** Implement the `debugString(string, [performSubtitutions])` function on your
-    sprite. You can provide a fully formatted string, or include substitution patterns as shown in the
-    table below, passing `true` for the optional second parameter.
+2.  **Set custom strings.** Implement the `debugString()` function on your sprite. You can provide a
+    fully formatted string, or include substitution patterns as shown in the table below,
+    passing `true` as a second return value to indicate that substitutions are needed.
 
     ```lua
     function MySprite:debugString()
         local s
-        -- construct `s` using any properties belonging to your sprite you'd like to see while debugging
-        return s, true
+        -- construct `s` using any properties belonging to your sprite
+        return s, true -- true indicates that substitutions are needed
     end
     ```
 
