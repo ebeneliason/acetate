@@ -74,20 +74,23 @@ acetate.defaults = {
 
     -- KEYBOARD SHORTCUTS
 
-    toggleDebugModeKey    = "d",       -- key to toggle [D]ebug drawing mode on/off
-    toggleCentersKey      = "c",       -- key to toggle drawing [C]enters while in debug mode
-    toggleBoundsKey       = "b",       -- key to toggle drawing [B]ounds while in debug mode
-    toggleOrientationsKey = "v",       -- key to toggle drawing orientation [V]ectors while in debug mode
-    toggleCollideRectsKey = "x",       -- key to toggle drawing colli[X]ion rects while in debug mode
-    toggleInvisiblesKey   = "z",       -- key to toggle debug drawing of invi[Z]ible sprites while in debug mode
-    toggleCustomDrawKey   = "m",       -- key to toggle use of custo[M] sprite `debugDraw` functions
-    toggleFPSKey          = "f",       -- key to toggle [F]PS display on/off
-    toggleSpriteCountKey  = "n",       -- key to toggle display of the total sprite count
-    toggleDebugStringKey  = "?",       -- key to toggle debug string display while focused a single sprite
-    cycleForwardKey       = ">",       -- key to cycle forward through sprites, one by one
-    cycleBackwardKey      = "<",       -- key to cycle backward through sprites, one by one
-    togglePauseKey        = "p",       -- key to [P]ause/unpause the game while in debug mode
-    captureScreenshotKey  = "q",       -- key to [Q]uick-capture a screenshot
+    toggleDebugModeKey        = "d",   -- key to toggle [D]ebug drawing mode on/off
+    toggleCentersKey          = "c",   -- key to toggle drawing [C]enters while in debug mode
+    toggleBoundsKey           = "b",   -- key to toggle drawing [B]ounds while in debug mode
+    toggleOrientationsKey     = "v",   -- key to toggle drawing orientation [V]ectors while in debug mode
+    toggleCollideRectsKey     = "x",   -- key to toggle drawing colli[X]ion rects while in debug mode
+    toggleInvisiblesKey       = "z",   -- key to toggle debug drawing of invi[Z]ible sprites while in debug mode
+    toggleCustomDrawKey       = "m",   -- key to toggle use of custo[M] sprite `debugDraw` functions
+    toggleFPSKey              = "f",   -- key to toggle [F]PS display on/off
+    toggleSpriteCountKey      = "n",   -- key to toggle display of the total sprite count
+    toggleDebugStringKey      = "?",   -- key to toggle debug string display while focused a single sprite
+    cycleForwardKey           = ".",   -- key to cycle forward through sprites, one by one
+    cycleBackwardKey          = ",",   -- key to cycle backward through sprites, one by one
+    cycleForwardInClassKey    = ">",   -- key used to cycle forward to the next sprite of the same class
+    cycleBackwardInClassKey   = "<",   -- key used to cycle backward to the previous sprite of the same class
+    toggleFocusLockKey        = "l",   -- key used to [L]ock focus to the selected sprite class
+    togglePauseKey            = "p",   -- key to [P]ause/unpause the game while in debug mode
+    captureScreenshotKey      = "q",   -- key to [Q]uick-capture a screenshot
 
     -- SCREENSHOTS
 

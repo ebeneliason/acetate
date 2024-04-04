@@ -7,16 +7,19 @@ _A visual debugging suite for Playdate._
 ## What is Acetate?
 
 Acetate is a visual debugging utility for use with the [Playdate](https://play.date/) Simulator,
-specifically optimized for use with the `playdate.graphics.sprite` class (and subclasses). It wraps
-the built-in functionality for debug drawing, adding:
+specifically optimized for use with the `playdate.graphics.sprite` class (and subclasses). With Acetate, you can easily
+enter a visual debugging mode at any time, cycle through debug visualizations for each sprite, and optionally
+customize the visuals and information shown for each from directly within your sprite classes.
 
-1.  The ability to do debug drawing from directly within your sprite classes
-2.  Out-of-the-box visualizations for your sprites: bounding boxes, center points, rotation, etc.
-3.  Controls for cycling through your sprites one by one
-4.  Rich debug strings displayed in a custom monospaced font
-5.  The option to pause your game while performing visual debugging
-6.  Keyboard shortcuts for toggling debug mode and various visualization options
-7.  Settings that let you decide how it looks and behaves
+Acetate wraps the built-in functionality for debug drawing, and adds:
+
+2.  Out-of-the-box visualizations for common properties: bounding boxes, center points, collision rects, rotation, etc.
+3.  The ability to cycle through debug info for each sprite, one by one
+4.  Rich debug strings displayed in a bespoke monospaced font
+5.  The ability to do custom debug drawing from directly within your sprite classes
+6.  An option to pause your game while performing visual debugging
+7.  Customizable keyboard shortcuts for toggling debug mode and various visualization options
+8.  Settings that let you decide how it looks and behaves
 
 ![Acetate debug visualizations](./screenshots/acetate_debug_layers.png?raw=true)
 
@@ -77,13 +80,24 @@ taking advantage of its features.
 
 1. Build and run your app in the Playdate Simulator.
 2. Press the `D` key on your keyboard to enter debug mode.
-3. Use `,` (`<`) and `.` (`>`) to cycle through individual sprites.
-4. Refer to the list of [keyboard shortcuts](#keyboard-shortcuts) below for additional options.
+3. Use `,` (`<`) and `.` (`>`) to cycle through sprites (hold `SHIFT` to cycle through
+   sprites of the same class as the currently focused sprite).
+4. Refer to the list of [keyboard shortcuts](#keyboard-shortcuts) for additional options.
 
-Read on to learn how to implement custom debug drawing for your sprite classes and customize
-the debug string displayed as you cycle through them in debug mode.
+Out of the box, you can see the following information for each sprite:
 
-### Implementing Custom Debug Drawing for Your Sprites
+- class name
+- size and position
+- bounding box
+- center point
+- collision rect
+- orientation orb
+
+You can also easily display additional information and visualizations unique to your sprites. Read
+on to learn how to implement custom debug drawing for your sprite classes and customize the debug
+string displayed as you cycle through them in debug mode.
+
+### Customizing Debug Drawing for Your Sprites
 
 Acetate provides several debug visualizations out-of-the-box, which are suitable for showing
 basic properties common to most sprites. However, you may want to visualize custom properties
@@ -100,16 +114,18 @@ end
 
 Acetate prepares the graphics context for you automatically:
 
--   The color will be set to `kColorWhite` (the color used for all debug drawing).
--   The line width will be set to `1`.
--   The drawing offset will be set according to the position of your sprite, so you can do all
-    drawing relative to your sprite (just like in your `draw` function).
+- The color will be set to `kColorWhite` (the color used for all debug drawing).
+- The line width will be set to `1`.
+- The drawing offset will be set according to the position of your sprite, so you can do all
+  drawing relative to your sprite (just like in your `draw` function).
 
 Anything you draw within this function will appear in debug mode. You can toggle your custom
 debug drawing on/off using the `M` key, or set `acetate.customDebugDrawing` to `true` or `false`
 from within your code.
 
-NOTE: Because fonts are rendered as images and tend to be black-on-white, regular use of `drawText`
+#### Rendering Text
+
+Because fonts are rendered as images and tend to be black-on-white, regular use of `drawText`
 variants will likely not appear. To draw text in `debugDraw`, change the image drawing mode so
 that your text will render in `kColorWhite` as follows:
 
@@ -118,7 +134,7 @@ gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
 acetate.debugFont:drawText("This text will render in the debug layer!", x, y)
 ```
 
-### Reusing Acetate's Built-in Debug Visualizations
+#### Reusing Acetate's Built-in Debug Visualizations
 
 Acetate provides a handful of extensions to the sprite class specifically designed for drawing
 debug info for common sprite properties. You can toggle these on/off globally using the
@@ -138,27 +154,28 @@ end
 
 The following built-in debug drawing functions are supported:
 
--   **`drawBounds`:** Draw the sprite's bounding box
--   **`drawCenter`:** Draw the sprite's center point
--   **`drawOrientation`:** Draw an indicator of the sprite's current rotation
--   **`drawCollideRect`:** Draw the sprite's collision rect, if set. (This option is also provided
-    by the simulator itself. You can use the simulator version to overlay collision rects in a
-    contrasting color.)
+- **`drawBounds`:** Draw the sprite's bounding box
+- **`drawCenter`:** Draw the sprite's center point
+- **`drawOrientation`:** Draw an indicator of the sprite's current rotation
+- **`drawCollideRect`:** Draw the sprite's collision rect, if set. (This option is also provided
+  by the simulator itself. You can use the simulator version to overlay collision rects in a
+  contrasting color.)
 
-### Focusing Individual Sprites
+### Sprite Debug Names
 
-Acetate allows you to cycle through sprites in the display list using the `,` and `.` keys in order
-to see debug visualizations for one at a time. A debug string for the focused sprite is also shown
-(the debug string can be toggled with the `/` key).
-
-You can also focus a sprite programmatically. This makes it easy to initiate visual debugging at
-the right time and for the right sprite.
+If you have a small bit of custom identifying information you'd like to display &mdash; say, the
+number of a pin in a bowling pin rack, or the name of a particular character &mdash; you can set
+the sprite's `debugName` property. When set, the debug name will be shown instead of the `className`
+of the sprite when cycling through sprites in debug mode. For instance:
 
 ```lua
-acetate.setFocus(mySprite)
+function Pin:init(number)
+    Pin.super.init(self)
+    self.number = number
+    self.debugName = "Pin " .. number
+    -- more initialization
+end
 ```
-
-If Acetate's debug mode isn't active when you call this function, it will be enabled automatically.
 
 ### Formatting Debug Strings
 
@@ -216,21 +233,25 @@ characters. They are case sensitive.
 | `$v`    | Visibility as "VISIBLE" or "INVISIBLE"       |
 | `$z`    | Z-index                                      |
 
-### Debug Names for Sprites
+### Programmatically Focusing Sprites
 
-If you have just a small bit of custom identifying information you'd like to display &mdash; say,
-the number of a pin in a bowling pin rack, or the name of a particular character &mdash; but
-otherwise wish to use the default debug string settings, you can set the sprite's `debugName`
-property. If set, its value will be used instead of the default `className` of the sprite when
-cycling through sprites in debug mode. For instance:
+Acetate allows you to cycle through sprites in the display list using the `,` and `.` keys. However,
+you can also focus sprites programmatically, for example in response to a particular game event or
+condition. This makes it easy to initiate visual debugging at the right time and for the right sprite.
 
 ```lua
-function Pin:init(number)
-    Pin.super.init(self)
-    self.number = number
-    self.debugName = "Pin " .. number
-    -- more initialization
-end
+acetate.setFocus(mySprite)
+```
+
+If Acetate's debug mode isn't active when you call this function, it will be enabled automatically.
+Optionally, you can enable the auto-pause behavior by setting `acetate.autoPause` to `true` (in init,
+or at runtime), in order to pause for inspection when focusing your sprite.
+
+You can also lock the focus to a specific class, so only sprites of that class get focused when
+cycling with the keyboard shortcuts:
+
+```lua
+acetate.setClassFocusLock(MyClass)
 ```
 
 ### Keyboard Shortcuts
@@ -253,7 +274,10 @@ the settings object or override the defaults in your project e.g. `acetate.toggl
 | /   | [?] Toggle display of the debug string while focused on an individual sprite |
 | ,   | [<] Cycle forward through sprites to focus them one by one                   |
 | .   | [>] Cycle backward through sprites                                           |
-| P   | [P]ause/unpause the game for/while debugging.                                |
+| <   | [SHIFT <] Cycle forward through sprites of the same class                    |
+| >   | [SHIFT >] Cycle backward through sprites of the same class                   |
+| L   | [L]ock focus cycling to the focused sprite class                             |
+| P   | [P]ause/unpause the game for/while debugging                                 |
 | Q   | [Q]uick-capture a screenshot of either the full screen or the focused sprite |
 
 ### Screenshots
@@ -371,22 +395,25 @@ The following settings are available:
 
 ### Keyboard Shortcuts
 
-| Setting                 | Type      | Default | Description                                                                     |
-| ----------------------- | --------- | ------- | ------------------------------------------------------------------------------- |
-| `toggleDebugModeKey`    | character | `"d"`   | Key used to toggle Acetate's visual [D]ebugging mode on/off.                    |
-| `toggleCentersKey`      | character | `"c"`   | Key used to toggle drawing of sprite [C]enters while in debug mode.             |
-| `toggleBoundsKey`       | character | `"b"`   | Key used to toggle drawing of sprite [B]ounds while in debug mode.              |
-| `toggleOrientationsKey` | character | `"v"`   | Key used to toggle drawing of sprite orientation [V]ectors while in debug mode. |
-| `toggleCollideRectsKey` | character | `"x"`   | Key used to toggle drawing of sprite colli[X]ion rects while in debug mode.     |
-| `toggleInvisiblesKey`   | character | `"z"`   | Key used to toggle debug drawing of invi[Z]ible sprites while in debug mode.    |
-| `toggleCustomDrawKey`   | character | `"m"`   | Key used to toggle use of custo[M] sprite `debugDraw` functions.                |
-| `toggleFPSKey`          | character | `"f"`   | Key used to toggle [F]PS display on/off.                                        |
-| `toggleSpriteCountKey`  | character | `"n"`   | Key used to toggle display of the total sprite count.                           |
-| `toggleDebugString`     | character | `"?"`   | Key used to toggle debug string display while focused a single sprite.          |
-| `cycleForwardKey`       | character | `">"`   | Key used to cycle forward through sprites, one by one.                          |
-| `cycleBackwardKey`      | character | `"<"`   | Key used to cycle backward through sprites, one by one.                         |
-| `togglePauseKey`        | character | `"p"`   | Key used to [P]ause/unpause the game while in debug mode.                       |
-| `captureScreenshotKey`  | character | `"q"`   | Key used to [Q]uick-capture a screenshot.                                       |
+| Setting                   | Type      | Default | Description                                                                           |
+| ------------------------- | --------- | ------- | ------------------------------------------------------------------------------------- |
+| `toggleDebugModeKey`      | character | `"d"`   | Key used to toggle Acetate's visual [D]ebugging mode on/off.                          |
+| `toggleCentersKey`        | character | `"c"`   | Key used to toggle drawing of sprite [C]enters while in debug mode.                   |
+| `toggleBoundsKey`         | character | `"b"`   | Key used to toggle drawing of sprite [B]ounds while in debug mode.                    |
+| `toggleOrientationsKey`   | character | `"v"`   | Key used to toggle drawing of sprite orientation [V]ectors while in debug mode.       |
+| `toggleCollideRectsKey`   | character | `"x"`   | Key used to toggle drawing of sprite colli[X]ion rects while in debug mode.           |
+| `toggleInvisiblesKey`     | character | `"z"`   | Key used to toggle debug drawing of invi[Z]ible sprites while in debug mode.          |
+| `toggleCustomDrawKey`     | character | `"m"`   | Key used to toggle use of custo[M] sprite `debugDraw` functions.                      |
+| `toggleFPSKey`            | character | `"f"`   | Key used to toggle [F]PS display on/off.                                              |
+| `toggleSpriteCountKey`    | character | `"n"`   | Key used to toggle display of the total sprite count.                                 |
+| `toggleDebugString`       | character | `"?"`   | Key used to toggle debug string display while focused a single sprite.                |
+| `cycleForwardKey`         | character | `"."`   | Key used to cycle forward through sprites, one by one.                                |
+| `cycleBackwardKey`        | character | `","`   | Key used to cycle backward through sprites, one by one.                               |
+| `cycleForwardInClassKey`  | character | `">"`   | Key used to cycle forward to the next sprite of the same class as the focused sprite. |
+| `cycleBackwardInClassKey` | character | `"<"`   | Key used to cycle backward through sprites of the same class as the focused sprite.   |
+| `toggleFocusLockKey`      | character | `"l"`   | Key used to [L]ock focus cycling to sprites of the same class as the focused sprite.  |
+| `togglePauseKey`          | character | `"p"`   | Key used to [P]ause/unpause the game while in debug mode.                             |
+| `captureScreenshotKey`    | character | `"q"`   | Key used to [Q]uick-capture a screenshot.                                             |
 
 ## Troubleshooting
 

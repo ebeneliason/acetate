@@ -149,6 +149,18 @@ end
 
 -- implement our debug drawing method, deferring to other sprites as appropriate
 
+function table.filter(t, func)
+    local i = 1
+    while (i <= #t) do
+        if func(t[i]) then
+            -- value passes test
+            i = i + 1
+        else
+            table.remove(t, i)
+        end
+    end
+end
+
 function acetate.debugDraw()
     -- call the wrapped debugDraw version, if present
     if acetate._debugDraw then acetate._debugDraw() end
@@ -159,6 +171,13 @@ function acetate.debugDraw()
     local sprites = playdate.graphics.sprite.getAllSprites()
     local s = ""
 
+    if acetate.focusedClass then
+        table.filter(sprites, function(s) return s:isa(acetate.focusedClass) end)
+        if #sprites == 0 then
+            acetate.releaseClassFocusLock() -- no sprites of the current focus remaining
+        end
+    end
+
     -- show FPS as appropriate
     if acetate.showFPS and (acetate.FPSPersists or acetate.enabled) then
         local fps = playdate.getFPS() -- luacheck: ignore
@@ -168,8 +187,21 @@ function acetate.debugDraw()
     -- show sprite count as appropriate
     if acetate.showSpriteCount and (acetate.spriteCountPersists or acetate.enabled) then
         if not acetate.focusedSprite or not acetate.enabled then
-            s = s .. (acetate.enabled and (#sprites .. " SPRITES\n") or (#sprites .. "\n"))
+            s = s .. tostring(#sprites)
+
+            if acetate.enabled then
+                s = s .. ((acetate.focusedClass ~= nil) and (" " .. acetate.focusedClass.className .. "s") or " SPRITES")
+            end
+
+            if acetate.focusedClass ~= nil then
+                s = s .. " 🔒"
+            end
+
+            s = s .. "\n"
+
         end
+    elseif acetate.enabled and acetate.focusedClass ~= nil and acetate.focusedSprite == nil then
+        s = s .. acetate.focusedClass.className .. " 🔒\n"
     end
 
     -- do debug drawing only if enabled
@@ -308,6 +340,10 @@ function acetate.formatDebugStringForSprite(sprite)
     local f      = playdate.getFPS() -- luacheck: ignore
     local num    = #playdate.graphics.sprite.getAllSprites()
     local n      = sprite.debugName or sprite.className
+
+    if acetate.focusedClass ~= nil then
+        n = n .. " 🔒"
+    end
 
                                                        -- SUBSTITUTION KEY
     s = s:gsub("$n",  ""  .. n)                        -- $n  | sprite class name or `debugName`

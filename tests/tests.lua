@@ -9,6 +9,12 @@ local lu <const> = luaunit
 class('S').extends(gfx.sprite)
 function S:init() S.super.init(self) end
 
+class('S2').extends(gfx.sprite)
+function S2:init() S2.super.init(self) end
+
+class('S3').extends(gfx.sprite)
+function S3:init() S3.super.init(self) end
+
 -- to hold the sprites we'll test with (populated in setUp)
 local sprites = {}
 
@@ -129,8 +135,10 @@ function TestSettings:testDefaults()
     lu.assertEquals(acetate.toggleFPSKey          , "f")
     lu.assertEquals(acetate.toggleSpriteCountKey  , "n")
     lu.assertEquals(acetate.toggleDebugStringKey  , "?")
-    lu.assertEquals(acetate.cycleForwardKey       , ">")
-    lu.assertEquals(acetate.cycleBackwardKey      , "<")
+    lu.assertEquals(acetate.cycleForwardKey       , ".")
+    lu.assertEquals(acetate.cycleBackwardKey      , ",")
+    lu.assertEquals(acetate.cycleForwardInClassKey, ">")
+    lu.assertEquals(acetate.cycleBackwardInClassKey,"<")
     lu.assertEquals(acetate.togglePauseKey        , "p")
     lu.assertEquals(acetate.captureScreenshotKey  , "q")
 
@@ -288,6 +296,7 @@ TestDebugStrings = {}
 
 function TestDebugStrings:setUp()
     if not playdate.isSimulator then lu.skip("Test invalid on device hardware") end
+    playdate.graphics.sprite.removeAll()
 end
 
 function TestDebugStrings:tearDown()
@@ -627,6 +636,18 @@ function TestKeyHandlers:testKeysInactiveWhileDisabled()
     acetate.cycleFocusBackward = setFlag()
     acetate.keyPressed(acetate.cycleBackwardKey)
     lu.assertIsFalse(getFlag())
+
+    acetate.cycleFocusForwardInClass = setFlag()
+    acetate.keyPressed(acetate.cycleForwardInClassKey)
+    lu.assertIsFalse(getFlag())
+
+    acetate.cycleFocusBackwardInClass = setFlag()
+    acetate.keyPressed(acetate.cycleBackwardInClassKey)
+    lu.assertIsFalse(getFlag())
+
+    acetate.toggleClassFocusLock = setFlag()
+    acetate.keyPressed(acetate.toggleClassFocusLockKey)
+    lu.assertIsFalse(getFlag())
 end
 
 function TestKeyHandlers:testKeysActiveWhileEnabled()
@@ -695,6 +716,18 @@ function TestKeyHandlers:testKeysActiveWhileEnabled()
     acetate.cycleFocusBackward = setFlag()
     acetate.keyPressed(acetate.cycleBackwardKey)
     lu.assertIsTrue(getFlag())
+
+    acetate.cycleFocusForwardInClass = setFlag()
+    acetate.keyPressed(acetate.cycleForwardInClassKey)
+    lu.assertIsTrue(getFlag())
+
+    acetate.cycleFocusBackwardInClass = setFlag()
+    acetate.keyPressed(acetate.cycleBackwardInClassKey)
+    lu.assertIsTrue(getFlag())
+
+    acetate.toggleFocusLock = setFlag()
+    acetate.keyPressed(acetate.toggleFocusLockKey)
+    lu.assertIsTrue(getFlag())
 end
 
 function TestKeyHandlers:testAltSymbolForKey()
@@ -732,8 +765,8 @@ function TestKeyHandlers:testShortcutStringAdaptsToSettings()
     lu.assertNotNil(shortcutString:match("%[f%] FPS"))
     lu.assertNotNil(shortcutString:match("%[n%] sprite count"))
     lu.assertNotNil(shortcutString:match("%[p%] Pause"))
-    lu.assertNotNil(shortcutString:match("%[>%] Next"))
-    lu.assertNotNil(shortcutString:match("%[<%] Back"))
+    lu.assertNotNil(shortcutString:match("%[.%] Next"))
+    lu.assertNotNil(shortcutString:match("%[,%] Back"))
     lu.assertNotNil(shortcutString:match("%[q%] Screenshot"))
 
     acetate.toggleCentersKey      = "1"
@@ -917,6 +950,170 @@ function TestFocusHandling:updateFocus()
     sprites[3]:remove()
     acetate.updateFocus()
     lu.assertIsNil(acetate.focusedSprite)
+end
+
+
+TestClassFocus = {}
+
+function TestClassFocus:setUp()
+    if not playdate.isSimulator then lu.skip("Test invalid on device hardware") end
+
+    gfx.sprite.removeAll()
+    for i = 1, 3 do
+        local s = S()
+        s:add()
+        sprites[#sprites+1] = s
+
+        s = S2()
+        s:add()
+        sprites[#sprites+1] = s
+
+        s = S3()
+        s:add()
+        sprites[#sprites+1] = s
+    end
+
+    -- resulting ordering: S, S2, S3, S, S2, S3, S, S2, S3
+    -- matching sprites are found at (index % 3) + 1
+end
+
+function TestClassFocus:tearDown()
+    sprites = {}
+    acetate.releaseFocus()
+    acetate.releaseClassFocusLock()
+end
+
+function TestClassFocus:testClassFocusLock()
+    -- test setting the focus lock
+    acetate.focusedSprite = nil
+    acetate.setClassFocusLock(S3)
+    lu.assertEquals(acetate.focusedClass, S3)
+    acetate.setClassFocusLock(S)
+    lu.assertEquals(acetate.focusedClass, S)
+
+    -- test cycling forward
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, sprites[4])
+    acetate.cycleFocusForward()
+    lu.assertEquals(acetate.focusedSprite, sprites[7])
+    acetate.cycleFocusForward() -- all
+    lu.assertEquals(acetate.focusedSprite, nil)
+    acetate.cycleFocusForward() -- loop
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+
+    -- test cycling backward
+    acetate.cycleFocusBackward() -- all
+    lu.assertEquals(acetate.focusedSprite, nil)
+    acetate.cycleFocusBackward() -- loop
+    lu.assertEquals(acetate.focusedSprite, sprites[7])
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, sprites[4])
+    acetate.cycleFocusBackward()
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+
+    -- test releasing the focus lock
+    acetate.releaseClassFocusLock()
+    lu.assertEquals(acetate.focusedClass, nil)
+end
+
+function TestClassFocus:testImplicitReleaseOfFocusLockDueToSetFocus()
+    -- set the focus lock
+    acetate.setClassFocusLock(S)
+    lu.assertEquals(acetate.focusedClass, S)
+    lu.assertEquals(acetate.focusedSprite, nil)
+
+    -- set a sprite matching current focus lock
+    acetate.setFocus(sprites[1])
+    lu.assertEquals(acetate.focusedClass, S)
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+
+    -- implicitly release
+    acetate.setFocus(sprites[2]) -- will override the current focus
+    lu.assertEquals(acetate.focusedClass, nil)
+    lu.assertEquals(acetate.focusedSprite, sprites[2])
+
+end
+
+function TestClassFocus:testImplicitReleaseOfFocusLockDueToSpriteRemoval()
+    -- test setting the focus lock
+    acetate.setClassFocusLock(S)
+    acetate.setFocus(sprites[1])
+    lu.assertEquals(acetate.focusedClass, S)
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+
+    -- remove the sprites of the focused class
+    sprites[1]:remove()
+    sprites[4]:remove()
+    sprites[7]:remove()
+
+    -- iterate one draw loop to give state a chance to update
+    acetate.debugDraw()
+    lu.assertEquals(acetate.focusedSprite, nil)
+    lu.assertEquals(acetate.focusedClass, nil)
+end
+
+function TestClassFocus:testImplicitReleaseOfFocusDueToSpriteVisibility()
+    acetate.setFocus(sprites[1])
+    acetate.toggleFocusLock()
+    acetate.focusInvisibleSprites = false
+    lu.assertEquals(acetate.focusedClass, S)
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+
+    -- hide the focused sprite
+    sprites[1]:setVisible(false)
+
+    -- update focus
+    acetate.updateFocus()
+    lu.assertEquals(acetate.focusedSprite, nil)
+    lu.assertEquals(acetate.focusedClass, S)
+end
+
+function TestClassFocus:testCyclingForwardInClass()
+    acetate.setFocus(sprites[1])
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+    acetate.cycleFocusForward(false)
+    lu.assertEquals(acetate.focusedSprite, sprites[2])
+    acetate.cycleFocusForward(true)
+    lu.assertEquals(acetate.focusedSprite, sprites[5])
+    acetate.cycleFocusForward(true)
+    lu.assertEquals(acetate.focusedSprite, sprites[8])
+    acetate.cycleFocusForward(true) -- loop
+    lu.assertEquals(acetate.focusedSprite, sprites[2])
+    acetate.cycleFocusForward(false)
+    lu.assertEquals(acetate.focusedSprite, sprites[3])
+end
+
+function TestClassFocus:testCyclingBackwardInClass()
+    acetate.setFocus(sprites[8])
+    lu.assertEquals(acetate.focusedSprite, sprites[8])
+    acetate.cycleFocusBackward(false)
+    lu.assertEquals(acetate.focusedSprite, sprites[7])
+    acetate.cycleFocusBackward(true)
+    lu.assertEquals(acetate.focusedSprite, sprites[4])
+    acetate.cycleFocusBackward(true)
+    lu.assertEquals(acetate.focusedSprite, sprites[1])
+    acetate.cycleFocusBackward(true) -- loop
+    lu.assertEquals(acetate.focusedSprite, sprites[7])
+    acetate.cycleFocusBackward(false)
+    lu.assertEquals(acetate.focusedSprite, sprites[6])
+end
+
+function TestClassFocus:testToggleFocusLock()
+    -- class focus does nothing when there's no focused sprite
+    acetate.focusedSprite = nil
+    acetate.toggleFocusLock()
+    lu.assertEquals(acetate.focusedClass, nil)
+
+    -- toggle focus on for the focused sprite
+    acetate.focusedSprite = sprites[1]
+    acetate.toggleFocusLock()
+    lu.assertEquals(acetate.focusedClass, sprites[1].class)
+
+    -- toggle focus off again
+    acetate.toggleFocusLock()
+    lu.assertEquals(acetate.focusedClass, nil)
 end
 
 
