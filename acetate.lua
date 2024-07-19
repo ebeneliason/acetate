@@ -204,6 +204,9 @@ function acetate.debugDraw()
         s = s .. acetate.focusedClass.className .. " 🔒\n"
     end
 
+    -- grab the current draw offset so we can adjust relative to it accordingly
+    local xo, yo = gfx.getDrawOffset()
+
     -- do debug drawing only if enabled
     if acetate.enabled then
 
@@ -230,7 +233,11 @@ function acetate.debugDraw()
                     gfx.pushContext()
                         -- determine the draw offset for the sprite and set useful defaults
                         local x, y = sprite:getBounds()
-                        gfx.setDrawOffset(x, y)
+                        if sprite.__ignoresDrawOffset then
+                            gfx.setDrawOffset(x, y)
+                        else
+                            gfx.setDrawOffset((sprite.__xo or (x + xo)), (sprite.__yo or (y + yo)))
+                        end
                         gfx.setLineWidth(acetate.lineWidth)
                         gfx.setColor(gfx.kColorWhite) -- white is the debug color
 
@@ -274,6 +281,7 @@ function acetate.debugDraw()
 
     -- lastly, show the debug string we've built up
     gfx.pushContext()
+        gfx.setDrawOffset(0, 0)
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         acetate.debugFont:drawText(s, acetate.debugStringPosition.x, acetate.debugStringPosition.y)
     gfx.popContext()

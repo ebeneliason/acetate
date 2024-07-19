@@ -97,6 +97,10 @@ You can also easily display additional information and visualizations unique to 
 on to learn how to implement custom debug drawing for your sprite classes and customize the debug
 string displayed as you cycle through them in debug mode.
 
+_**NOTE:** If your game adjusts the draw offset, you may need to cache it so that debug drawing
+appears in the correct position relative to your sprites. See the [#Troubleshooting](troubleshooting)
+section for additional details._
+
 ### Customizing Debug Drawing for Your Sprites
 
 Acetate provides several debug visualizations out-of-the-box, which are suitable for showing
@@ -456,6 +460,20 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
     Note that you may not need to implement `playdate.debugDraw` yourself if you leverage Acetate's
     support for implementing `debugDraw` within your individual sprite classes. (You will, however,
     need to do your own debug drawing for anything not associated with sprites.)
+
+### Debug drawing doesn't align properly with my sprites.
+
+Acetate attempts to adjust the draw offset so that debug drawing aligns properly with your sprites.
+However, if your project adjusts the draw offset itself (via `playdate.graphics.setDrawOffset()`),
+Acetate may not have sufficient knowledge to do so correctly. In this case, provide Acetate with
+the appropriate draw offset by calling `cacheDrawOffset` from within your sprite's `draw` function:
+
+```lua
+function MySprite:draw()
+    self:cacheDrawOffset()
+    -- draw...
+end
+```
 
 ### Help, my app keeps crashing on Playdate hardware!
 

@@ -60,3 +60,17 @@ function gfx.sprite:getLocalOrigin()
     local cx, cy = self:getCenter()
     return -cx * self.width, -cy * self.height
 end
+
+function gfx.sprite:cacheDrawOffset()
+    local xo, yo = gfx.getDrawOffset()
+    self.__xo = xo
+    self.__yo = yo
+end
+
+-- work around a limitation of the SDK which makes it impossible to check
+-- whether a sprite is currently set to ignore the draw offset
+local _setIgnoresDrawOffset = gfx.sprite.setIgnoresDrawOffset
+function gfx.sprite:setIgnoresDrawOffset(flag)
+    self.__ignoresDrawOffset = flag
+    _setIgnoresDrawOffset(self, flag)
+end
