@@ -319,7 +319,7 @@ experience. You can change the configuration in one of several ways:
     ```lua
     acetate.init {
         autoPause = true,
-        debugColor = {0, 255, 0, 0.8},
+        debugColor = {0, 1, 0, 0.8},
         -- as many as you like
     }
     ```
@@ -334,7 +334,7 @@ experience. You can change the configuration in one of several ways:
     ```
 
 3.  **Set individual values.** You can also override individual settings from within your app at
-    runtime following initialization, e.g. `acetate.color = {0, 255, 0, 0.8}` and so on.
+    runtime following initialization, e.g. `acetate.color = {0, 1, 0, 0.8}` and so on.
 
 The following settings are available:
 
@@ -361,7 +361,7 @@ The following settings are available:
 
 | Setting                   | Type      | Default  | Description                                                                                                                                                     |
 | ------------------------- | --------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `color`                   | {r,g,b,a} | cyan 75% | A table containing RGB values ([0,255]) and an alpha value ([0,1]) describing the color used for debug drawing.                                                 |
+| `color`                   | {r,g,b,a} | cyan 75% | A table containing RGBA values (in range [0,1]) describing the color used for debug drawing.                                                                    |
 | `lineWidth`               | number    | `1`      | The default line width set for the debug drawing graphics context.                                                                                              |
 | `centerRadius`            | number    | `2`      | The radius of the dot drawn when `drawCenters` is true.                                                                                                         |
 | `orientationOrbScale`     | number    | `0.5`    | Orientation orbs are drawn in proportion to the sprite they belong to. This setting describes their _diameter_ with respect to the sprite's shortest dimension. |
