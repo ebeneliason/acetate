@@ -21,7 +21,7 @@ acetate.defaults = {
 
     -- DRAWING OPTIONS
 
-    color = {0, 255, 255, 0.75},       -- the color used for debug drawing (r, g, b, a)
+    color = {0, 0.9, 1, 0.75},         -- the color used for debug drawing (r, g, b, a)
     lineWidth = 1,                     -- line width used for debug drawing
 
     centerRadius = 2,                  -- determines size of sprite center indicators
