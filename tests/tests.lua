@@ -141,6 +141,7 @@ function TestSettings:testDefaults()
     lu.assertEquals(acetate.cycleBackwardInClassKey,"<")
     lu.assertEquals(acetate.togglePauseKey        , "p")
     lu.assertEquals(acetate.captureScreenshotKey  , "q")
+    lu.assertEquals(acetate.printDebugInfoKey     , "i")
 
     lu.assertEquals(acetate.spriteScreenshotsEnabled, true)
     lu.assertEquals(acetate.defaultScreenshotPath, "~/Desktop")

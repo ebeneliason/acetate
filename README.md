@@ -165,7 +165,9 @@ The following built-in debug drawing functions are supported:
   by the simulator itself. You can use the simulator version to overlay collision rects in a
   contrasting color.)
 
-### Sprite Debug Names
+### Displaying Debug Information
+
+#### Sprite Debug Names
 
 If you have a small bit of custom identifying information you'd like to display &mdash; say, the
 number of a pin in a bowling pin rack, or the name of a particular character &mdash; you can set
@@ -181,7 +183,7 @@ function Pin:init(number)
 end
 ```
 
-### Formatting Debug Strings
+#### Formatting Debug Strings
 
 Acetate displays a debug string for the focused sprite while debug mode is active. By default, this
 string indicates the size and position of the sprite. You can modify the debug string format to
@@ -202,44 +204,108 @@ include the most useful information for your use case in two ways:
     end
     ```
 
-All substitution patterns begin with a dollar sign (`$`) followed by either one or two alphabetical
+All substitution patterns begin with a dollar sign (`$`) followed by up to three alphabetical
 characters. They are case sensitive.
 
-| Pattern | Substitution                                 |
-| ------- | -------------------------------------------- |
-| `$n`    | Class name, or `debugName` if provided       |
-| `$p`    | Position coordinate in the form `(x, y)`     |
-| `$x`    | X position                                   |
-| `$y`    | Y position                                   |
-| `$w`    | Width                                        |
-| `$h`    | Height                                       |
-| `$rx`   | Local relative horizontal center             |
-| `$ry`   | Local relative vertical center               |
-| `$rc`   | Local relative center point, e.g. (0.5, 0.5) |
-| `$o`    | Origin coordinate (top left) in local space  |
-| `$ox`   | Local origin X position                      |
-| `$oy`   | Local origin Y position                      |
-| `$O`    | Origin coordinate in world space             |
-| `$Ox`   | Local origin X position                      |
-| `$Oy`   | Local origin Y position                      |
-| `$c`    | Center coordinate in local space             |
-| `$cx`   | Local center X position                      |
-| `$cy`   | Local center Y position                      |
-| `$C`    | Center coordinate in world space             |
-| `$Cx`   | World center X position                      |
-| `$Cy`   | World center Y position                      |
-| `$r`    | Rotation (radians)                           |
-| `$d`    | Rotation (degrees)                           |
-| `$s`    | Scale                                        |
-| `$t`    | Tag number                                   |
-| `$q`    | Opaqueness as "OPAQUE" or "TRANSPARENT"      |
-| `$u`    | Update status as "UPDATING" or "DISABLED"    |
-| `$v`    | Visibility as "VISIBLE" or "INVISIBLE"       |
-| `$z`    | Z-index                                      |
+| Pattern      | Substitution                                 |
+| ------------ | -------------------------------------------- |
+| `$n`         | `debugName` if given, class name otherwise   |
+| `$cn`        | Class name                                   |
+| `$str`       | `tostring()` output                          |
+| `$a`         | Memory address                               |
+| `$p`, `$pos` | Position coordinate in the form `(x, y)`     |
+| `$x`         | X position                                   |
+| `$y`         | Y position                                   |
+| `$w`         | Width                                        |
+| `$h`         | Height                                       |
+| `$rx`        | Local relative horizontal center             |
+| `$ry`        | Local relative vertical center               |
+| `$rc`        | Local relative center point, e.g. (0.5, 0.5) |
+| `$o`         | Origin coordinate (top left) in local space  |
+| `$ox`        | Local origin X position                      |
+| `$oy`        | Local origin Y position                      |
+| `$O`         | Origin coordinate in world space             |
+| `$Ox`        | Local origin X position                      |
+| `$Oy`        | Local origin Y position                      |
+| `$c`         | Center coordinate in local space             |
+| `$cx`        | Local center X position                      |
+| `$cy`        | Local center Y position                      |
+| `$C`         | Center coordinate in world space             |
+| `$Cx`        | World center X position                      |
+| `$Cy`        | World center Y position                      |
+| `$r`, `$rad` | Rotation (radians)                           |
+| `$d`, `$deg` | Rotation (degrees)                           |
+| `$s`         | Scale                                        |
+| `$t`, `$tag` | Tag number                                   |
+| `$q`         | Opaqueness as "OPAQUE" or "TRANSPARENT"      |
+| `$u`         | Update status as "UPDATING" or "DISABLED"    |
+| `$v`         | Visibility as "VISIBLE" or "INVISIBLE"       |
+| `$z`         | Z-index                                      |
 
-### Programmatically Focusing Sprites
+#### Printing Debug Info
 
-Acetate allows you to cycle through sprites in the display list using the `,` and `.` keys. However,
+You can print debug information for the currently focused sprite(s) to the console by pressing the `I` key. This makes it easy to review, compare, or copy/paste values. This works regardless of whether the current focus is an individual sprite, a class, a debug group, or all sprites currently in the global sprite list.
+
+You can also dump debug info for a sprite programmatically in order to easily view debug data at specific points in your program's execution:
+
+```lua
+mySprite:printDebugInfo()
+```
+
+If desired, you can add a prefix that will print immediately before the info to provide context. Here's what that looks like if you print from within your sprite class:
+
+```lua
+-- e.g inside an overridden setSize()
+self:printDebugInfo("Resized")
+```
+
+You can override the standard debug string in order to print just the information relevant in context, while still utilizing the convenience of Acetate's debug string substitution patterns. For example, here's how you could print just the updated size and center position of your sprite:
+
+```lua
+-- e.g inside an overridden setSize()
+self:printDebugInfo("RESIZED", "$n: $sz, $c")
+```
+
+Which would output the following:
+
+```console
+RESIZED
+MySprite: 100 x 200 (50, 100)
+```
+
+Lastly, Acetate also provides a convenience for printing the traceback to a given line of program execution. This also accepts an optional prefix and format string, just like `printDebugInfo()`.
+
+```lua
+-- from anywhere within your sprite
+self:printDebugTrace("How did we get here?")
+```
+
+### Managing Focus
+
+Cycling focus to obtain debug info for specific sprites is central to Acetate's functionality. Highlighting individual sprites or groups of related sprite allows you to isolate visual debug layers or access textual debug output for the things that matter in the moment, without needing to comment/uncomment and rebuild to surface that data. The beauty of Acetate is that you can define detailed debug visuals and text output for each class as part of its design, so it's all at the ready the next time you need to debug, without getting in the way in the meantime.
+
+Acetate offers three main affordances for managing focus:
+
+1. By sprite. Cycle through all sprites in the display list.
+2. By class. Cycle through all sprites of a given class.
+3. By Group. Cycle through sprites within an explicitly defined group.
+
+As you focus each sprite, their visual debug drawing layer will appear. You can also toggle display of the sprite's debug string with the `/` (`?`) key. While a sprite is focused, you can also press the `I` key to print its debug string to the console for easy viewing/copying.
+
+#### Cycling Through Sprites
+
+Cycling through sprites one-by-one is Acetate's basic interaction mode. Press the comma (',') and period (`.`) keys to cycle backward and forward through the list of extant sprites, respectively. (As a "mnemonic" of sorts, it may be helpful to think of these as the `<` (backward) and `>` (forward) keys. When you first enable Acetate, _all_ visible sprites in the SDKs display list are focused at once—use these keys to isolate each in sequence.
+
+> [!NOTE]
+> Invisible sprites are excluded from the focus list by default. Press the `Z` key to toggle their inclusion.
+
+#### Class Focus
+
+Hold `SHIFT` while cycling to constrain focus to the currently selected sprite class. This makes it easy to quickly iterate through and compare similar sprites. You can also lock focus to the currently selected class by pressing the 'L' key, at which point you can continue cycling through sprites of that class without the `SHIFT` modifier. Press `L` again to unlock focus. A 🔒 symbols is displayed with the sprite name while class focus is locked.
+
+#### Programmatically Focusing Sprites
+
+Acetate allows you to cycle through sprites in the display list manually using the `,` and `.` keys. However,
 you can also focus sprites programmatically, for example in response to a particular game event or
 condition. This makes it easy to initiate visual debugging at the right time and for the right sprite.
 
@@ -276,6 +342,7 @@ the settings object or override the defaults in your project e.g. `acetate.toggl
 | F   | Toggle the [F]PS display on/off                                              |
 | N   | Toggle the total sprite count on/off                                         |
 | /   | [?] Toggle display of the debug string while focused on an individual sprite |
+| I   | Dump debug string [I]nfo for the currently focused sprite(s) to the console  |
 | ,   | [<] Cycle forward through sprites to focus them one by one                   |
 | .   | [>] Cycle backward through sprites                                           |
 | <   | [SHIFT <] Cycle forward through sprites of the same class                    |
@@ -378,6 +445,7 @@ The following settings are available:
 | `spriteCountPersists`      | boolean | `false`                               | Whether to show the total number of sprites even while debug mode isn't enabled.                                                                                    |
 | `showDebugString`          | boolean | `true`                                | Whether the debug string is shown while focused on a single sprite in debug mode.                                                                                   |
 | `defaultDebugFormatString` | string  | `"$n\nX: $x\nY: $y\nW: $w\nH: $h"`    | The format used for the debug string for any sprites which don't define their own. See [Debug String Formats](#formatting-debug-strings) for details.               |
+| `displayPrecision`         | number  | `3`                                   | An integer specifying the desired number of decimals used to display values for the provided format string.                                                         |
 | `alwaysShowSpriteNames`    | boolean | `true`                                | Whether to display the highlighted sprite's name even while the debug string is hidden.                                                                             |
 | `debugStringPosition`      | {x,y}   | `{2, 2}`                              | A table containing the x and y position at which the debug string is drawn. By default, it draws just beneath the FPS counter at the top left corner of the screen. |
 | `debugFontPath`            | string  | `"fonts/Acetate-Mono-Bold-Condensed"` | The path to the font to use for displaying the debug string.                                                                                                        |
@@ -410,7 +478,8 @@ The following settings are available:
 | `toggleCustomDrawKey`     | character | `"m"`   | Key used to toggle use of custo[M] sprite `debugDraw` functions.                      |
 | `toggleFPSKey`            | character | `"f"`   | Key used to toggle [F]PS display on/off.                                              |
 | `toggleSpriteCountKey`    | character | `"n"`   | Key used to toggle display of the total sprite count.                                 |
-| `toggleDebugString`       | character | `"?"`   | Key used to toggle debug string display while focused a single sprite.                |
+| `toggleDebugStringKey`    | character | `"?"`   | Key used to toggle debug string display while focused a single sprite.                |
+| `printDebugInfoKey`       | character | `"I"`   | Key used to print the debug [I]nfo for the currently selected sprite(s).              |
 | `cycleForwardKey`         | character | `"."`   | Key used to cycle forward through sprites, one by one.                                |
 | `cycleBackwardKey`        | character | `","`   | Key used to cycle backward through sprites, one by one.                               |
 | `cycleForwardInClassKey`  | character | `">"`   | Key used to cycle forward to the next sprite of the same class as the focused sprite. |

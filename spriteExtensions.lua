@@ -33,6 +33,18 @@ function gfx.sprite:drawOrientation()
         y + radius * math.sin(math.rad(degrees)))
 end
 
+-- quick access to debug info
+function gfx.sprite:printDebugInfo(prefix, format)
+    if prefix then print(prefix) end
+    acetate.printDebugInfoForSprite(self, format)
+end
+
+-- print a debug trace
+function gfx.sprite:printDebugTrace(prefix, format)
+    if prefix then self:printDebugInfo(prefix, format) end
+    print(debug.traceback())
+end
+
 -- sprite extensions for determining local and world origins and centers
 
 function gfx.sprite:getWorldCenter()

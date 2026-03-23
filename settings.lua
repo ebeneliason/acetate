@@ -70,6 +70,8 @@ acetate.defaults = {
     debugFontPath =                    -- the font used to display debug strings
         "fonts/Acetate-Mono-Bold-Condensed",
 
+    displayPrecision = 3,              -- the default decimal precision used to display values
+
     showShortcuts = false,             -- show the shortcut cheat sheet (when not focused on an individual sprite)
 
     -- KEYBOARD SHORTCUTS
@@ -91,6 +93,7 @@ acetate.defaults = {
     toggleFocusLockKey        = "l",   -- key used to [L]ock focus to the selected sprite class
     togglePauseKey            = "p",   -- key to [P]ause/unpause the game while in debug mode
     captureScreenshotKey      = "q",   -- key to [Q]uick-capture a screenshot
+    printDebugInfoKey         = "i",   -- key to dump debug [I]nfo for the focused sprite(s) to the console
 
     -- SCREENSHOTS
 

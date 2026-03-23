@@ -154,3 +154,19 @@ function acetate.updateFocus()
     end
     acetate.releaseFocus()
 end
+
+function acetate.getFocusedSprites()
+    if acetate.focusedSprite then return { acetate.focusedSprite } end
+
+    local sprites = playdate.graphics.sprite.getAllSprites()
+
+    if acetate.focusedGroup then
+        table.filter(sprites, function(s) return s.debugGroup == acetate.focusedGroup end)
+    end
+
+    if not acetate.focusInvisibleSprites then
+        table.filter(sprites, function(s) return s.isVisible end)
+    end
+
+    return sprites
+end

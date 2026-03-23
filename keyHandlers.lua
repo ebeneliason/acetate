@@ -67,6 +67,9 @@ function acetate.keyPressed(key)
         elseif key == acetate.toggleFocusLockKey then
             acetate.toggleFocusLock()
 
+        elseif key == acetate.printDebugInfoKey then
+            acetate.printDebugInfo()
+
         elseif acetate.keyMatch(key, "?") and not acetate.focusedSprite then
             acetate.showShortcuts = not acetate.showShortcuts
 

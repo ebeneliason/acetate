@@ -319,24 +319,33 @@ end
 -- if provided, and our default format string otherwise. By necessity, this needs to
 -- happen every frame, even though it's somewhat inefficient.
 
-function acetate.formatDebugStringForSprite(sprite)
+function acetate.formatDebugStringForSprite(sprite, options)
     local s, performSubstitutions
+    local options = options or {}
 
+    -- a format string passed as an argument takes precedence
+    if options.formatString then
+        s = options.formatString
+        performSubstitutions = true
     -- check to see if the sprite provides a custom debug string
-    if sprite.debugString then
+    elseif sprite.debugString and not s then
         if type(sprite.debugString) == "function" then
             s, performSubstitutions = sprite:debugString()
-            -- if no formatting is required, just return it
-            if not performSubstitutions then return s end
         else
             -- legacy support
             return sprite.debugString
         end
+    -- fall back to a custom tostring() implementation, if defined
+    elseif sprite.__tostring then
+        s = (sprite.debugName or sprite.className) .. "\n" .. tostring(sprite)
+    else
+    -- the default format string otherwise
+        s = s or sprite.debugStringFormat or acetate.defaultDebugStringFormat
+        performSubstitutions = true
     end
 
-    -- use the format string specified by the sprite, if provided, falling back to
-    -- the default format string otherwise
-    s = s or sprite.debugStringFormat or acetate.defaultDebugStringFormat
+    -- if no substitutions are needed, we're done
+    if not performSubstitutions then return s end
 
     local x,  y  = sprite.x, sprite.y
     local w,  h  = sprite:getSize()
@@ -352,46 +361,75 @@ function acetate.formatDebugStringForSprite(sprite)
     local u      = sprite:updatesEnabled()
     local t      = sprite:getTag()
     local z      = sprite:getZIndex()
-    local f      = playdate.getFPS() -- luacheck: ignore
+    local fps    = playdate.getFPS() -- luacheck: ignore
     local num    = #playdate.graphics.sprite.getAllSprites()
     local n      = sprite.debugName or sprite.className
+    local cn     = sprite.className
 
     if acetate.focusedClass ~= nil then
         n = n .. " 🔒"
+        cn = cn .. " 🔒"
     end
 
-                                                       -- SUBSTITUTION KEY
-    s = s:gsub("$n",  ""  .. n)                        -- $n  | sprite class name or `debugName`
-    s = s:gsub("$p",  "(" .. x .. ", " .. y .. ")")    -- $p  | position coord
-    s = s:gsub("$x",  ""  .. x)                        -- $x  | x position
-    s = s:gsub("$y",  ""  .. y)                        -- $y  | y position
-    s = s:gsub("$w",  ""  .. w)                        -- $w  | width
-    s = s:gsub("$h",  ""  .. h)                        -- $h  | height
-    s = s:gsub("$rx", ""  .. rx)                       -- $rx | local relative horizontal center
-    s = s:gsub("$ry", ""  .. ry)                       -- $ry | local relative vertical center
-    s = s:gsub("$rc", "(" .. rx .. ", " .. ry .. ")")  -- $rc | local relative center
-    s = s:gsub("$ox", ""  .. ox)                       -- $ox | local origin x position
-    s = s:gsub("$oy", ""  .. oy)                       -- $oy | local origin y position
-    s = s:gsub("$o",  "(" .. ox .. ", " .. oy .. ")")  -- $o  | local origin coord
-    s = s:gsub("$Ox", ""  .. Ox)                       -- $Ox | world origin x position
-    s = s:gsub("$Oy", ""  .. Oy)                       -- $Oy | world origin y position
-    s = s:gsub("$O",  "(" .. Ox .. ", " .. Oy .. ")")  -- $O  | world origin coord
-    s = s:gsub("$cx", ""  .. cx)                       -- $cx | local center x position
-    s = s:gsub("$cy", ""  .. cy)                       -- $cy | local center y position
-    s = s:gsub("$c",  "(" .. cx .. ", " .. cy .. ")")  -- $c  | local center coord
-    s = s:gsub("$Cx", ""  .. Cx)                       -- $Cx | world center x position
-    s = s:gsub("$Cy", ""  .. Cy)                       -- $Cy | world center y position
-    s = s:gsub("$C",  "(" .. Cx .. ", " .. Cy .. ")")  -- $C  | world center coord
-    s = s:gsub("$d",  ""  .. r)                        -- $d  | rotation (deg)
-    s = s:gsub("$r",  ""  .. math.rad(r))              -- $r  | rotation (rad)
-    s = s:gsub("$s",  ""  .. sc)                       -- $s  | scale
-    s = s:gsub("$t",  ""  .. t)                        -- $t  | tag number
-    s = s:gsub("$u",  u and "UPDATING" or "DISABLED")  -- $u  | updates enabled
-    s = s:gsub("$v",  v and "VISIBLE" or "INVISIBLE")  -- $v  | visibility
-    s = s:gsub("$q",  q and "OPAQUE" or "TRANSPARENT") -- $q  | opaqueness
-    s = s:gsub("$z",  ""  .. z)                        -- $z  | z index
-    s = s:gsub("$f",  ""  .. f)                        -- $f  | FPS
-    s = s:gsub("$#",  ""  .. num)                      -- $#  | number of sprites
+    -- truncate to desired precision
+    local precision = options.precision or acetate.displayPrecision or 3
+    local mult = 10^precision
+    local p = function(num)
+        if precision < 0 then return num end
+        return num*mult//1/mult
+    end
+
+    s = s:gsub("%$[a-zA-Z#]+", function(str)                                  -- SUBSTITUTION KEY
+        if     str == "$n"   then return n                                    -- $n  | sprite `debugName` (or classname)
+        elseif str == "$cn"  then return cn                                   -- $cn | sprite classname
+        elseif str == "$str" then return tostring(sprite)                     -- $str| `tostring()` output
+        elseif str == "$a"   then return string.format("%p", sprite)          -- $a  | memory address
+        elseif str == "$x"   then return p(x)                                 -- $x  | x position
+        elseif str == "$y"   then return p(y)                                 -- $y  | y position
+        elseif str == "$p"   then return "(" .. p(x) .. ", " .. p(y) .. ")"   -- $p  | position coordinate (x, y)
+        elseif str == "$pos" then return "(" .. p(x) .. ", " .. p(y) .. ")"   -- $pos| position coordinate (x, y)
+        elseif str == "$w"   then return p(w)                                 -- $w  | width
+        elseif str == "$h"   then return p(h)                                 -- $h  | height
+        elseif str == "$sz"  then return "" .. p(w) .. " x " .. p(h)          -- $sz | size (w x h)
+        elseif str == "$rx"  then return p(rx)                                -- $rx | local relative horizontal center
+        elseif str == "$ry"  then return p(ry)                                -- $ry | local relative vertical center
+        elseif str == "$rc"  then return "(" .. p(rx) .. ", " .. p(ry) .. ")" -- $rc | local relative center coordinate
+        elseif str == "$ox"  then return p(ox)                                -- $ox | local origin x
+        elseif str == "$oy"  then return p(oy)                                -- $oy | local origin y
+        elseif str == "$o"   then return "(" .. p(ox) .. ", " .. p(oy) .. ")" -- $o  | local origin coordinate
+        elseif str == "$Ox"  then return p(Ox)                                -- $Ox | world origin x
+        elseif str == "$Oy"  then return p(Oy)                                -- $Oy | world origin y
+        elseif str == "$O"   then return "(" .. p(Ox) .. ", " .. p(Oy) .. ")" -- $O  | world origin coordinate
+        elseif str == "$cx"  then return p(cx)                                -- $cx | local center x
+        elseif str == "$cy"  then return p(cy)                                -- $cy | local center y
+        elseif str == "$c"   then return "(" .. p(cx) .. ", " .. p(cy) .. ")" -- $c  | local center coordinate
+        elseif str == "$Cx"  then return p(Cx)                                -- $Cx | world center x
+        elseif str == "$Cy"  then return p(Cy)                                -- $Cy | world center y
+        elseif str == "$C"   then return "(" .. p(Cx) .. ", " .. p(Cy) .. ")" -- $C  | world center coordinate
+        elseif str == "$d"   then return p(r)                                 -- $d  | rotation (degrees)
+        elseif str == "$deg" then return p(r)                                 -- $deg| rotation (degrees)
+        elseif str == "$r"   then return p(math.rad(r))                       -- $r  | rotation (radians)
+        elseif str == "$rad" then return p(math.rad(r))                       -- $rad| rotation (radians)
+        elseif str == "$s"   then return p(sc)                                -- $s  | scale
+        elseif str == "$t"   then return t                                    -- $t  | tag number
+        elseif str == "$u"   then return u and "UPDATING" or "DISABLED"       -- $u  | updates enabled
+        elseif str == "$v"   then return v and "VISIBLE" or "INVISIBLE"       -- $v  | visibility
+        elseif str == "$q"   then return q and "OPAQUE" or "TRANSPARENT"      -- $q  | opaqueness
+        elseif str == "$z"   then return z                                    -- $z  | z-index
+        elseif str == "$fps" then return fps                                  -- $fps| FPS
+        elseif str == "$#"   then return num                                  -- $num| number of sprites
+        end
+    end)
 
     return s
+end
+
+function acetate.printDebugInfo()
+    for _, sprite in ipairs(acetate.getFocusedSprites() or playdate.graphics.sprite.getAllSprites()) do
+        acetate.printDebugInfoForSprite(sprite)
+    end
+end
+
+function acetate.printDebugInfoForSprite(s, formatString)
+    print(acetate.formatDebugStringForSprite(s, { formatString = formatString, precision = -1 }))
 end

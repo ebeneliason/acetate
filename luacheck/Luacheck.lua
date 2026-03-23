@@ -81,6 +81,8 @@ return {
                 minOrientationOrbRadius = {},
                 centerRadius = {},
                 formatDebugStringForSprite = {},
+                printDebugInfo = {},
+                printDebugInfoForSprite = {},
                 debugStringPosition = {
                     fields = {
                         x = {},
@@ -111,6 +113,7 @@ return {
                         gsub = {},
                     }
                 },
+                printDebugInfoKey = {},
                 keyMatch = {},
                 altSymbolForKey = {},
                 cycleForwardKey  = {
