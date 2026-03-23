@@ -125,5 +125,6 @@ return {
                 },
             }
         },
+        "AcetateEasyPattern",
     },
 }

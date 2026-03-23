@@ -1,5 +1,5 @@
 import "CoreLibs/graphics"
-import "../toyboxes/toyboxes.lua"
+import "./EasyPattern"
 
 -- define the Acetate namespace before importing our settings and function definitions
 acetate = {}
@@ -12,11 +12,18 @@ import "screenshots"
 
 local gfx <const> = playdate.graphics
 
--- the animated dotted line effect used for selection bounds
-local marchingAnts = EasyPattern {
+-- animated dotted line effect used for selection bounds
+local marchingAnts = AcetateEasyPattern {
     ditherType = gfx.image.kDitherTypeDiagonalLine,
     xDuration = 0.25,
     bgColor = gfx.kColorWhite, -- debug color
+}
+
+-- animated dot field used for nudge selection
+local marchingDots = AcetateEasyPattern {
+    alpha = 0.99,
+    duration = 0.5,
+    color = gfx.kColorWhite -- debug color
 }
 
 -- USAGE:
