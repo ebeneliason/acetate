@@ -289,7 +289,8 @@ function acetate.debugDraw()
                         -- show the info string if a single sprite is focused
                         if acetate.focusedSprite then
                             if acetate.showDebugString then
-                                s = s .. acetate.formatDebugStringForSprite(sprite)
+                                local precision = acetate.displayPrecision or 3
+                                s = s .. acetate.formatDebugStringForSprite(sprite, { precision = precision })
                             elseif acetate.alwaysShowSpriteNames then
                                 s = s .. (sprite.debugName or sprite.className)
                             end
@@ -387,11 +388,17 @@ function acetate.formatDebugStringForSprite(sprite, options)
     end
 
     -- truncate to desired precision
-    local precision = options.precision or acetate.displayPrecision or 3
+    local precision = options.precision or -1
     local mult = 10^precision
     local p = function(num)
         if precision < 0 then return num end
-        return num*mult//1/mult
+        if math.type(num) == "integer" then return num end
+        local s = string.format("%." .. precision .. "f", num) -- format to n decimal places
+        if not acetate.paddedPrecision then
+            s = s:gsub("(%..-)0+$", "%1") -- strip trailing zeros
+            s = s:gsub("%.$", "") -- remove trailing decimal point if needed
+        end
+        return s
     end
 
     s = s:gsub("%$[a-zA-Z#]+", function(str)                                  -- SUBSTITUTION KEY
@@ -447,5 +454,5 @@ function acetate.printDebugInfo()
 end
 
 function acetate.printDebugInfoForSprite(s, formatString)
-    print(acetate.formatDebugStringForSprite(s, { formatString = formatString, precision = -1 }))
+    print(acetate.formatDebugStringForSprite(s, { formatString = formatString }))
 end

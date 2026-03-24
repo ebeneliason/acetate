@@ -125,6 +125,9 @@ function TestSettings:testDefaults()
     lu.assertEquals(acetate.debugFontPath, "fonts/Acetate-Mono-Bold-Condensed")
     lu.assertEquals(acetate.showShortcuts, false)
 
+    lu.assertEquals(acetate.displayPrecision, 3)
+    lu.assertEquals(acetate.paddedPrecision, false)
+
     lu.assertEquals(acetate.toggleDebugModeKey    , "d")
     lu.assertEquals(acetate.toggleCentersKey      , "c")
     lu.assertEquals(acetate.toggleBoundsKey       , "b")
@@ -537,6 +540,97 @@ function TestDebugStrings:testAllSubstitutions()
 
 end
 
+function TestDebugStrings:testPrecision()
+    acetate.init()
+
+    local s = S()
+    s:moveTo(123.456789, 234.567890)
+    s:setSize(345.678901, 456.789012)
+    s:setCenter(0.1234, 0.2345)
+    s:setRotation(567.890123)
+    s:setScale(1.2345)
+    s:add()
+
+    local x,  y  = s.x, s.y
+    local w,  h  = s:getSize()
+    local cx, cy = s:getLocalCenter()
+    local Cx, Cy = s:getWorldCenter()
+    local rx, ry = s:getCenter()
+    local ox, oy = s:getLocalOrigin()
+    local Ox, Oy = s:getWorldOrigin()
+    local r      = s:getRotation()
+    local sc     = s:getScale()
+
+    local str
+
+    -- test x, y
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$x, $y" })
+    lu.assertEquals(str, 123.456789 .. ", " .. 234.567890)
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$x, $y", precision = 3 })
+    lu.assertEquals(str, 123.457 .. ", " .. 234.568)
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$x, $y", precision = 1 })
+    lu.assertEquals(str, 123.5 .. ", " .. 234.6)
+
+    -- test width and height (note that Playdate always sets these to whole numbers!)
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$w, $h" })
+    lu.assertEquals(str, 345.0 .. ", " .. 456.0) -- float precision, by default, even though whole
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$w, $h", precision = 3 })
+    lu.assertEquals(str, 345 .. ", " .. 456) -- unnecessary digits truncated
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$w, $h", precision = 1 })
+    lu.assertEquals(str, 345 .. ", " .. 456)
+
+    -- test world center
+    str = acetate.formatDebugStringForSprite(s, { formatString = "[$Cx, $Cy], $C" })
+    lu.assertEquals(str, "[" .. Cx .. ", " .. Cy .. "], (" .. Cx .. ", " .. Cy .. ")")
+    str = acetate.formatDebugStringForSprite(s, { formatString = "[$Cx, $Cy], $C", precision = 2 })
+    lu.assertNotEquals(str, "[" .. Cx .. ", " .. Cy .. "], (" .. Cx .. ", " .. Cy .. ")")
+
+    -- test relative center
+    str = acetate.formatDebugStringForSprite(s, { formatString = "[$rx, $ry], $rc" })
+    lu.assertEquals(str, "[" .. rx .. ", " .. ry .. "], (" .. rx .. ", " .. ry .. ")")
+    str = acetate.formatDebugStringForSprite(s, { formatString = "[$rx, $ry], $rc", precision = 2 })
+    lu.assertNotEquals(str, "[" .. rx .. ", " .. ry .. "], (" .. rx .. ", " .. ry .. ")")
+
+    -- test local origin
+    str = acetate.formatDebugStringForSprite(s, { formatString = "[$ox, $oy], $o" })
+    lu.assertEquals(str, "[" .. ox .. ", " .. oy .. "], (" .. ox .. ", " .. oy .. ")")
+    str = acetate.formatDebugStringForSprite(s, { formatString = "[$ox, $oy], $o", precision = 2 })
+    lu.assertNotEquals(str, "[" .. ox .. ", " .. oy .. "], (" .. ox .. ", " .. oy .. ")")
+
+    -- test world center
+    str = acetate.formatDebugStringForSprite(s, { formatString = "[$Ox, $Oy], $O" })
+    lu.assertEquals(str, "[" .. Ox .. ", " .. Oy .. "], (" .. Ox .. ", " .. Oy .. ")")
+    str = acetate.formatDebugStringForSprite(s, { formatString = "[$Ox, $Oy], $O", precision = 2 })
+    lu.assertNotEquals(str, "[" .. Ox .. ", " .. Oy .. "], (" .. Ox .. ", " .. Oy .. ")")
+
+    -- test rotation in degrees
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$d" })
+    lu.assertEquals(str, tostring(567.890123-360))
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$d", precision = 2 })
+    lu.assertEquals(str, tostring(567.89-360))
+
+    -- test rotation in radians
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$r" })
+    lu.assertEquals(str, tostring(math.rad(r)))
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$r", precision = 2 })
+    lu.assertNotEquals(str, tostring(math.rad(r)))
+
+    -- test scale
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$s" })
+    lu.assertEquals(str, tostring(1.2345))
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$s", precision = 2 })
+    lu.assertEquals(str, tostring(1.23))
+
+    -- test padded precision on width and height values
+    acetate.paddedPrecision = true
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$w, $h" })
+    lu.assertEquals(str, "345.0, 456.0") -- float precision, by default, even though whole
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$w, $h", precision = 3 })
+    lu.assertEquals(str, "345.000, 456.000") -- unnecessary digits truncated
+    str = acetate.formatDebugStringForSprite(s, { formatString = "$w, $h", precision = 1 })
+    lu.assertEquals(str, "345.0, 456.0")
+    acetate.paddedPrecision = false
+end
 
 TestKeyHandlers = {}
 

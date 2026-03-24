@@ -69,6 +69,7 @@ acetate.defaults = {
         "fonts/Acetate-Mono-Bold-Condensed",
 
     displayPrecision = 3,              -- the default decimal precision used to display values
+    paddedPrecision = false,           -- whether or not display values are padded with trailing zeros
 
     showShortcuts = false,             -- show the shortcut cheat sheet (when not focused on an individual sprite)
 
