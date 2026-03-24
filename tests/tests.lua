@@ -102,7 +102,7 @@ function TestSettings:testDefaults()
     lu.assertEquals(acetate.drawOrientations, true)
     lu.assertEquals(acetate.drawCollideRects, false)
 
-    lu.assertEquals(acetate.color, {0, 255, 255, 0.75})
+    lu.assertEquals(acetate.color, {0.5, 1, 1, 0.9})
     lu.assertEquals(acetate.lineWidth, 1)
 
     lu.assertEquals(acetate.centerRadius, 2)
@@ -133,7 +133,7 @@ function TestSettings:testDefaults()
     lu.assertEquals(acetate.toggleInvisiblesKey   , "z")
     lu.assertEquals(acetate.toggleCustomDrawKey   , "m")
     lu.assertEquals(acetate.toggleFPSKey          , "f")
-    lu.assertEquals(acetate.toggleSpriteCountKey  , "n")
+    lu.assertEquals(acetate.toggleSpriteCountKey  , "t")
     lu.assertEquals(acetate.toggleDebugStringKey  , "?")
     lu.assertEquals(acetate.cycleForwardKey       , ".")
     lu.assertEquals(acetate.cycleBackwardKey      , ",")
@@ -494,7 +494,7 @@ function TestDebugStrings:testAllSubstitutions()
     lu.assertEquals(str, tostring(z))
 
     -- test FPS
-    s.debugString = function() return "$f", true end
+    s.debugString = function() return "$fps", true end
     str = acetate.formatDebugStringForSprite(s)
     lu.assertEquals(str, tostring(fps))
 
@@ -763,8 +763,6 @@ function TestKeyHandlers:testShortcutStringAdaptsToSettings()
     lu.assertNotNil(shortcutString:match("%[z%] invisible"))
     lu.assertNotNil(shortcutString:match("%[m%] custom"))
     lu.assertNotNil(shortcutString:match("%[?%] sprite info"))
-    lu.assertNotNil(shortcutString:match("%[f%] FPS"))
-    lu.assertNotNil(shortcutString:match("%[n%] sprite count"))
     lu.assertNotNil(shortcutString:match("%[p%] Pause"))
     lu.assertNotNil(shortcutString:match("%[.%] Next"))
     lu.assertNotNil(shortcutString:match("%[,%] Back"))

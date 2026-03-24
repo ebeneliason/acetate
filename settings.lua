@@ -21,7 +21,7 @@ acetate.defaults = {
 
     -- DRAWING OPTIONS
 
-    color = {0, 0.9, 1, 0.75},         -- the color used for debug drawing (r, g, b, a)
+    color = {0.5, 1, 1, 0.9},          -- the color used for debug drawing (r, g, b, a)
     lineWidth = 1,                     -- line width used for debug drawing
 
     centerRadius = 2,                  -- determines size of sprite center indicators
@@ -60,8 +60,6 @@ acetate.defaults = {
         -- "$q\n"        ..            --    opaqueness
         -- "$v\n"        ..            --    visibility
         -- "$u"          ..            --    updates enabled
-        -- "$f FPS\n"    ..            --    current FPS
-        -- "$# SPRITES\n"..            --    number of sprites
         "",                            -- terminate our format string concatenation
     debugStringPosition = {            -- the position of the debug string
         x = 2,
@@ -84,7 +82,7 @@ acetate.defaults = {
     toggleInvisiblesKey       = "z",   -- key to toggle debug drawing of invi[Z]ible sprites while in debug mode
     toggleCustomDrawKey       = "m",   -- key to toggle use of custo[M] sprite `debugDraw` functions
     toggleFPSKey              = "f",   -- key to toggle [F]PS display on/off
-    toggleSpriteCountKey      = "n",   -- key to toggle display of the total sprite count
+    toggleSpriteCountKey      = "t",   -- key to toggle display of the [T]otal sprite count
     toggleDebugStringKey      = "?",   -- key to toggle debug string display while focused a single sprite
     cycleForwardKey           = ".",   -- key to cycle forward through sprites, one by one
     cycleBackwardKey          = ",",   -- key to cycle backward through sprites, one by one
