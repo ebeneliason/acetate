@@ -64,14 +64,17 @@ function acetate.keyPressed(key)
         elseif key == acetate.cycleBackwardInClassKey then
             acetate.cycleFocusBackward(true)
 
-        elseif key == acetate.toggleFocusLockKey then
-            acetate.toggleFocusLock()
+        elseif key == acetate.toggleClassFocusKey then
+            acetate.toggleClassFocus()
 
         elseif key == acetate.printDebugInfoKey then
             acetate.printDebugInfo()
 
         elseif acetate.keyMatch(key, "?") and not acetate.focusedSprite then
             acetate.showShortcuts = not acetate.showShortcuts
+
+        elseif key:match("[0-9]") then
+            acetate.focusGroup(tonumber(key))
 
         elseif acetate.keyMatch(key, acetate.toggleDebugStringKey) then
             if acetate.focusedSprite then
@@ -121,7 +124,7 @@ function acetate.shortcutString()
         "\n"..
         "[" .. acetate.cycleForwardKey       .. "] Next\n" ..
         "[" .. acetate.cycleBackwardKey      .. "] Back\n" ..
-        "[" .. acetate.toggleFocusLockKey    .. "] Toggle class focus lock\n" ..
+        "[" .. acetate.toggleClassFocusKey   .. "] Toggle class focus lock\n" ..
         "\n"..
         "[" .. acetate.togglePauseKey        .. "] Pause\n" ..
         "[" .. acetate.captureScreenshotKey  .. "] Screenshot\n" ..

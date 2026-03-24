@@ -726,8 +726,8 @@ function TestKeyHandlers:testKeysActiveWhileEnabled()
     acetate.keyPressed(acetate.cycleBackwardInClassKey)
     lu.assertIsTrue(getFlag())
 
-    acetate.toggleFocusLock = setFlag()
-    acetate.keyPressed(acetate.toggleFocusLockKey)
+    acetate.toggleClassFocus = setFlag()
+    acetate.keyPressed(acetate.toggleClassFocusKey)
     lu.assertIsTrue(getFlag())
 end
 
@@ -819,11 +819,11 @@ end
 
 function TestFocusHandling:testFocusSprite()
     acetate.focusedSprite = nil
-    acetate.setFocus(sprites[1])
+    acetate.focusSprite(sprites[1])
     lu.assertEquals(acetate.focusedSprite, sprites[1])
-    acetate.setFocus(sprites[2])
+    acetate.focusSprite(sprites[2])
     lu.assertEquals(acetate.focusedSprite, sprites[2])
-    acetate.setFocus(sprites[3])
+    acetate.focusSprite(sprites[3])
     lu.assertEquals(acetate.focusedSprite, sprites[3])
 end
 
@@ -832,25 +832,25 @@ function TestFocusHandling:testFocusForInvisibleSprites()
     sprites[1]:setVisible(false)
 
     acetate.focusInvisibleSprites = false
-    acetate.setFocus(sprites[1])
+    acetate.focusSprite(sprites[1])
     lu.assertIsNil(acetate.focusedSprite)
 
     acetate.focusInvisibleSprites = true
-    acetate.setFocus(sprites[1])
+    acetate.focusSprite(sprites[1])
     lu.assertEquals(acetate.focusedSprite, sprites[1])
 end
 
 function TestFocusHandling:testFocusForUnaddedSprites()
     local s = gfx.sprite.new()
     acetate.focusedSprite = nil
-    acetate.setFocus(s)
+    acetate.focusSprite(s)
     lu.assertIsNil(acetate.focusedSprite)
 end
 
-function TestFocusHandling:releaseFocus()
-    acetate.setFocus(sprites[3])
+function TestFocusHandling:releaseSpriteFocus()
+    acetate.focusSprite(sprites[3])
     assertEquals(acetate.focusedSprite, sprites[3])
-    acetate.releaseFocus()
+    acetate.releaseSpriteFocus()
     lu.assertIsNil(acetate.focusedSprite)
 end
 
@@ -979,15 +979,14 @@ end
 function TestClassFocus:tearDown()
     sprites = {}
     acetate.releaseFocus()
-    acetate.releaseClassFocusLock()
 end
 
 function TestClassFocus:testClassFocusLock()
     -- test setting the focus lock
     acetate.focusedSprite = nil
-    acetate.setClassFocusLock(S3)
+    acetate.focusClass(S3)
     lu.assertEquals(acetate.focusedClass, S3)
-    acetate.setClassFocusLock(S)
+    acetate.focusClass(S)
     lu.assertEquals(acetate.focusedClass, S)
 
     -- test cycling forward
@@ -1013,23 +1012,23 @@ function TestClassFocus:testClassFocusLock()
     lu.assertEquals(acetate.focusedSprite, sprites[1])
 
     -- test releasing the focus lock
-    acetate.releaseClassFocusLock()
+    acetate.releaseClassFocus()
     lu.assertEquals(acetate.focusedClass, nil)
 end
 
 function TestClassFocus:testImplicitReleaseOfFocusLockDueToSetFocus()
     -- set the focus lock
-    acetate.setClassFocusLock(S)
+    acetate.focusClass(S)
     lu.assertEquals(acetate.focusedClass, S)
     lu.assertEquals(acetate.focusedSprite, nil)
 
     -- set a sprite matching current focus lock
-    acetate.setFocus(sprites[1])
+    acetate.focusSprite(sprites[1])
     lu.assertEquals(acetate.focusedClass, S)
     lu.assertEquals(acetate.focusedSprite, sprites[1])
 
     -- implicitly release
-    acetate.setFocus(sprites[2]) -- will override the current focus
+    acetate.focusSprite(sprites[2]) -- will override the current focus
     lu.assertEquals(acetate.focusedClass, nil)
     lu.assertEquals(acetate.focusedSprite, sprites[2])
 
@@ -1037,8 +1036,8 @@ end
 
 function TestClassFocus:testImplicitReleaseOfFocusLockDueToSpriteRemoval()
     -- test setting the focus lock
-    acetate.setClassFocusLock(S)
-    acetate.setFocus(sprites[1])
+    acetate.focusClass(S)
+    acetate.focusSprite(sprites[1])
     lu.assertEquals(acetate.focusedClass, S)
     lu.assertEquals(acetate.focusedSprite, sprites[1])
 
@@ -1054,13 +1053,14 @@ function TestClassFocus:testImplicitReleaseOfFocusLockDueToSpriteRemoval()
 end
 
 function TestClassFocus:testImplicitReleaseOfFocusDueToSpriteVisibility()
-    acetate.setFocus(sprites[1])
-    acetate.toggleFocusLock()
+    acetate.focusSprite(sprites[1])
+    acetate.toggleClassFocus()
     acetate.focusInvisibleSprites = false
     lu.assertEquals(acetate.focusedClass, S)
-    lu.assertEquals(acetate.focusedSprite, sprites[1])
+    lu.assertEquals(acetate.focusedSprite, nil) -- all class members focused
 
-    -- hide the focused sprite
+    -- re-focus and hide the focused sprite
+    acetate.focusSprite(sprites[1])
     sprites[1]:setVisible(false)
 
     -- update focus
@@ -1070,7 +1070,7 @@ function TestClassFocus:testImplicitReleaseOfFocusDueToSpriteVisibility()
 end
 
 function TestClassFocus:testCyclingForwardInClass()
-    acetate.setFocus(sprites[1])
+    acetate.focusSprite(sprites[1])
     lu.assertEquals(acetate.focusedSprite, sprites[1])
     acetate.cycleFocusForward(false)
     lu.assertEquals(acetate.focusedSprite, sprites[2])
@@ -1085,7 +1085,7 @@ function TestClassFocus:testCyclingForwardInClass()
 end
 
 function TestClassFocus:testCyclingBackwardInClass()
-    acetate.setFocus(sprites[8])
+    acetate.focusSprite(sprites[8])
     lu.assertEquals(acetate.focusedSprite, sprites[8])
     acetate.cycleFocusBackward(false)
     lu.assertEquals(acetate.focusedSprite, sprites[7])
@@ -1102,16 +1102,16 @@ end
 function TestClassFocus:testToggleFocusLock()
     -- class focus does nothing when there's no focused sprite
     acetate.focusedSprite = nil
-    acetate.toggleFocusLock()
+    acetate.toggleClassFocus()
     lu.assertEquals(acetate.focusedClass, nil)
 
     -- toggle focus on for the focused sprite
     acetate.focusedSprite = sprites[1]
-    acetate.toggleFocusLock()
+    acetate.toggleClassFocus()
     lu.assertEquals(acetate.focusedClass, sprites[1].class)
 
     -- toggle focus off again
-    acetate.toggleFocusLock()
+    acetate.toggleClassFocus()
     lu.assertEquals(acetate.focusedClass, nil)
 end
 
@@ -1190,7 +1190,7 @@ function TestScreenshots:testScreenshot()
     s.draw = nil
 
     -- no draw function
-    acetate.setFocus(s)
+    acetate.focusSprite(s)
     ret = acetate.captureScreenshot()
     lu.assertIsFalse(ret)
 
@@ -1198,14 +1198,14 @@ function TestScreenshots:testScreenshot()
     s:setSize(0,0)
 
     -- invalid bitmap size
-    acetate.setFocus(s)
+    acetate.focusSprite(s)
     ret = acetate.captureScreenshot()
     lu.assertIsFalse(ret)
 
     s:setSize(5,5)
 
     -- success case
-    acetate.setFocus(s)
+    acetate.focusSprite(s)
     ret = acetate.captureSpriteScreenshot(s)
     lu.assertIsTrue(ret)
 end

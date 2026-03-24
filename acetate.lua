@@ -179,9 +179,16 @@ function acetate.debugDraw()
     local s = ""
 
     if acetate.focusedClass then
-        table.filter(sprites, function(s) return s:isa(acetate.focusedClass) end)
+        table.filter(sprites, function(sprite) return sprite:isa(acetate.focusedClass) end)
         if #sprites == 0 then
-            acetate.releaseClassFocusLock() -- no sprites of the current focus remaining
+            acetate.releaseClassFocus() -- no sprites of the current focus remaining
+        end
+    end
+
+    if acetate.focusedGroup then
+        table.filter(sprites, function(sprite) return sprite.debugGroup == acetate.focusedGroup end)
+        if #sprites == 0 then
+            acetate.releaseGroupFocus() -- no sprites in the current group remaining
         end
     end
 
@@ -191,13 +198,20 @@ function acetate.debugDraw()
         s = s .. (acetate.enabled and (fps .. " FPS\n") or (fps .. "\n"))
     end
 
+    -- show group
+    if acetate.focusedGroup then
+        s = s .. "GROUP " .. (acetate.groupNames[acetate.focusedGroup] or acetate.focusedGroup) .. "\n"
+    end
+
     -- show sprite count as appropriate
-    if acetate.showSpriteCount and (acetate.spriteCountPersists or acetate.enabled) then
+    if (acetate.showSpriteCount and (acetate.spriteCountPersists or acetate.enabled))
+        or acetate.focusedClass then
         if not acetate.focusedSprite or not acetate.enabled then
             s = s .. tostring(#sprites)
 
             if acetate.enabled then
-                s = s .. ((acetate.focusedClass ~= nil) and (" " .. acetate.focusedClass.className .. "s") or " SPRITES")
+                s = s .. ((acetate.focusedClass ~= nil)
+                    and (" " .. acetate.focusedClass.className .. "s") or " SPRITES")
             end
 
             if acetate.focusedClass ~= nil then
@@ -321,14 +335,14 @@ end
 
 function acetate.formatDebugStringForSprite(sprite, options)
     local s, performSubstitutions
-    local options = options or {}
+    options = options or {}
 
     -- a format string passed as an argument takes precedence
     if options.formatString then
         s = options.formatString
         performSubstitutions = true
     -- check to see if the sprite provides a custom debug string
-    elseif sprite.debugString and not s then
+    elseif sprite.debugString then
         if type(sprite.debugString) == "function" then
             s, performSubstitutions = sprite:debugString()
         else
@@ -340,7 +354,7 @@ function acetate.formatDebugStringForSprite(sprite, options)
         s = (sprite.debugName or sprite.className) .. "\n" .. tostring(sprite)
     else
     -- the default format string otherwise
-        s = s or sprite.debugStringFormat or acetate.defaultDebugStringFormat
+        s = sprite.debugStringFormat or acetate.defaultDebugStringFormat
         performSubstitutions = true
     end
 
@@ -365,6 +379,7 @@ function acetate.formatDebugStringForSprite(sprite, options)
     local num    = #playdate.graphics.sprite.getAllSprites()
     local n      = sprite.debugName or sprite.className
     local cn     = sprite.className
+    local g      = sprite.debugGroup or "0"
 
     if acetate.focusedClass ~= nil then
         n = n .. " 🔒"
@@ -416,6 +431,7 @@ function acetate.formatDebugStringForSprite(sprite, options)
         elseif str == "$v"   then return v and "VISIBLE" or "INVISIBLE"       -- $v  | visibility
         elseif str == "$q"   then return q and "OPAQUE" or "TRANSPARENT"      -- $q  | opaqueness
         elseif str == "$z"   then return z                                    -- $z  | z-index
+        elseif str == "$g"   then return g                                    -- $g  | debug group
         elseif str == "$fps" then return fps                                  -- $fps| FPS
         elseif str == "$#"   then return num                                  -- $num| number of sprites
         end

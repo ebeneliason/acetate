@@ -72,6 +72,8 @@ acetate.defaults = {
 
     showShortcuts = false,             -- show the shortcut cheat sheet (when not focused on an individual sprite)
 
+    groupNames = {},                   -- provide a list of named groups (ordered 1-9) here
+
     -- KEYBOARD SHORTCUTS
 
     toggleDebugModeKey        = "d",   -- key to toggle [D]ebug drawing mode on/off
@@ -88,7 +90,7 @@ acetate.defaults = {
     cycleBackwardKey          = ",",   -- key to cycle backward through sprites, one by one
     cycleForwardInClassKey    = ">",   -- key used to cycle forward to the next sprite of the same class
     cycleBackwardInClassKey   = "<",   -- key used to cycle backward to the previous sprite of the same class
-    toggleFocusLockKey        = "l",   -- key used to [L]ock focus to the selected sprite class
+    toggleClassFocusKey       = "l",   -- key used to [L]ock focus to the selected sprite class
     togglePauseKey            = "p",   -- key to [P]ause/unpause the game while in debug mode
     captureScreenshotKey      = "q",   -- key to [Q]uick-capture a screenshot
     printDebugInfoKey         = "i",   -- key to dump debug [I]nfo for the focused sprite(s) to the console

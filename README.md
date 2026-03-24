@@ -7,7 +7,7 @@ _A visual debugging suite for Playdate._
 ## What is Acetate?
 
 Acetate is a visual debugging utility for use with the [Playdate](https://play.date/) Simulator,
-specifically optimized for use with the `playdate.graphics.sprite` class (and subclasses). With Acetate, you can easily
+optimized for use with `playdate.graphics.sprite` classes. With Acetate, you can easily
 enter a visual debugging mode at any time, cycle through debug visualizations for each sprite, and optionally
 customize the visuals and information shown for each from directly within your sprite classes.
 
@@ -303,6 +303,16 @@ Cycling through sprites one-by-one is Acetate's basic interaction mode. Press th
 
 Hold `SHIFT` while cycling to constrain focus to the currently selected sprite class. This makes it easy to quickly iterate through and compare similar sprites. You can also lock focus to the currently selected class by pressing the 'L' key, at which point you can continue cycling through sprites of that class without the `SHIFT` modifier. Press `L` again to unlock focus. A 🔒 symbols is displayed with the sprite name while class focus is locked.
 
+#### Debug Groups
+
+Debug groups make it easy to inspect distinct groups of sprites together, without the visual noise of other unrelated sprites. It also enables you to swiftly cycle through sprites in a given group. Set the `debugGroup` property of your sprite to a value in the range [1-9] to add it to that group.
+
+```lua
+mySprite.debugGroup = 1
+```
+
+Press the corresponding key while in debug mode to focus all sprites in that group. While a group is focused, the `.` [<] and `,` [>] keys will cycle through the sprites in the group. Press `0` to unfocus a debug group and restore default focus behaviors. The group number (or name, if set) will be shown while a group is focused. You can define names for each group by providing a list for the `groupNames` configuration setting.
+
 #### Programmatically Focusing Sprites
 
 Acetate allows you to cycle through sprites in the display list manually using the `,` and `.` keys. However,
@@ -310,7 +320,10 @@ you can also focus sprites programmatically, for example in response to a partic
 condition. This makes it easy to initiate visual debugging at the right time and for the right sprite.
 
 ```lua
-acetate.setFocus(mySprite)
+-- focus a single sprite
+acetate.focusSprite(mySprite)
+-- release focus
+acetate.releaseSpriteFocus()
 ```
 
 If Acetate's debug mode isn't active when you call this function, it will be enabled automatically.
@@ -321,7 +334,27 @@ You can also lock the focus to a specific class, so only sprites of that class g
 cycling with the keyboard shortcuts:
 
 ```lua
-acetate.setClassFocusLock(MyClass)
+-- focus by class
+acetate.focusClass(MyClass)
+-- release focus
+acetate.releaseClassFocus()
+```
+
+You can focus your debug groups by number or name:
+
+```lua
+-- focus group by number
+acetate.focusGroup(1)
+-- focus group by name
+acetate.focusGroup("Enemy")
+-- unlock focus
+acetate.releaseGroupFocus()
+```
+
+Finally, you can remove all focus constraints to restore access to the entire display list:
+
+```lua
+acetate.releaseFocus()
 ```
 
 ### Keyboard Shortcuts
@@ -330,30 +363,31 @@ Acetate provides a number of keyboard shortcuts. You're welcome to change any of
 to fit your preference, or avoid conflict with other `keyPress` handlers defined elsewhere. Edit
 the settings object or override the defaults in your project e.g. `acetate.toggleDebugKey = "0"`.
 
-| Key | Function                                                                     |
-| --- | ---------------------------------------------------------------------------- |
-| D   | Toggle Acetate's visual [D]ebugging mode on/off                              |
-| C   | Toggle drawing of sprite [C]enters while in debug mode                       |
-| B   | Toggle drawing of sprite [B]ounds while in debug mode                        |
-| V   | Toggle drawing of sprite orientation [V]ectors while in debug mode           |
-| X   | Toggle drawing of sprite colli[X]ion rects while in debug mode               |
-| Z   | Toggle debug drawing of invi[Z]ible sprites while in debug mode              |
-| M   | Toggle the use of custo[M] `debugDraw` functions defined in your own sprites |
-| F   | Toggle the [F]PS display on/off                                              |
-| N   | Toggle the total sprite count on/off                                         |
-| /   | [?] Toggle display of the debug string while focused on an individual sprite |
-| I   | Dump debug string [I]nfo for the currently focused sprite(s) to the console  |
-| ,   | [<] Cycle forward through sprites to focus them one by one                   |
-| .   | [>] Cycle backward through sprites                                           |
-| <   | [SHIFT <] Cycle forward through sprites of the same class                    |
-| >   | [SHIFT >] Cycle backward through sprites of the same class                   |
-| L   | [L]ock focus cycling to the focused sprite class                             |
-| P   | [P]ause/unpause the game for/while debugging                                 |
-| Q   | [Q]uick-capture a screenshot of either the full screen or the focused sprite |
+| Key   | Function                                                                     |
+| ----- | ---------------------------------------------------------------------------- |
+| D     | Toggle Acetate's visual [D]ebugging mode on/off                              |
+| C     | Toggle drawing of sprite [C]enters while in debug mode                       |
+| B     | Toggle drawing of sprite [B]ounds while in debug mode                        |
+| V     | Toggle drawing of sprite orientation [V]ectors while in debug mode           |
+| X     | Toggle drawing of sprite colli[X]ion rects while in debug mode               |
+| Z     | Toggle debug drawing of invi[Z]ible sprites while in debug mode              |
+| M     | Toggle the use of custo[M] `debugDraw` functions defined in your own sprites |
+| F     | Toggle the [F]PS display on/off                                              |
+| N     | Toggle the total sprite count on/off                                         |
+| /     | [?] Toggle display of the debug string while focused on an individual sprite |
+| I     | Dump debug string [I]nfo for the currently focused sprite(s) to the console  |
+| ,     | [<] Cycle forward through sprites to focus them one by one                   |
+| .     | [>] Cycle backward through sprites                                           |
+| <     | [SHIFT <] Cycle forward through sprites of the same class                    |
+| >     | [SHIFT >] Cycle backward through sprites of the same class                   |
+| L     | [L]ock focus cycling to the focused sprite class                             |
+| P     | [P]ause/unpause the game for/while debugging                                 |
+| Q     | [Q]uick-capture a screenshot of either the full screen or the focused sprite |
+| [1-9] | Focus debug group (press again, or 0 to unfocus)                             |
 
 ### Screenshots
 
-Acetate also provides a shortcut for capturing instantaneous screenshots from the simulator. While
+Acetate provides a shortcut for capturing instantaneous screenshots from the simulator. While
 not strictly a debug feature, it's certainly a useful tool to have in your workflow. Capture
 a screenshot by pressing the `Q` key at any time (even outside debug mode), or from within your
 code:
@@ -484,7 +518,7 @@ The following settings are available:
 | `cycleBackwardKey`        | character | `","`   | Key used to cycle backward through sprites, one by one.                               |
 | `cycleForwardInClassKey`  | character | `">"`   | Key used to cycle forward to the next sprite of the same class as the focused sprite. |
 | `cycleBackwardInClassKey` | character | `"<"`   | Key used to cycle backward through sprites of the same class as the focused sprite.   |
-| `toggleFocusLockKey`      | character | `"l"`   | Key used to [L]ock focus cycling to sprites of the same class as the focused sprite.  |
+| `toggleClassFocusKey`     | character | `"l"`   | Key used to [L]ock focus cycling to sprites of the same class as the focused sprite.  |
 | `togglePauseKey`          | character | `"p"`   | Key used to [P]ause/unpause the game while in debug mode.                             |
 | `captureScreenshotKey`    | character | `"q"`   | Key used to [Q]uick-capture a screenshot.                                             |
 
@@ -552,9 +586,9 @@ the simulator will cause Playdate to crash. You can do so safely from within any
 the simulator. Any access outside these contexts should be wrapped within a check to ensure acetate
 has been initialized:
 
-```
+```lua
 if acetate.initialized then
-    -- safe to access acetate members here, for example to call `acetate.setFocus(mySprite)`
+    -- safe to access acetate members here, for example to call `acetate.focusSprite(mySprite)`
 end
 ```
 

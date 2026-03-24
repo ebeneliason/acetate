@@ -60,9 +60,29 @@ return {
                 focusedSprite = {
                     fields = {
                         isVisible = {},
+                        class = {},
                     }
                 },
-                setFocus = {},
+                focusedClass = {
+                    fields = {
+                        className = {},
+                    }
+                },
+                focusedGroup = {},
+                focusSprite = {},
+                releaseSpriteFocus = {},
+                spriteIsFocusable = {},
+                focusClass = {},
+                releaseClassFocus = {},
+                toggleClassFocus = {},
+                focusGroup = {},
+                releaseGroupFocus = {},
+                getFocusedSprites = {},
+                setGroupName = {},
+                setGroupNames = {},
+                groupNames = {
+                    fields = { "?" },
+                },
                 releaseFocus = {},
                 cycleFocusForward = {},
                 cycleFocusBackward = {},
@@ -113,6 +133,9 @@ return {
                         gsub = {},
                     }
                 },
+                cycleForwardInClassKey = {},
+                cycleBackwardInClassKey = {},
+                toggleClassFocusKey = {},
                 printDebugInfoKey = {},
                 keyMatch = {},
                 altSymbolForKey = {},
@@ -129,5 +152,10 @@ return {
             }
         },
         "AcetateEasyPattern",
+        table = {
+            fields = {
+                filter = {},
+            }
+        },
     },
 }
