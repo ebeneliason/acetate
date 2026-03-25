@@ -53,7 +53,9 @@ local marchingDots = AcetateEasyPattern {
 
 function acetate.init(config)
     if not playdate.isSimulator then
-        print("NOTE: Skipping initialization of Acetate outside simulator.")
+        if not acetate.quietMode then
+            print("NOTE: Skipping initialization of Acetate outside simulator.")
+        end
         return
     end
 
@@ -69,8 +71,10 @@ function acetate.init(config)
     -- install our `debugDraw` function, storing a reference to any previously defined
     -- function which we'll still call to preserve its behavior
     if playdate.debugDraw and playdate.debugDraw ~= acetate.debugDraw then
-        print("NOTE: Acetate is wrapping an existing `playdate.debugDraw` function.")
-        print("That function will still be called to preserve its functionality.")
+        if not acetate.quietMode then
+            print("NOTE: Acetate is wrapping an existing `playdate.debugDraw` function.")
+            print("That function will still be called to preserve its functionality.")
+        end
         acetate._debugDraw = playdate.debugDraw
     end
     playdate.debugDraw = acetate.debugDraw
@@ -78,12 +82,16 @@ function acetate.init(config)
     -- install our `keyPressed` function, storing a reference to any previously defined
     -- function which we'll still call to preserve its behavior
     if playdate.keyPressed  and playdate.keyPressed ~= acetate.keyPressed then
-        print("NOTE: Acetate is wrapping an existing `playdate.keyPressed` function.")
-        print("That function will still be called to preserve its functionality.")
+        if not acetate.quietMode then
+            print("NOTE: Acetate is wrapping an existing `playdate.keyPressed` function.")
+            print("That function will still be called to preserve its functionality.")
+        end
         acetate._keyPressed = playdate.keyPressed
     end
     playdate.keyPressed = acetate.keyPressed
-    print("NOTE: Press [" .. acetate.toggleDebugModeKey .. "] to activate Acetate debug mode.")
+    if not acetate.quietMode then
+        print("NOTE: Press [" .. acetate.toggleDebugModeKey .. "] to activate Acetate debug mode.")
+    end
 
     -- set a bool which can be checked to determine whether acetate is initialized
     -- before attempting to access its members
@@ -327,6 +335,7 @@ function acetate.loadDebugFont()
     -- use the system font as a fallback
     print("WARNING: Acetate fonts could not be found. Falling back to system font.")
     print("Please double-check your `debugFontPath` setting and font file installations.")
+    print("Current path: ", acetate.debugFontPath)
     acetate.debugFont = gfx.getSystemFont(gfx.font.kVariantBold)
 end
 

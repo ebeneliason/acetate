@@ -5,6 +5,8 @@ import "CoreLibs/sprites"
 local gfx <const> = playdate.graphics
 local lu <const> = luaunit
 
+acetate.defaults.quietMode = true -- avoid info NOTE output
+
 -- a stub of a sprite class
 class('S').extends(gfx.sprite)
 function S:init() S.super.init(self) end
