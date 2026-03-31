@@ -80,8 +80,7 @@ taking advantage of its features.
 
 1. Build and run your app in the Playdate Simulator.
 2. Press the `D` key on your keyboard to enter debug mode.
-3. Use `,` (`<`) and `.` (`>`) to cycle through sprites (hold `SHIFT` to cycle through
-   sprites of the same class as the currently focused sprite).
+3. Use `,` (`<`) and `.` (`>`) to cycle through sprites.
 4. Refer to the list of [keyboard shortcuts](#keyboard-shortcuts) for additional options.
 
 Out of the box, you can see the following information for each sprite:
@@ -314,7 +313,7 @@ Cycling through sprites one-by-one is Acetate's basic interaction mode. Press th
 
 #### Class Focus
 
-Hold `SHIFT` while cycling to constrain focus to the currently selected sprite class. This makes it easy to quickly iterate through and compare similar sprites. You can also lock focus to the currently selected class by pressing the 'L' key, at which point you can continue cycling through sprites of that class without the `SHIFT` modifier. Press `L` again to unlock focus. A 🔒 symbols is displayed with the sprite name while class focus is locked.
+Press the `L` key to lock focus to the currently selected sprite class. After doing so, the usual focus cycling keys will cycle through all sprites of the same class only. Press `L` again to unlock focus. A 🔒 symbol is displayed with the name of the sprite class while class focus is locked. You may also use `;` and `'` to cycle forward and backward through sprites of the currently focused class without toggling class lock.
 
 #### Debug Groups
 
