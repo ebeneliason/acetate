@@ -192,14 +192,14 @@ include the most useful information for your use case in two ways:
     string shown for all of your sprites.
 
 2.  **Set custom strings.** Implement the `debugString()` function on your sprite. You can provide a
-    fully formatted string, or include substitution patterns as shown in the table below,
-    passing `true` as a second return value to indicate that substitutions are needed.
+    fully formatted string, or include substitution patterns as shown in the table below. If you don't
+    require substitutions, you may pass `false` as a second return value to skip the substitution logic.
 
     ```lua
     function MySprite:debugString()
         local s
         -- construct `s` using any properties belonging to your sprite
-        return s, true -- true indicates that substitutions are needed
+        return s
     end
     ```
 

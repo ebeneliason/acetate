@@ -459,6 +459,7 @@ function acetate.formatDebugStringForSprite(sprite, options)
     elseif sprite.debugString then
         if type(sprite.debugString) == "function" then
             s, performSubstitutions = sprite:debugString()
+            performSubstitutions = performSubstitutions ~= false -- nil -> true
         else
             -- legacy support
             return sprite.debugString
