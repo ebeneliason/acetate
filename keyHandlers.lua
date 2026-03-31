@@ -67,6 +67,9 @@ function acetate.keyPressed(key)
         elseif key == acetate.toggleClassFocusKey then
             acetate.toggleClassFocus()
 
+        elseif key == acetate.toggleNudgeKey then
+            acetate.toggleNudgeMode()
+
         elseif key == acetate.printDebugInfoKey then
             acetate.printDebugInfo()
 

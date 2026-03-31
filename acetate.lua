@@ -7,6 +7,7 @@ acetate = {}
 import "settings"
 import "keyHandlers"
 import "focusHandling"
+import "nudging"
 import "spriteExtensions"
 import "screenshots"
 
@@ -122,6 +123,11 @@ function acetate.disable()
     if not acetate.retainFocusOnDisable then
         acetate.focusedSprite = nil
     end
+    if acetate.nudgeMode then
+        playdate.inputHandlers.pop()
+        acetate.nudgeMode = false
+        acetate.stopNudging()
+    end
     if acetate.paused then acetate.unpause() end
 end
 
@@ -186,6 +192,49 @@ function acetate.debugDraw()
     local sprites = playdate.graphics.sprite.getAllSprites()
     local s = ""
 
+    if acetate.nudgeMode then
+        s = s .. "✛ "
+        local focusedSprites = acetate.getFocusedSprites()
+        if not acetate.focusedSprite and not acetate.focusedGroup and not acetate.focusedClass then
+            s = s .. #focusedSprites .. " SPRITES\n"
+        end
+        if playdate.getCurrentTimeMilliseconds()//500%2 == 0 then
+            gfx.pushContext()
+                gfx.setLineWidth(acetate.lineWidth)
+                gfx.setColor(gfx.kColorWhite)
+
+                -- determine bounds of focused sprites
+                local xmin, xmax, ymin, ymax
+                for _, sprite in ipairs(focusedSprites) do
+                    local l, t = sprite:getWorldCoordFromRelative(0, 0)
+                    local r, b = sprite:getWorldCoordFromRelative(1, 1)
+                    if not xmin or l < xmin then xmin = l end
+                    if not xmax or r > xmax then xmax = r end
+                    if not ymin or t < ymin then ymin = t end
+                    if not ymax or b > ymax then ymax = b end
+                end
+
+                -- constrain indicators to bounds of screen
+                local x, y
+                local s = 7 -- arrow size
+                xmin = math.max(xmin, 0+s)
+                xmax = math.min(xmax, 400-s)
+                ymin = math.max(ymin, 0+s)
+                ymax = math.min(ymax, 240-s)
+
+                -- draw the indicators
+                x, y = xmin+(xmax-xmin)//2, ymin
+                gfx.fillPolygon(x-s, y, x+s, y, x, y-s) -- UP
+                x, y = xmin+(xmax-xmin)//2, ymax
+                gfx.fillPolygon(x-s, y, x+s, y, x, y+s) -- DOWN
+                x, y = xmax, ymin+(ymax-ymin)//2
+                gfx.fillPolygon(x, y-s, x, y+s, x+s, y) -- RIGHT
+                x, y = xmin, ymin+(ymax-ymin)//2
+                gfx.fillPolygon(x, y-s, x, y+s, x-s, y) -- LEFT
+            gfx:popContext()
+        end
+    end
+
     if acetate.focusedClass then
         table.filter(sprites, function(sprite) return sprite:isa(acetate.focusedClass) end)
         if #sprites == 0 then
@@ -213,7 +262,7 @@ function acetate.debugDraw()
 
     -- show sprite count as appropriate
     if (acetate.showSpriteCount and (acetate.spriteCountPersists or acetate.enabled))
-        or acetate.focusedClass then
+        or acetate.nudgeMode or acetate.focusedClass then
         if not acetate.focusedSprite or not acetate.enabled then
             s = s .. tostring(#sprites)
 
@@ -261,12 +310,16 @@ function acetate.debugDraw()
                     -- time to draw
                     gfx.pushContext()
                         -- determine the draw offset for the sprite and set useful defaults
-                        local x, y = sprite:getBounds()
-                        if sprite.__ignoresDrawOffset then
-                            gfx.setDrawOffset(x, y)
-                        else
-                            gfx.setDrawOffset((sprite.__xo or (x + xo)), (sprite.__yo or (y + yo)))
+                        local dox, doy = sprite:getBounds()
+                        if not sprite.__ignoresDrawOffset then
+                            dox = (sprite.__xo or (dox + xo))
+                            doy = (sprite.__yo or (doy + yo))
                         end
+                        -- this odd bit of logic keeps the center stable even when the offset origin is negative
+                        dox = dox >= 0 and dox or math.ceil(dox)
+                        doy = doy >= 0 and doy or math.ceil(doy)
+                        gfx.setDrawOffset(dox, doy)
+
                         gfx.setLineWidth(acetate.lineWidth)
                         gfx.setColor(gfx.kColorWhite) -- white is the debug color
 
@@ -302,6 +355,17 @@ function acetate.debugDraw()
                             elseif acetate.alwaysShowSpriteNames then
                                 s = s .. (sprite.debugName or sprite.className)
                             end
+                        end
+
+                        -- handle nudge mode
+                        if acetate.nudgeMode then
+                            gfx.setDrawOffset(0,0)
+                            if acetate.focusedSprite then
+                                local x, y = sprite:getWorldCenter()
+                                gfx.drawCircleAtPoint(x, y, 5)
+                            end
+                            gfx.setPattern(marchingDots:apply())
+                            gfx.fillRect(sprite:getBounds())
                         end
                     gfx.popContext()
                 end
@@ -362,6 +426,10 @@ function acetate.formatDebugStringForSprite(sprite, options)
     -- fall back to a custom tostring() implementation, if defined
     elseif sprite.__tostring then
         s = (sprite.debugName or sprite.className) .. "\n" .. tostring(sprite)
+    -- override default debug string while nudging
+    elseif acetate.nudgeMode then
+        s = sprite.nudgeDebugStringFormat or acetate.defaultNudgeDebugStringFormat
+        performSubstitutions = true
     else
     -- the default format string otherwise
         s = sprite.debugStringFormat or acetate.defaultDebugStringFormat

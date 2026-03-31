@@ -357,6 +357,30 @@ Finally, you can remove all focus constraints to restore access to the entire di
 acetate.releaseFocus()
 ```
 
+### Nudge Mode
+
+Nudge mode lets you tweak the size, position, rotation, or even other properties of your sprites interactively. This lets you visualize the desired result in real time and then codify those values, avoiding the need to guess and rebuild each time.
+
+#### Activating Nudge Mode
+
+Press the `N` key to enter nudge mode. You'll see an animated bounding box and overlay for the focused sprite (or sprites), along with flashing arrows to indicate that nudge mode is active. Use the arrow keys to make adjustments, and hold modifier keys as shown below to adjust different properties. Discrete key presses will adjust with pixel precision, while holding the keys enables faster adjustment.
+
+- No modifier: Move the sprite up, down, left, or right.
+- A button (`s` key): Increase or decrease the size of the sprite. If the sprite has an image set on it with `setImage()`, then the sprite's scale will be adjusted. Otherwise, this will adjust the width and height properties.
+- B button (`a` key): Adjust the rotation of the sprite. This works out-of-the-box for sprites with an image set with `setImage()`, but will have no effect otherwise unless you read the sprite's rotation value when drawing. You can also provide a custom override for this modifier (see below).
+
+#### Nudging Multiple Sprites
+
+You can nudge multiple sprites at once by using class focus or debug groups (or even all sprites at once). Note that nudging will still adjust the properties of each sprite individually when multiple sprites are focused. For example, when rotating, each sprite will rotate in place, rather than the group rotating around some central point. Likewise, when scaling, each sprite will scale, but its position relative to the other focused sprites will not change.
+
+#### Customizing Nudge Behaviors
+
+Depending on your sprite, you might want to adjust other properties. For example, an arc or circular sprite might have a radius that parameterizes it, rather than a width and height. You can provide a custom `debugNudge(x, y)` function which will be called when the B button is held down. This function receives `x` and `y` increments, which are positive or negative according to whether the left/right and/or up/down keys are pressed.
+
+You can choose to modify different properties with up/down vs. left/right, or have them both adjust a single property. In the latter case, you can take a shortcut by redefining the increment as their sum, e.g. `local increment = x + y`, then simply add the increment to the property you wish to adjust.
+
+You can also define the optional `nudgeReset()` function to restore the initial value of the property you adjust with your custom `debugNudge` function.
+
 ### Keyboard Shortcuts
 
 Acetate provides a number of keyboard shortcuts. You're welcome to change any of these shortcuts
@@ -471,18 +495,19 @@ The following settings are available:
 
 ### Debug Text
 
-| Setting                    | Type    | Default                               | Description                                                                                                                                                         |
-| -------------------------- | ------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `showFPS`                  | boolean | `true`                                | Whether to show the current FPS (frames per second).                                                                                                                |
-| `FPSPersists`              | boolean | `false`                               | Whether to show the FPS (frames per second) even while debug mode isn't enabled.                                                                                    |
-| `showSpriteCount`          | boolean | `true`                                | Whether to show the total number of sprites.                                                                                                                        |
-| `spriteCountPersists`      | boolean | `false`                               | Whether to show the total number of sprites even while debug mode isn't enabled.                                                                                    |
-| `showDebugString`          | boolean | `true`                                | Whether the debug string is shown while focused on a single sprite in debug mode.                                                                                   |
-| `defaultDebugFormatString` | string  | `"$n\nX: $x\nY: $y\nW: $w\nH: $h"`    | The format used for the debug string for any sprites which don't define their own. See [Debug String Formats](#formatting-debug-strings) for details.               |
-| `displayPrecision`         | number  | `3`                                   | An integer specifying the desired number of decimals used to display values for the provided format string.                                                         |
-| `alwaysShowSpriteNames`    | boolean | `true`                                | Whether to display the highlighted sprite's name even while the debug string is hidden.                                                                             |
-| `debugStringPosition`      | {x,y}   | `{2, 2}`                              | A table containing the x and y position at which the debug string is drawn. By default, it draws just beneath the FPS counter at the top left corner of the screen. |
-| `debugFontPath`            | string  | `"fonts/Acetate-Mono-Bold-Condensed"` | The path to the font to use for displaying the debug string.                                                                                                        |
+| Setting                         | Type     | Default                               | Description                                                                                                                                                         |
+| ------------------------------- | -------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `showFPS`                       | boolean  | `true`                                | Whether to show the current FPS (frames per second).                                                                                                                |
+| `FPSPersists`                   | boolean  | `false`                               | Whether to show the FPS (frames per second) even while debug mode isn't enabled.                                                                                    |
+| `showSpriteCount`               | boolean  | `true`                                | Whether to show the total number of sprites.                                                                                                                        |
+| `spriteCountPersists`           | boolean  | `false`                               | Whether to show the total number of sprites even while debug mode isn't enabled.                                                                                    |
+| `showDebugString`               | boolean  | `true`                                | Whether the debug string is shown while focused on a single sprite in debug mode.                                                                                   |
+| `defaultDebugFormatString`      | string   | `"$n\nX: $x\nY: $y\nW: $w\nH: $h"`    | The format used for the debug string for any sprites which don't define their own. See [Debug String Formats](#formatting-debug-strings) for details.               |
+| `defaultNudgeDebugFormatString` | string   | `"$n \n$p \n$sz \n$d \n"`             | The format used for the debug string while nudging, unless the sprite provides a custom `debugString`.                                                              |
+| `displayPrecision`              | `number` | 3                                     | An integer value specifying the desired number of decimals used to display values for the provided format string.                                                   |
+| `alwaysShowSpriteNames`         | boolean  | `true`                                | Whether to display the highlighted sprite's name even while the debug string is hidden.                                                                             |
+| `debugStringPosition`           | {x,y}    | `{2, 2}`                              | A table containing the x and y position at which the debug string is drawn. By default, it draws just beneath the FPS counter at the top left corner of the screen. |
+| `debugFontPath`                 | string   | `"fonts/Acetate-Mono-Bold-Condensed"` | The path to the font to use for displaying the debug string.                                                                                                        |
 
 ### Setting Focus
 

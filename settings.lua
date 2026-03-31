@@ -61,6 +61,12 @@ acetate.defaults = {
         -- "$v\n"        ..            --    visibility
         -- "$u"          ..            --    updates enabled
         "",                            -- terminate our format string concatenation
+    defaultNudgeDebugStringFormat =    -- the format used while in nudge mode, unless a custom debugString is given
+        "$n   \n"        ..            -- class name or `debugName`
+        "$p   \n"        ..            -- position coordinate (x, y)
+        "$sz  \n"        ..            -- size [w x h]
+        "$d   \n"        ..            -- rotation, in degrees
+        "",
     debugStringPosition = {            -- the position of the debug string
         x = 2,
         y = 2
@@ -94,6 +100,7 @@ acetate.defaults = {
     toggleClassFocusKey       = "l",   -- key used to [L]ock focus to the selected sprite class
     togglePauseKey            = "p",   -- key to [P]ause/unpause the game while in debug mode
     captureScreenshotKey      = "q",   -- key to [Q]uick-capture a screenshot
+    toggleNudgeKey            = "n",   -- key to toggle [N]udge mode
     printDebugInfoKey         = "i",   -- key to dump debug [I]nfo for the focused sprite(s) to the console
 
     -- SCREENSHOTS
