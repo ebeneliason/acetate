@@ -79,6 +79,9 @@ function acetate.keyPressed(key)
         elseif key:match("[0-9]") then
             acetate.focusGroup(tonumber(key))
 
+        elseif key == acetate.cycleDebugGroupKey then
+            acetate.cycleGroups()
+
         elseif acetate.keyMatch(key, acetate.toggleDebugStringKey) then
             if acetate.focusedSprite then
                 acetate.showDebugString = not acetate.showDebugString

@@ -88,6 +88,10 @@ function acetate.releaseGroupFocus()
     acetate.focusedGroup = nil
 end
 
+function acetate.cycleGroups()
+    acetate.focusedGroup = acetate.focusedGroup and acetate.focusedGroup+1 or 1
+end
+
 -- determine whether the sprite meets all criteria for becoming focused
 function acetate.spriteIsFocusable(s, sameClass)
     local sameClassCheck = not sameClass or acetate.focusedSprite == nil or s:isa(acetate.focusedSprite.class)
@@ -201,9 +205,7 @@ function acetate.releaseFocus()
     acetate.releaseGroupFocus()
 end
 
-function acetate.getFocusedSprites()
-    if acetate.focusedSprite then return { acetate.focusedSprite } end
-
+function acetate.getFocusableSprites()
     local sprites = playdate.graphics.sprite.getAllSprites()
 
     if acetate.focusedClass then
@@ -215,8 +217,13 @@ function acetate.getFocusedSprites()
     end
 
     if not acetate.focusInvisibleSprites then
-        table.filter(sprites, function(s) return s.isVisible end)
+        table.filter(sprites, function(s) return s:isVisible() end)
     end
 
     return sprites
+end
+
+function acetate.getFocusedSprites()
+    if acetate.focusedSprite then return { acetate.focusedSprite } end
+    return acetate.getFocusableSprites()
 end

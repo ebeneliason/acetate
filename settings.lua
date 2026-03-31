@@ -97,6 +97,7 @@ acetate.defaults = {
     cycleBackwardKey          = ",",   -- key to cycle backward through sprites, one by one
     cycleForwardInClassKey    = ">",   -- key used to cycle forward to the next sprite of the same class
     cycleBackwardInClassKey   = "<",   -- key used to cycle backward to the previous sprite of the same class
+    cycleDebugGroupKey        = "g",   -- key used to cycle through all debug groups
     toggleClassFocusKey       = "l",   -- key used to [L]ock focus to the selected sprite class
     togglePauseKey            = "p",   -- key to [P]ause/unpause the game while in debug mode
     captureScreenshotKey      = "q",   -- key to [Q]uick-capture a screenshot

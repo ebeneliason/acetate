@@ -190,11 +190,11 @@ function acetate.debugDraw()
     playdate.setDebugDrawColor(table.unpack(acetate.color))
 
     local sprites = playdate.graphics.sprite.getAllSprites()
+    local focusedSprites = acetate.getFocusedSprites()
     local s = ""
 
     if acetate.nudgeMode then
         s = s .. "✛ "
-        local focusedSprites = acetate.getFocusedSprites()
         if not acetate.focusedSprite and not acetate.focusedGroup and not acetate.focusedClass then
             s = s .. #focusedSprites .. " SPRITES\n"
         end
@@ -256,15 +256,15 @@ function acetate.debugDraw()
     end
 
     -- show group
-    if acetate.focusedGroup then
+    if acetate.focusedGroup and acetate.enabled then
         s = s .. "GROUP " .. (acetate.groupNames[acetate.focusedGroup] or acetate.focusedGroup) .. "\n"
     end
 
     -- show sprite count as appropriate
-    if (acetate.showSpriteCount and (acetate.spriteCountPersists or acetate.enabled))
-        or acetate.nudgeMode or acetate.focusedClass then
-        if not acetate.focusedSprite or not acetate.enabled then
-            s = s .. tostring(#sprites)
+    if (acetate.showSpriteCount and (acetate.spriteCountPersists or acetate.enabled)) or acetate.focusedClass
+        or (not acetate.focusedSprite and not acetate.showShortcuts and acetate.enabled) then
+        if not acetate.focusedSprite or acetate.spriteCountPersists or not acetate.enabled then
+            s = s .. tostring(#acetate.getFocusableSprites())
 
             if acetate.enabled then
                 s = s .. ((acetate.focusedClass ~= nil)
@@ -525,7 +525,22 @@ function acetate.formatDebugStringForSprite(sprite, options)
 end
 
 function acetate.printDebugInfo()
-    for _, sprite in ipairs(acetate.getFocusedSprites() or playdate.graphics.sprite.getAllSprites()) do
+    local focusedSprites = acetate.getFocusedSprites()
+    -- show summary for multi-selections
+    if acetate.focusedGroup or acetate.focusedClass or not acetate.focusedSprite then
+        local s
+        if acetate.focusedGroup then
+            s = "GROUP " .. (acetate.groupNames[acetate.focusedGroup] or acetate.focusedGroup)
+            s = s .. " (" .. #focusedSprites .. " sprites)"
+        elseif acetate.focusedClass then
+            s = "CLASS " .. acetate.focusedClass.className .. " (" .. #focusedSprites .. " sprites)"
+        else
+            s = #focusedSprites .. " sprites"
+        end
+        print(s, "\n")
+    end
+
+    for _, sprite in ipairs(focusedSprites or playdate.graphics.sprite.getAllSprites()) do
         acetate.printDebugInfoForSprite(sprite)
     end
 end

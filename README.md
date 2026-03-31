@@ -311,7 +311,7 @@ Debug groups make it easy to inspect distinct groups of sprites together, withou
 mySprite.debugGroup = 1
 ```
 
-Press the corresponding key while in debug mode to focus all sprites in that group. While a group is focused, the `.` [<] and `,` [>] keys will cycle through the sprites in the group. Press `0` to unfocus a debug group and restore default focus behaviors. The group number (or name, if set) will be shown while a group is focused. You can define names for each group by providing a list for the `groupNames` configuration setting.
+Press the corresponding key while in debug mode to focus all sprites in that group. Alternatively, press `G` to cycle through defined groups. While a group is focused, the `.` [<] and `,` [>] keys will cycle through the sprites in the group. Press `0` to unfocus a debug group and restore default focus behaviors. The group number (or name, if set) will be shown while a group is focused. You can define names for each group by providing a list for the `groupNames` configuration setting.
 
 #### Programmatically Focusing Sprites
 
@@ -408,6 +408,7 @@ the settings object or override the defaults in your project e.g. `acetate.toggl
 | P     | [P]ause/unpause the game for/while debugging                                 |
 | Q     | [Q]uick-capture a screenshot of either the full screen or the focused sprite |
 | [1-9] | Focus debug group (press again, or 0 to unfocus)                             |
+| G     | Cycle focus through debug groups                                             |
 
 ### Screenshots
 
@@ -543,6 +544,7 @@ The following settings are available:
 | `cycleBackwardKey`        | character | `","`   | Key used to cycle backward through sprites, one by one.                               |
 | `cycleForwardInClassKey`  | character | `">"`   | Key used to cycle forward to the next sprite of the same class as the focused sprite. |
 | `cycleBackwardInClassKey` | character | `"<"`   | Key used to cycle backward through sprites of the same class as the focused sprite.   |
+| `cycleDebugGroupKey`      | character | `"G"`   | Key used to cycle through all defined debug groups                                    |
 | `toggleClassFocusKey`     | character | `"l"`   | Key used to [L]ock focus cycling to sprites of the same class as the focused sprite.  |
 | `togglePauseKey`          | character | `"p"`   | Key used to [P]ause/unpause the game while in debug mode.                             |
 | `captureScreenshotKey`    | character | `"q"`   | Key used to [Q]uick-capture a screenshot.                                             |
