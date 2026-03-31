@@ -121,23 +121,27 @@ end
 -- return a multi-line string listing all available shortcuts
 function acetate.shortcutString()
     local shortcutString =
-        "[" .. acetate.toggleCentersKey      .. "] centers\n" ..
-        "[" .. acetate.toggleBoundsKey       .. "] bounds\n" ..
-        "[" .. acetate.toggleOrientationsKey .. "] orientations\n" ..
-        "[" .. acetate.toggleCollideRectsKey .. "] collide rects\n" ..
-        "[" .. acetate.toggleInvisiblesKey   .. "] invisible sprites\n" ..
-        "[" .. acetate.toggleCustomDrawKey   .. "] custom debug draws\n" ..
-        "[" .. acetate.toggleDebugStringKey  .. "] sprite info\n" ..
-        "[" .. acetate.toggleFPSKey          .. "] FPS\n" ..
-        "[" .. acetate.toggleSpriteCountKey  .. "] sprite count\n" ..
-        "\n"..
-        "[" .. acetate.cycleForwardKey       .. "] Next\n" ..
-        "[" .. acetate.cycleBackwardKey      .. "] Back\n" ..
-        "[" .. acetate.toggleClassFocusKey   .. "] Toggle class focus lock\n" ..
-        "\n"..
-        "[" .. acetate.togglePauseKey        .. "] Pause\n" ..
-        "[" .. acetate.captureScreenshotKey  .. "] Screenshot\n" ..
-        "[?] Help\n"
+        "< BACK [" .. acetate.cycleBackwardKey:upper() .. "]" ..
+           "    [" .. acetate.cycleForwardKey:upper()  .. "] NEXT >\n" ..
+        "0-9"                                 ..   " Focus Debug Group\n" ..
+        acetate.toggleClassFocusKey:upper()   .. "   Focus Selected Class\n" ..
+
+        acetate.toggleDebugStringKey:upper()  .. "   Toggle Debug Info\n" ..
+        acetate.printDebugInfoKey:upper()     .. "   Print Debug Info\n" ..
+        acetate.toggleCentersKey:upper()      .. "   Centers\n" ..
+        acetate.toggleBoundsKey:upper()       .. "   Bounds\n" ..
+        acetate.toggleOrientationsKey:upper() .. "   Orientations\n" ..
+        acetate.toggleCollideRectsKey:upper() .. "   Collide Rects\n" ..
+        acetate.toggleCustomDrawKey:upper()   .. "   Custom Debug Drawing\n" ..
+        acetate.toggleInvisiblesKey:upper()   .. "   Invisible Sprites\n" ..
+        acetate.toggleFPSKey:upper()          .. "   FPS\n" ..
+        acetate.toggleSpriteCountKey:upper()  .. "   Sprite Count\n" ..
+
+        acetate.toggleNudgeKey:upper()        .. "   Nudge Mode\n" ..
+        acetate.togglePauseKey:upper()        .. "   Pause/Unpause\n" ..
+        acetate.captureScreenshotKey:upper()  .. "   Capture Screenshot\n" ..
+        acetate.toggleOverlayKey:upper()      .. "   Toggle Overlay\n" ..
+        "?] Help\n"
 
     return shortcutString
 end
