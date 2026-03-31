@@ -74,6 +74,14 @@ acetate.defaults = {
     debugFontPath =                    -- the font used to display debug strings
         "fonts/Acetate-Mono-Bold-Condensed",
 
+                                       -- NOTE: these settings require calling acetate.update()
+    overlayColor = 0,                  -- the color of the overlay shown behind the debug layer 0 == gfx.kColorBlack)
+    overlayAlpha = 0.5,                -- the opacity of the overlay
+    showOverlayOnEnable = false,       -- whether to always show the overlay each time the debug layer is enabled
+    hideOverlayOnDisable = false,      -- whether to always hide the overlay each time the debug layer is disabled
+    showOverlay = false,               -- whether a translucent overlay behind the debug layer is shown for legibility
+    debugStringBackground = true,      -- show an opaque background behind debug strings for legibility
+
     displayPrecision = 3,              -- the default decimal precision used to display values
     paddedPrecision = false,           -- whether or not display values are padded with trailing zeros
 
@@ -99,6 +107,7 @@ acetate.defaults = {
     cycleBackwardInClassKey   = "<",   -- key used to cycle backward to the previous sprite of the same class
     cycleDebugGroupKey        = "g",   -- key used to cycle through all debug groups
     toggleClassFocusKey       = "l",   -- key used to [L]ock focus to the selected sprite class
+    toggleOverlayKey          = "o",   -- key to hide or show the translucent [O]verlay behind the debug layer
     togglePauseKey            = "p",   -- key to [P]ause/unpause the game while in debug mode
     captureScreenshotKey      = "q",   -- key to [Q]uick-capture a screenshot
     toggleNudgeKey            = "n",   -- key to toggle [N]udge mode

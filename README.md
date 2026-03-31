@@ -280,6 +280,19 @@ Lastly, Acetate also provides a convenience for printing the traceback to a give
 self:printDebugTrace("How did we get here?")
 ```
 
+### Improving Debug Legibility
+
+Debug visualizations, and especially debug text, can be difficult to see regardless of color when the underlying game contains high frequency patterns and visuals. Acetate offers a translucent overlay which can be used to dim the game content and help the debug layer stand out for added legibility. It does so by drawing directly to the screen buffer after your game renders each frame, and so requires adding a call to `acetate.update` at the end of your `playdate.update` callback:
+
+```lua
+-- at the very end of playdate.update
+acetate.update()
+```
+
+Press the `O` key to toggle the [O]verlay on and off while debugging. You can also adjust its color and opacity via the `overlayColor` and `overlayAlpha` settings.
+
+Set the `showOverlayOnEnable` setting to `true` if you want the overlay to appear by default when entering debug mode. Conversely, set `hideOverlayOnDisable` to `true` if you want to prevent it from being shown each time you re-enter debug mode. Leave both set to `false` to preserve the state of the overlay when toggling debug mode.
+
 ### Managing Focus
 
 Cycling focus to obtain debug info for specific sprites is central to Acetate's functionality. Highlighting individual sprites or groups of related sprite allows you to isolate visual debug layers or access textual debug output for the things that matter in the moment, without needing to comment/uncomment and rebuild to surface that data. The beauty of Acetate is that you can define detailed debug visuals and text output for each class as part of its design, so it's all at the ready the next time you need to debug, without getting in the way in the meantime.

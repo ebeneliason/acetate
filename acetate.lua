@@ -13,6 +13,8 @@ import "screenshots"
 
 local gfx <const> = playdate.graphics
 
+local PADDING <const> = 8
+
 -- animated dotted line effect used for selection bounds
 local marchingAnts = AcetateEasyPattern {
     ditherType = gfx.image.kDitherTypeDiagonalLine,
@@ -115,6 +117,9 @@ function acetate.enable()
     if acetate.enabled then return end
     acetate.enabled = true
     if acetate.autoPause then acetate.pause() end
+    if acetate.showOverlayOnEnable then
+        acetate.showOverlay = true
+    end
 end
 
 function acetate.disable()
@@ -129,6 +134,9 @@ function acetate.disable()
         acetate.stopNudging()
     end
     if acetate.paused then acetate.unpause() end
+    if acetate.hideOverlayOnDisable then
+        acetate.showOverlay = false
+    end
 end
 
 function acetate.toggleEnabled()
@@ -136,6 +144,27 @@ function acetate.toggleEnabled()
         acetate.disable()
     else
         acetate.enable()
+    end
+end
+
+function acetate.toggleOverlay()
+    acetate.showOverlay = not acetate.showOverlay
+end
+
+function acetate.update()
+    if acetate.enabled and acetate.showOverlay then
+        gfx.pushContext()
+            gfx.setColor(acetate.overlayColor or gfx.kColorBlack)
+            gfx.setDitherPattern(acetate.overlayAlpha or 0.5)
+            gfx.fillRect(0, 0, 400, 240)
+        gfx.popContext()
+    end
+    if acetate.enabled and (acetate.debugStringBackground or acetate.showShortcuts) then
+        gfx.pushContext()
+            gfx.setColor(acetate.overlayColor or gfx.kColorBlack)
+            gfx.fillRect(acetate.debugStringPosition.x - PADDING, acetate.debugStringPosition.y - PADDING,
+                acetate._tw + PADDING * 2, acetate._th + PADDING * 2)
+        gfx.popContext()
     end
 end
 
@@ -373,11 +402,22 @@ function acetate.debugDraw()
         end
     end
 
+    -- trim trailing newline
+    s = s:gsub("[\r\n]+$", "")
+
+    -- mask out debug layer behind shortcut hints
+    if acetate.showShortcuts and acetate.debugStringBackground then
+        gfx.setColor(gfx.kColorBlack)
+        gfx.fillRect(acetate.debugStringPosition.x - PADDING, 0, acetate.debugFont:getTextWidth(s) + PADDING*2, 240)
+    end
+
     -- lastly, show the debug string we've built up
     gfx.pushContext()
         gfx.setDrawOffset(0, 0)
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-        acetate.debugFont:drawText(s, acetate.debugStringPosition.x, acetate.debugStringPosition.y)
+        -- store its drawn size in case we want to draw a backing rect
+        acetate._tw, acetate._th =
+            acetate.debugFont:drawText(s, acetate.debugStringPosition.x, acetate.debugStringPosition.y)
     gfx.popContext()
 end
 
