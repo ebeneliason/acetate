@@ -30,12 +30,12 @@ function acetate.nudge(x, y, delta, sprite)
     delta = delta or 1-fastNudgeAmount -- how much? (negative value offsets first key repeat call)
     local adjust = (x == 1 or y == 1) and delta or -delta -- which way?
 
-    local sprite = sprite or acetate.focusedSprite
+    sprite = sprite or acetate.focusedSprite
     -- nudge all focused sprites if there's no singular focus
     if not sprite then
         local sprites = acetate.getFocusedSprites()
-        for _, sprite in ipairs(sprites) do
-            acetate.nudge(x, y, delta, sprite)
+        for _, s in ipairs(sprites) do
+            acetate.nudge(x, y, delta, s)
         end
         return
     end
@@ -76,7 +76,7 @@ function acetate.nudge(x, y, delta, sprite)
             local xs, ys = sprite:getScale()
             sprite:setScale(xs + adjust/100, (xs + adjust/100)/xs * ys)
         else
-            local w, h = sprite:getSize()
+            local w, _ = sprite:getSize()
             local aspectRatio = sprite.acetateData.width / sprite.acetateData.height
             sprite:setSize(w + adjust, (w + adjust) / aspectRatio)
         end
@@ -106,11 +106,11 @@ function acetate.nudgeReset(sprite, center)
     if not acetate.nudgeMode then return end
     if not (playdate.buttonIsPressed(playdate.kButtonA) and playdate.buttonIsPressed(playdate.kButtonB)) then return end
 
-    local sprite = sprite or acetate.focusedSprite
+    sprite = sprite or acetate.focusedSprite
     if not sprite then
         local sprites = acetate.getFocusedSprites()
-        for _, sprite in ipairs(sprites) do
-            acetate.nudgeReset(sprite)
+        for _, s in ipairs(sprites) do
+            acetate.nudgeReset(s)
         end
         return
     end
@@ -141,12 +141,12 @@ end
 
 function acetate.scaleOrRotate(c, _, sprite)
     c /= 10
-    local sprite = sprite or acetate.focusedSprite
+    sprite = sprite or acetate.focusedSprite
     -- nudge all focused sprites if there's no singular focus
     if not sprite then
         local sprites = acetate.getFocusedSprites()
-        for _, sprite in ipairs(sprites) do
-            acetate.scaleOrRotate(c, nil, sprite)
+        for _, s in ipairs(sprites) do
+            acetate.scaleOrRotate(c, nil, s)
         end
         return
     end
@@ -173,7 +173,7 @@ function acetate.scaleOrRotate(c, _, sprite)
             local xs, ys = sprite:getScale()
             sprite:setScale(xs + c/100, (xs + c/100)/xs * ys)
         else
-            local w, h = sprite:getSize()
+            local w, _ = sprite:getSize()
             local aspectRatio = sprite.acetateData.width / sprite.acetateData.height
             sprite:setSize(w + c, (w + c) / aspectRatio)
         end

@@ -109,6 +109,7 @@ end
 
 -- work around a limitation of the SDK which makes it impossible to check
 -- whether a sprite is currently set to ignore the draw offset
+-- luacheck: ignore
 local _setIgnoresDrawOffset = gfx.sprite.setIgnoresDrawOffset
 function gfx.sprite:setIgnoresDrawOffset(flag)
     self.__ignoresDrawOffset = flag
@@ -116,11 +117,11 @@ function gfx.sprite:setIgnoresDrawOffset(flag)
 end
 
 -- enable animated updates to position for nudge reset
-function gfx.sprite:slideTo(x, y, _duration, _ease)
+function gfx.sprite:slideTo(x, y, --[[optional:]] duration, --[[optional]] ease)
     if self._interpX then self._interpX:remove() end
     if self._interpY then self._interpY:remove() end
-    local ease = _ease or self.interpEase or playdate.easingFunctions.inOutCubic
-    local duration = _duration or self.interpDuration or 300
+    ease = ease or self.interpEase or playdate.easingFunctions.inOutCubic
+    duration = duration or self.interpDuration or 300
     if x ~= self.x then
         self._interpX = playdate.timer.new(duration, self.x, x, ease)
         self._interpX.updateCallback = function(t) self:moveTo(t.value, self.y) end
@@ -134,11 +135,11 @@ function gfx.sprite:slideTo(x, y, _duration, _ease)
 end
 
 -- enable animated updates to size for nudge reset
-function gfx.sprite:resizeTo(w, h, _duration, _ease)
+function gfx.sprite:resizeTo(w, h, --[[optional]] duration, --[[optional]] ease)
     if self._interpW then self._interpW:remove() end
     if self._interpH then self._interpH:remove() end
-    local ease = _ease or self.interpEase or playdate.easingFunctions.inOutCubic
-    local duration = _duration or self.interpDuration or 300
+    ease = ease or self.interpEase or playdate.easingFunctions.inOutCubic
+    duration = duration or self.interpDuration or 300
     if w ~= self.width then
         self._interpW = playdate.timer.new(duration, self.width, w, ease)
         self._interpW.updateCallback = function(t) self:setSize(t.value, self.height) end
@@ -152,13 +153,13 @@ function gfx.sprite:resizeTo(w, h, _duration, _ease)
 end
 
 -- enable animated updates to scale for nudge reset
-function gfx.sprite:scaleTo(sx, sy, _duration, _ease)
+function gfx.sprite:scaleTo(sx, sy, --[[optional]] duration, --[[optional]] ease)
     sy = sy or sx
     local _sx, _sy = self:getScale()
     if self._interpSX then self._interpSX:remove() end
     if self._interpSY then self._interpSY:remove() end
-    local ease = _ease or self.interpEase or playdate.easingFunctions.inOutCubic
-    local duration = _duration or self.interpDuration or 300
+    ease = ease or self.interpEase or playdate.easingFunctions.inOutCubic
+    duration = duration or self.interpDuration or 300
     if sx ~= _sx then
         self._interpSX = playdate.timer.new(duration, _sx, sx, ease)
         self._interpSX.updateCallback = function(t) self:setScale(t.value, select(2, self:getScale())) end
@@ -172,12 +173,12 @@ function gfx.sprite:scaleTo(sx, sy, _duration, _ease)
 end
 
 -- enable animated updates to rotation for nudge reset
-function gfx.sprite:rotateTo(degrees, _duration, _ease)
+function gfx.sprite:rotateTo(degrees, --[[optional]] duration, --[[optional]] ease)
     if self._interpR then self._interpR:remove() end
     local _degrees = self:getRotation()
     if _degrees - degrees > 180 then degrees += 360 end
-    local ease = _ease or self.interpEase or playdate.easingFunctions.inOutCubic
-    local duration = _duration or self.interpDuration or 300
+    ease = ease or self.interpEase or playdate.easingFunctions.inOutCubic
+    duration = duration or self.interpDuration or 300
     if degrees ~= _degrees then
         self._interpR = playdate.timer.new(duration, _degrees, degrees, ease)
         self._interpR.updateCallback = function(t) self:setRotation(t.value) end

@@ -28,7 +28,9 @@ function acetate.captureFullScreenshot(path, filename)
 
     -- save the image to disk
     playdate.simulator.writeToFile(screenshot, fullPath)
-    print("Saved screenshot to " .. fullPath)
+    if not acetate.quietMode then
+        print("Saved screenshot to " .. fullPath)
+    end
     return true
 end
 
@@ -36,12 +38,16 @@ end
 function acetate.captureSpriteScreenshot(sprite, path, filename)
     -- abort if there's no sprite to capture
     if not sprite then
-        print("Failed to capture sprite screenshot. No sprite provided.")
+        if acetate.quietMode then
+            print("Failed to capture sprite screenshot. No sprite provided.")
+        end
         return false
     end
 
     if sprite.width <= 0 or sprite.height <= 0 then
-        print("Can't capture a screenshot of a sprite with 0 area. Set a valid width and height.")
+        if not acetate.quietMode then
+            print("Can't capture a screenshot of a sprite with 0 area. Set a valid width and height.")
+        end
         return false
     end
 
@@ -61,13 +67,17 @@ function acetate.captureSpriteScreenshot(sprite, path, filename)
                 sprite:draw()
             gfx.unlockFocus()
         else
-            print("Failed to capture sprite screenshot. No image set or draw() function provided.")
+            if not acetate.quietMode then
+                print("Failed to capture sprite screenshot. No image set or draw() function provided.")
+            end
             return false
         end
     end
 
     -- save the image to disk
     playdate.simulator.writeToFile(screenshot, fullPath)
-    print("Saved sprite screenshot to " .. fullPath)
+    if not acetate.quietMode then
+        print("Saved sprite screenshot to " .. fullPath)
+    end
     return true
 end

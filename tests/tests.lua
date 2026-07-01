@@ -121,7 +121,7 @@ function TestSettings:testDefaults()
     lu.assertEquals(acetate.spriteCountPersists, true)
     lu.assertEquals(acetate.alwaysShowSpriteNames, true)
 
-    lu.assertEquals(acetate.showDebugString, true)
+    lu.assertEquals(acetate.showDebugString, false)
     lu.assertEquals(acetate.defaultDebugStringFormat, "$n   \nX: $x\nY: $y\nW: $w\nH: $h\n")
     lu.assertEquals(acetate.debugStringPosition, { x=2, y=2 })
     lu.assertEquals(acetate.debugFontPath, "fonts/Acetate-Mono-Bold-Condensed")
@@ -142,8 +142,8 @@ function TestSettings:testDefaults()
     lu.assertEquals(acetate.toggleDebugStringKey  , "?")
     lu.assertEquals(acetate.cycleForwardKey       , ".")
     lu.assertEquals(acetate.cycleBackwardKey      , ",")
-    lu.assertEquals(acetate.cycleForwardInClassKey, ">")
-    lu.assertEquals(acetate.cycleBackwardInClassKey,"<")
+    lu.assertEquals(acetate.cycleForwardInClassKey, "'")
+    lu.assertEquals(acetate.cycleBackwardInClassKey,";")
     lu.assertEquals(acetate.togglePauseKey        , "p")
     lu.assertEquals(acetate.captureScreenshotKey  , "q")
     lu.assertEquals(acetate.printDebugInfoKey     , "i")
@@ -383,15 +383,23 @@ function TestDebugStrings:testDebugStringFunction()
     acetate.init()
 
     local s = S()
-    s:moveTo(rnds[1], rnds[2])
+    local x = rnds[1]
+    local y = rnds[2]
+    s:moveTo(x, y)
     s:setSize(rnds[3], rnds[4])
 
     -- test that custom debugString is used and substituted
     s.debugString = function()
-        return "($x, $y) should not be substituted"
+        return "($x, $y) should be substituted"
+    end
+    local str = acetate.formatDebugStringForSprite(s, { precision = 0 })
+    lu.assertEquals(str, "(" .. x .. ", " .. y ..") should be substituted")
+
+    s.debugString = function()
+        return "($x, $y) should NOT be substituted", false
     end
     local str = acetate.formatDebugStringForSprite(s)
-    lu.assertEquals(str, "($x, $y) should not be substituted")
+    lu.assertEquals(str, "($x, $y) should NOT be substituted")
 end
 
 function TestDebugStrings:testDebugStringFunctionSubstitution()
@@ -852,18 +860,29 @@ end
 function TestKeyHandlers:testShortcutStringAdaptsToSettings()
     local shortcutString = acetate.shortcutString()
 
-    lu.assertNotNil(shortcutString:match("%[c%] centers"))
-    lu.assertNotNil(shortcutString:match("%[b%] bounds"))
-    lu.assertNotNil(shortcutString:match("%[v%] orientations"))
-    lu.assertNotNil(shortcutString:match("%[x%] collide rects"))
-    lu.assertNotNil(shortcutString:match("%[z%] invisible"))
-    lu.assertNotNil(shortcutString:match("%[m%] custom"))
-    lu.assertNotNil(shortcutString:match("%[?%] sprite info"))
-    lu.assertNotNil(shortcutString:match("%[p%] Pause"))
-    lu.assertNotNil(shortcutString:match("%[.%] Next"))
-    lu.assertNotNil(shortcutString:match("%[,%] Back"))
-    lu.assertNotNil(shortcutString:match("%[q%] Screenshot"))
+    lu.assertNotNil(shortcutString:match("%[.%] NEXT >"))
+    lu.assertNotNil(shortcutString:match("< BACK %[,%]"))
+    lu.assertNotNil(shortcutString:match("0-9 Focus Debug Group"))
+    lu.assertNotNil(shortcutString:match("L   Focus Selected Class"))
+    lu.assertNotNil(shortcutString:match("?   Toggle Debug Info"))
+    lu.assertNotNil(shortcutString:match("I   Print Debug Info"))
+    lu.assertNotNil(shortcutString:match("C   Centers"))
+    lu.assertNotNil(shortcutString:match("B   Bounds"))
+    lu.assertNotNil(shortcutString:match("V   Orientations"))
+    lu.assertNotNil(shortcutString:match("X   Collide Rects"))
+    lu.assertNotNil(shortcutString:match("Z   Invisible Sprites"))
+    lu.assertNotNil(shortcutString:match("M   Custom Debug Drawing"))
+    lu.assertNotNil(shortcutString:match("F   FPS"))
+    lu.assertNotNil(shortcutString:match("T   Sprite Count"))
+    lu.assertNotNil(shortcutString:match("N   Nudge Mode"))
+    lu.assertNotNil(shortcutString:match("P   Pause/Unpause"))
+    lu.assertNotNil(shortcutString:match("Q   Capture Screenshot"))
+    lu.assertNotNil(shortcutString:match("O   Toggle Overlay"))
 
+    acetate.cycleForwardKey       = "]"
+    acetate.cycleBackwardKey      = "["
+    acetate.toggleClassFocusKey   = "#"
+    acetate.printDebugInfoKey     = "$"
     acetate.toggleCentersKey      = "1"
     acetate.toggleBoundsKey       = "2"
     acetate.toggleOrientationsKey = "3"
@@ -874,25 +893,30 @@ function TestKeyHandlers:testShortcutStringAdaptsToSettings()
     acetate.toggleFPSKey          = "8"
     acetate.toggleSpriteCountKey  = "9"
     acetate.togglePauseKey        = "0"
-    acetate.cycleForwardKey       = "]"
-    acetate.cycleBackwardKey      = "["
+    acetate.toggleNudgeKey        = "@"
     acetate.captureScreenshotKey  = "~"
+    acetate.toggleOverlayKey      = "!"
 
     shortcutString = acetate.shortcutString()
 
-    lu.assertNotNil(shortcutString:match("%[1%] centers"))
-    lu.assertNotNil(shortcutString:match("%[2%] bounds"))
-    lu.assertNotNil(shortcutString:match("%[3%] orientations"))
-    lu.assertNotNil(shortcutString:match("%[4%] collide rects"))
-    lu.assertNotNil(shortcutString:match("%[5%] invisible"))
-    lu.assertNotNil(shortcutString:match("%[6%] custom"))
-    lu.assertNotNil(shortcutString:match("%[7%] sprite info"))
-    lu.assertNotNil(shortcutString:match("%[8%] FPS"))
-    lu.assertNotNil(shortcutString:match("%[9%] sprite count"))
-    lu.assertNotNil(shortcutString:match("%[0%] Pause"))
-    lu.assertNotNil(shortcutString:match("%[%]%] Next"))
-    lu.assertNotNil(shortcutString:match("%[%[%] Back"))
-    lu.assertNotNil(shortcutString:match("%[~%] Screenshot"))
+    lu.assertNotNil(shortcutString:match("%[%]%] NEXT >"))
+    lu.assertNotNil(shortcutString:match("< BACK %[%[%]"))
+    lu.assertNotNil(shortcutString:match("0-9 Focus Debug Group"))
+    lu.assertNotNil(shortcutString:match("#   Focus Selected Class"))
+    lu.assertNotNil(shortcutString:match("$   Print Debug Info"))
+    lu.assertNotNil(shortcutString:match("1   Centers"))
+    lu.assertNotNil(shortcutString:match("2   Bounds"))
+    lu.assertNotNil(shortcutString:match("3   Orientations"))
+    lu.assertNotNil(shortcutString:match("4   Collide Rects"))
+    lu.assertNotNil(shortcutString:match("5   Invisible Sprites"))
+    lu.assertNotNil(shortcutString:match("6   Custom Debug Drawing"))
+    lu.assertNotNil(shortcutString:match("7   Toggle Debug Info"))
+    lu.assertNotNil(shortcutString:match("8   FPS"))
+    lu.assertNotNil(shortcutString:match("9   Sprite Count"))
+    lu.assertNotNil(shortcutString:match("0   Pause/Unpause"))
+    lu.assertNotNil(shortcutString:match("@   Nudge Mode"))
+    lu.assertNotNil(shortcutString:match("~   Capture Screenshot"))
+    lu.assertNotNil(shortcutString:match("!   Toggle Overlay"))
 end
 
 

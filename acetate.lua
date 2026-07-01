@@ -154,6 +154,7 @@ end
 function acetate.update()
     if acetate.enabled and acetate.showOverlay then
         gfx.pushContext()
+            gfx.setDrawOffset(0, 0)
             gfx.setColor(acetate.overlayColor or gfx.kColorBlack)
             gfx.setDitherPattern(acetate.overlayAlpha or 0.5)
             gfx.fillRect(0, 0, 400, 240)
@@ -161,6 +162,7 @@ function acetate.update()
     end
     if acetate.enabled and (acetate.debugStringBackground or acetate.showShortcuts) then
         gfx.pushContext()
+            gfx.setDrawOffset(0, 0)
             gfx.setColor(acetate.overlayColor or gfx.kColorBlack)
             gfx.fillRect(acetate.debugStringPosition.x - PADDING, acetate.debugStringPosition.y - PADDING,
                 acetate._tw + PADDING * 2, acetate._th + PADDING * 2)
@@ -222,6 +224,9 @@ function acetate.debugDraw()
     local focusedSprites = acetate.getFocusedSprites()
     local s = ""
 
+    -- grab the current draw offset so we can adjust relative to it accordingly
+    local xo, yo = gfx.getDrawOffset()
+
     if acetate.nudgeMode then
         s = s .. "✛ "
         if not acetate.focusedSprite and not acetate.focusedGroup and not acetate.focusedClass then
@@ -245,21 +250,21 @@ function acetate.debugDraw()
 
                 -- constrain indicators to bounds of screen
                 local x, y
-                local s = 7 -- arrow size
-                xmin = math.max(xmin, 0+s)
-                xmax = math.min(xmax, 400-s)
-                ymin = math.max(ymin, 0+s)
-                ymax = math.min(ymax, 240-s)
+                local sz = 7 -- arrow size
+                xmin = math.max(xmin, 0-xo+sz)
+                xmax = math.min(xmax, 400-xo-sz)
+                ymin = math.max(ymin, 0-yo+sz)
+                ymax = math.min(ymax, 240-yo-sz)
 
                 -- draw the indicators
                 x, y = xmin+(xmax-xmin)//2, ymin
-                gfx.fillPolygon(x-s, y, x+s, y, x, y-s) -- UP
+                gfx.fillPolygon(x-sz, y, x+sz, y, x, y-sz) -- UP
                 x, y = xmin+(xmax-xmin)//2, ymax
-                gfx.fillPolygon(x-s, y, x+s, y, x, y+s) -- DOWN
+                gfx.fillPolygon(x-sz, y, x+sz, y, x, y+sz) -- DOWN
                 x, y = xmax, ymin+(ymax-ymin)//2
-                gfx.fillPolygon(x, y-s, x, y+s, x+s, y) -- RIGHT
+                gfx.fillPolygon(x, y-sz, x, y+sz, x+sz, y) -- RIGHT
                 x, y = xmin, ymin+(ymax-ymin)//2
-                gfx.fillPolygon(x, y-s, x, y+s, x-s, y) -- LEFT
+                gfx.fillPolygon(x, y-sz, x, y+sz, x-sz, y) -- LEFT
             gfx:popContext()
         end
     end
@@ -285,34 +290,25 @@ function acetate.debugDraw()
     end
 
     -- show group
-    if acetate.focusedGroup and acetate.enabled then
-        s = s .. "GROUP " .. (acetate.groupNames[acetate.focusedGroup] or acetate.focusedGroup) .. "\n"
+    if acetate.focusedGroup and acetate.enabled and not acetate.showShortcuts then
+        s = s .. "GROUP " .. (acetate.groupNames[acetate.focusedGroup] or acetate.focusedGroup)
+        s = s .. " (" .. #acetate.getFocusableSprites() .. ")\n"
+    end
+
+    if acetate.focusedClass and acetate.enabled and not acetate.showShortcuts then
+        s = s .. "CLASS " .. acetate.focusedClass.className
+        s = s .. " (" .. #acetate.getFocusableSprites() .. ")\n"
     end
 
     -- show sprite count as appropriate
-    if (acetate.showSpriteCount and (acetate.spriteCountPersists or acetate.enabled)) or acetate.focusedClass
+    if (acetate.showSpriteCount and (acetate.spriteCountPersists or acetate.enabled))
         or (not acetate.focusedSprite and not acetate.showShortcuts and acetate.enabled) then
-        if not acetate.focusedSprite or acetate.spriteCountPersists or not acetate.enabled then
             s = s .. tostring(#acetate.getFocusableSprites())
 
             if acetate.enabled then
-                s = s .. ((acetate.focusedClass ~= nil)
-                    and (" " .. acetate.focusedClass.className .. "s") or " SPRITES")
+                s = s .. " SPRITES\n"
             end
-
-            if acetate.focusedClass ~= nil then
-                s = s .. " 🔒"
-            end
-
-            s = s .. "\n"
-
-        end
-    elseif acetate.enabled and acetate.focusedClass ~= nil and acetate.focusedSprite == nil then
-        s = s .. acetate.focusedClass.className .. " 🔒\n"
     end
-
-    -- grab the current draw offset so we can adjust relative to it accordingly
-    local xo, yo = gfx.getDrawOffset()
 
     -- do debug drawing only if enabled
     if acetate.enabled then
@@ -382,13 +378,13 @@ function acetate.debugDraw()
                                 local precision = acetate.displayPrecision or 3
                                 s = s .. acetate.formatDebugStringForSprite(sprite, { precision = precision })
                             elseif acetate.alwaysShowSpriteNames then
-                                s = s .. (sprite.debugName or sprite.className)
+                                s = s .. acetate.formatDebugStringForSprite(sprite, { formatString = "$N\n" })
                             end
                         end
-
+                    gfx.popContext()
+                    gfx.pushContext()
                         -- handle nudge mode
                         if acetate.nudgeMode then
-                            gfx.setDrawOffset(0,0)
                             if acetate.focusedSprite then
                                 local x, y = sprite:getWorldCenter()
                                 gfx.drawCircleAtPoint(x, y, 5)
@@ -499,31 +495,27 @@ function acetate.formatDebugStringForSprite(sprite, options)
     local n      = sprite.debugName or sprite.className
     local cn     = sprite.className
     local g      = sprite.debugGroup or "0"
-
-    if acetate.focusedClass ~= nil then
-        n = n .. " 🔒"
-        cn = cn .. " 🔒"
-    end
+    local a      = string.format("%p", sprite)
 
     -- truncate to desired precision
     local precision = options.precision or -1
-    local mult = 10^precision
-    local p = function(num)
-        if precision < 0 then return num end
-        if math.type(num) == "integer" then return num end
-        local s = string.format("%." .. precision .. "f", num) -- format to n decimal places
+    local p = function(number)
+        if precision < 0 then return number end
+        if math.type(number) == "integer" then return number end
+        local str = string.format("%." .. precision .. "f", number) -- format to n decimal places
         if not acetate.paddedPrecision then
-            s = s:gsub("(%..-)0+$", "%1") -- strip trailing zeros
-            s = s:gsub("%.$", "") -- remove trailing decimal point if needed
+            str = str:gsub("(%..-)0+$", "%1") -- strip trailing zeros
+            str = str:gsub("%.$", "") -- remove trailing decimal point if needed
         end
-        return s
+        return str
     end
 
     s = s:gsub("%$[a-zA-Z#]+", function(str)                                  -- SUBSTITUTION KEY
         if     str == "$n"   then return n                                    -- $n  | sprite `debugName` (or classname)
+        elseif str == "$N"   then return n .. " (" .. a .. ")"                -- $n  | sprite `debugName` (or classname with address)
         elseif str == "$cn"  then return cn                                   -- $cn | sprite classname
         elseif str == "$str" then return tostring(sprite)                     -- $str| `tostring()` output
-        elseif str == "$a"   then return string.format("%p", sprite)          -- $a  | memory address
+        elseif str == "$a"   then return a                                    -- $a  | memory address
         elseif str == "$x"   then return p(x)                                 -- $x  | x position
         elseif str == "$y"   then return p(y)                                 -- $y  | y position
         elseif str == "$p"   then return "(" .. p(x) .. ", " .. p(y) .. ")"   -- $p  | position coordinate (x, y)
@@ -570,15 +562,15 @@ function acetate.printDebugInfo()
     -- show summary for multi-selections
     if acetate.focusedGroup or acetate.focusedClass or not acetate.focusedSprite then
         local s
-        if acetate.focusedGroup then
+        if acetate.focusedGroup and not acetate.focusedSprite then
             s = "GROUP " .. (acetate.groupNames[acetate.focusedGroup] or acetate.focusedGroup)
             s = s .. " (" .. #focusedSprites .. " sprites)"
-        elseif acetate.focusedClass then
+        elseif acetate.focusedClass and not acetate.focusedSprite then
             s = "CLASS " .. acetate.focusedClass.className .. " (" .. #focusedSprites .. " sprites)"
-        else
+        elseif not acetate.focusedSprite then
             s = #focusedSprites .. " sprites"
         end
-        print(s, "\n")
+        if s then print(s, "\n") end
     end
 
     for _, sprite in ipairs(focusedSprites or playdate.graphics.sprite.getAllSprites()) do

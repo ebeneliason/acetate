@@ -38,10 +38,10 @@ acetate.defaults = {
     spriteCountPersists = true,        -- whether to display the total number of sprites when not in debug mode
     alwaysShowSpriteNames = true,      -- whether to display the focused sprite's name when the debug string is hidden
 
-    showDebugString = true,            -- whether to show informative text when a single sprite is focused sprite
+    showDebugString = false,           -- whether to show informative text when a single sprite is focused sprite
     defaultDebugStringFormat =         -- comment and/or reorder lines below to adjust the format; see
                                        -- `formatDebugStringForSprite` for additional substitution options
-        "$n   \n"     ..               --    class name or `debugName` if provided
+       "$N    \n"     ..               --    class name & address, or `debugName` if provided
         "X: $x\n"     ..               --    X position
         "Y: $y\n"     ..               --    Y position
         "W: $w\n"     ..               --    width
@@ -62,7 +62,7 @@ acetate.defaults = {
         -- "$u"          ..            --    updates enabled
         "",                            -- terminate our format string concatenation
     defaultNudgeDebugStringFormat =    -- the format used while in nudge mode, unless a custom debugString is given
-        "$n   \n"        ..            -- class name or `debugName`
+        "$N   \n"        ..            -- class name & address, or `debugName` if provided
         "$p   \n"        ..            -- position coordinate (x, y)
         "$sz  \n"        ..            -- size [w x h]
         "$d   \n"        ..            -- rotation, in degrees

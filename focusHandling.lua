@@ -4,13 +4,17 @@
 -- pick the sprite to show debug visualizations for exclusively
 function acetate.focusSprite(sprite)
     if not sprite:isVisible() and not acetate.focusInvisibleSprites then
-        print("Unable to focus " .. sprite.className .. " sprite as it's currently invisible. "
-            .."Set acetate.focusInvisibleSprites to true to focus invisible sprites.")
+        if not acetate.quietMode then
+            print("Unable to focus " .. sprite.className .. " sprite as it's currently invisible. "
+                .."Set acetate.focusInvisibleSprites to true to focus invisible sprites.")
+        end
         return
     end
 
     if acetate.focusedClass and not sprite:isa(acetate.focusedClass) then
-        print("Releasing class focus lock in order to focus " .. sprite.className .. ".")
+        if not acetate.quietMode then
+            print("Releasing class focus lock in order to focus " .. sprite.className .. ".")
+        end
         acetate.releaseClassFocus()
     end
 
@@ -22,7 +26,9 @@ function acetate.focusSprite(sprite)
             return
         end
     end
-    print("Unable to focus " .. sprite.className .. " sprite. Have you called add()?")
+    if not acetate.quietMode then
+        print("Unable to focus " .. sprite.className .. " sprite. Have you called add()?")
+    end
 end
 
 -- release focus, returning to drawing debug visualizations for all sprites
@@ -102,7 +108,7 @@ function acetate.spriteIsFocusable(s, sameClass)
 end
 
 -- move forward through the sprite display list, focusing the next one for debug visualization
-function acetate.cycleFocusForward(sameClass, _looping)
+function acetate.cycleFocusForward(sameClass, --[[optional]] looping)
     local sprites = playdate.graphics.sprite.getAllSprites()
 
     -- release focus if there are no sprites
@@ -114,7 +120,7 @@ function acetate.cycleFocusForward(sameClass, _looping)
 
     -- keep track of whether we've iterated past the current focus, starting at the
     -- beginning if we're looping around or beginning without a focused sprite
-    local focusFound = _looping or acetate.focusedSprite == nil
+    local focusFound = looping or acetate.focusedSprite == nil
 
     for i, sprite in ipairs(sprites) do
         if focusFound then
@@ -129,7 +135,7 @@ function acetate.cycleFocusForward(sameClass, _looping)
         end
         -- reached the end
         if i == #sprites then
-            if sameClass and not _looping then
+            if sameClass and not looping then
                 -- loop around once when cycling through sprites of the same class
                 acetate.cycleFocusForward(true, true)
             else
@@ -141,7 +147,7 @@ function acetate.cycleFocusForward(sameClass, _looping)
 end
 
 -- move backward through the sprite display list, focusing the previous one for debug visualization
-function acetate.cycleFocusBackward(sameClass, _looping)
+function acetate.cycleFocusBackward(sameClass, --[[optional]] looping)
     local sprites = playdate.graphics.sprite.getAllSprites()
 
     -- release focus if there are no sprites
@@ -153,7 +159,7 @@ function acetate.cycleFocusBackward(sameClass, _looping)
 
     -- keep track of whether we've iterated past the current focus, starting at the
     -- end if we're looping around or beginning without a focused sprite
-    local focusFound = _looping or acetate.focusedSprite == nil
+    local focusFound = looping or acetate.focusedSprite == nil
 
     for i = #sprites, 1, -1 do
         local sprite = sprites[i]
@@ -169,7 +175,7 @@ function acetate.cycleFocusBackward(sameClass, _looping)
         end
         -- reached the end
         if i == 1 then
-            if sameClass and not _looping then
+            if sameClass and not looping then
                 -- loop around once when cycling through sprites of the same class
                 acetate.cycleFocusBackward(true, true)
             else

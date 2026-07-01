@@ -209,6 +209,7 @@ characters. They are case sensitive.
 | Pattern      | Substitution                                 |
 | ------------ | -------------------------------------------- |
 | `$n`         | `debugName` if given, class name otherwise   |
+| `$N`         | as above, but with class name + memory addr  |
 | `$cn`        | Class name                                   |
 | `$str`       | `tostring()` output                          |
 | `$a`         | Memory address                               |
@@ -514,7 +515,7 @@ The following settings are available:
 | `FPSPersists`                   | boolean  | `false`                               | Whether to show the FPS (frames per second) even while debug mode isn't enabled.                                                                                    |
 | `showSpriteCount`               | boolean  | `true`                                | Whether to show the total number of sprites.                                                                                                                        |
 | `spriteCountPersists`           | boolean  | `false`                               | Whether to show the total number of sprites even while debug mode isn't enabled.                                                                                    |
-| `showDebugString`               | boolean  | `true`                                | Whether the debug string is shown while focused on a single sprite in debug mode.                                                                                   |
+| `showDebugString`               | boolean  | `false`                               | Whether the debug string is shown while focused on a single sprite in debug mode.                                                                                   |
 | `defaultDebugFormatString`      | string   | `"$n\nX: $x\nY: $y\nW: $w\nH: $h"`    | The format used for the debug string for any sprites which don't define their own. See [Debug String Formats](#formatting-debug-strings) for details.               |
 | `defaultNudgeDebugFormatString` | string   | `"$n \n$p \n$sz \n$d \n"`             | The format used for the debug string while nudging, unless the sprite provides a custom `debugString`.                                                              |
 | `displayPrecision`              | `number` | 3                                     | An integer value specifying the desired number of decimals used to display values for the provided format string.                                                   |
