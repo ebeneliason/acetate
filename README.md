@@ -81,11 +81,13 @@ taking advantage of its features.
 1. Build and run your app in the Playdate Simulator.
 2. Press the `D` key on your keyboard to enter debug mode.
 3. Use `,` (`<`) and `.` (`>`) to cycle through sprites.
-4. Refer to the list of [keyboard shortcuts](#keyboard-shortcuts) for additional options.
+4. Press the `?` key to toggle a debug string with additional information.
+5. Refer to the list of [keyboard shortcuts](#keyboard-shortcuts) for additional options.
 
 Out of the box, you can see the following information for each sprite:
 
 - class name
+- memory address
 - size and position
 - bounding box
 - center point
