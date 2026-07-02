@@ -21,7 +21,7 @@ Acetate wraps the built-in functionality for debug drawing, and adds:
 7.  Customizable keyboard shortcuts for toggling debug mode and various visualization options
 8.  Settings that let you decide how it looks and behaves
 
-![Acetate debug visualizations](./screenshots/acetate_debug_layers.png?raw=true)
+![Acetate debug visualizations](./assets/screenshots/acetate_debug_layers.png?raw=true)
 
 _Playdate is a registered trademark of [Panic](https://panic.com)._
 
