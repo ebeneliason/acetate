@@ -1,15 +1,15 @@
 import "CoreLibs/graphics"
-import "./EasyPattern"
+import "modules/EasyPattern"
 
 -- define the Acetate namespace before importing our settings and function definitions
 acetate = {}
 
-import "settings"
-import "keyHandlers"
-import "focusHandling"
-import "nudging"
-import "spriteExtensions"
-import "screenshots"
+import "modules/settings"
+import "modules/keyHandlers"
+import "modules/focusHandling"
+import "modules/nudging"
+import "modules/spriteExtensions"
+import "modules/screenshots"
 
 local gfx <const> = playdate.graphics
 

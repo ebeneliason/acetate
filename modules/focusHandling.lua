@@ -39,7 +39,7 @@ end
 -- constrain focus cycling to sprites of the specified class
 function acetate.focusClass(class)
     acetate.focusedClass = class
-    acetate.releaseSpriteFocus()
+    acetate.releaseSpriteFocus() -- TODO: yay or nay?
     acetate.releaseGroupFocus()
 end
 
