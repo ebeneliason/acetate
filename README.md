@@ -1,6 +1,6 @@
 # Acetate
 
-[![MIT License](https://img.shields.io/github/license/ebeneliason/acetate)](LICENSE) [![Toybox Compatible](https://img.shields.io/badge/toybox.py-compatible-brightgreen)](https://toyboxpy.io) [![Latest Version](https://img.shields.io/github/v/tag/ebeneliason/acetate)](https://github.com/ebeneliason/acetate/tags)
+[![MIT License](https://img.shields.io/github/license/ebeneliason/acetate)](LICENSE) [![Latest Version](https://img.shields.io/github/v/tag/ebeneliason/acetate)](https://github.com/ebeneliason/acetate/tags)
 
 _A visual debugging suite for Playdate._
 
@@ -27,48 +27,15 @@ _Playdate is a registered trademark of [Panic](https://panic.com)._
 
 ## Installation
 
-### Installing Manually
-
-1.  Clone this repo into your project folder (e.g. inside `source`).
-2.  Move the `Acetate-Mono-*.fnt` files into your `source/fonts/` folder.
-3.  Import it into your project within your `main.lua` file.
+1.  Clone this repo (or copy its contents) into a `libraries` folder in your project, e.g. `source/libraries`.
+2.  Import `Acetate` from `main.lua`
+3.  Initialize it with an optional single argument to override any default settings
 
     ```lua
-    import 'Acetate/acetate'
-    ```
-
-4.  Initialize it for use.
-
-    ```lua
-    acetate.init()
-    ```
-
-### Using [`toybox.py`](https://toyboxpy.io/)
-
-1.  If you haven't already, download and install [`toybox.py`](https://toyboxpy.io/).
-2.  Navigate to your project folder in a Terminal window.
-
-    ```console
-    cd "/path/to/myProject"
-    ```
-
-3.  Add Acetate to your project
-
-    ```console
-    toybox add acetate
-    toybox update
-    ```
-
-4.  Then, if your code is in the `source` directory, import it as follows:
-
-    ```lua
-    import '../toyboxes/toyboxes.lua'
-    ```
-
-5.  Lastly, be sure to initialize it.
-
-    ```lua
-    acetate.init()
+    import 'libraries/acetate/Acetate'
+    acetate.init({
+      -- custom settings go here
+    })
     ```
 
 ## Usage

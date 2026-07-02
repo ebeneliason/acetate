@@ -425,11 +425,6 @@ function acetate.loadDebugFont()
         -- check the canonical fonts directory first
         acetate.debugFont = gfx.font.new(acetate.debugFontPath)
         if acetate.debugFont then return end
-
-        -- check the toybox assets directory next
-        local toyboxAssetsDir = "toybox_assets/github-dot-com/ebeneliason/acetate/"
-        acetate.debugFont = gfx.font.new(toyboxAssetsDir .. acetate.debugFontPath)
-        if acetate.debugFont then return end
     end
 
     -- use the system font as a fallback

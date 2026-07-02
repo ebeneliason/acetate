@@ -72,7 +72,7 @@ acetate.defaults = {
         y = 2
     },
     debugFontPath =                    -- the font used to display debug strings
-        "fonts/Acetate-Mono-Bold-Condensed",
+        "libraries/acetate/assets/fonts/Acetate-Mono-Bold-Condensed",
 
                                        -- NOTE: these settings require calling acetate.update()
     overlayColor = 0,                  -- the color of the overlay shown behind the debug layer 0 == gfx.kColorBlack)
