@@ -29,7 +29,7 @@ _Playdate is a registered trademark of [Panic](https://panic.com)._
 
 1.  Clone this repo (or copy its contents) into a `libraries` folder in your project, e.g. `source/libraries`.
 2.  Import `Acetate` from `main.lua`
-3.  Initialize it with an optional single argument to override any default settings
+3.  Initialize it with an optional single argument to override any default [settings](#settings)
 
     ```lua
     import 'libraries/acetate/Acetate'
