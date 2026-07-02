@@ -13,13 +13,13 @@ customize the visuals and information shown for each from directly within your s
 
 Acetate wraps the built-in functionality for debug drawing, and adds:
 
-2.  Out-of-the-box visualizations for common properties: bounding boxes, center points, collision rects, rotation, etc.
-3.  The ability to cycle through debug info for each sprite, one by one
-4.  Rich debug strings displayed in a bespoke monospaced font
-5.  The ability to do custom debug drawing from directly within your sprite classes
-6.  An option to pause your game while performing visual debugging
-7.  Customizable keyboard shortcuts for toggling debug mode and various visualization options
-8.  Settings that let you decide how it looks and behaves
+1.  Out-of-the-box visualizations for common properties: bounding boxes, center points, collision rects, rotation, etc.
+2.  The ability to cycle through debug info for each sprite, one by one
+3.  Rich debug strings displayed in a bespoke monospaced font
+4.  The ability to do custom debug drawing from directly within your sprite classes
+5.  An option to pause your game while performing visual debugging
+6.  Customizable keyboard shortcuts for toggling debug mode and various visualization options
+7.  Settings that let you decide how it looks and behaves
 
 ![Acetate debug visualizations](./assets/screenshots/acetate_debug_layers.png?raw=true)
 
