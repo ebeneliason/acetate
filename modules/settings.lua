@@ -41,7 +41,7 @@ acetate.defaults = {
     showDebugString = false,           -- whether to show informative text when a single sprite is focused sprite
     defaultDebugStringFormat =         -- comment and/or reorder lines below to adjust the format; see
                                        -- `formatDebugStringForSprite` for additional substitution options
-       "$N    \n"     ..               --    class name & address, or `debugName` if provided
+       "$N\n"         ..               --    class name & address, or `debugName` if provided
         "X: $x\n"     ..               --    X position
         "Y: $y\n"     ..               --    Y position
         "W: $w\n"     ..               --    width
@@ -72,8 +72,8 @@ acetate.defaults = {
         y = 2
     },
     debugFontPath =                    -- the font used to display debug strings
-        "libraries/acetate/assets/fonts/Acetate-Mono-Bold-Condensed",
-
+        "fonts/Acetate-Mono-Bold-Condensed",
+        -- "libraries/acetate/assets/fonts/Acetate-Mono-Bold-Condensed",
                                        -- NOTE: these settings require calling acetate.update()
     overlayColor = 0,                  -- the color of the overlay shown behind the debug layer 0 == gfx.kColorBlack)
     overlayAlpha = 0.5,                -- the opacity of the overlay

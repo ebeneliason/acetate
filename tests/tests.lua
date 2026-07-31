@@ -122,7 +122,7 @@ function TestSettings:testDefaults()
     lu.assertEquals(acetate.alwaysShowSpriteNames, true)
 
     lu.assertEquals(acetate.showDebugString, false)
-    lu.assertEquals(acetate.defaultDebugStringFormat, "$n   \nX: $x\nY: $y\nW: $w\nH: $h\n")
+    lu.assertEquals(acetate.defaultDebugStringFormat, "$N\nX: $x\nY: $y\nW: $w\nH: $h\n")
     lu.assertEquals(acetate.debugStringPosition, { x=2, y=2 })
     lu.assertEquals(acetate.debugFontPath, "fonts/Acetate-Mono-Bold-Condensed")
     lu.assertEquals(acetate.showShortcuts, false)
@@ -321,7 +321,7 @@ function TestDebugStrings:testDefaultDebugString()
 
     -- default debug strings work for basic sprites
     local str = acetate.formatDebugStringForSprite(s)
-    lu.assertEquals(str, "S   \n"   ..
+    lu.assertEquals(str, "S " .. string.format("(%p)", s) .. "\n" ..
         "X: " .. x .. "\n"     ..
         "Y: " .. y .. "\n"     ..
         "W: " .. w .. "\n"     ..
@@ -342,7 +342,7 @@ function TestDebugStrings:testDebugName()
     -- custom debug name is used in formatted debug string
     s.debugName = "Foo"
     local str = acetate.formatDebugStringForSprite(s)
-    lu.assertEquals(str, "Foo   \n"   ..
+    lu.assertEquals(str, "Foo " .. string.format("(%p)", s) .. "\n" ..
         "X: " .. x .. "\n"     ..
         "Y: " .. y .. "\n"     ..
         "W: " .. w .. "\n"     ..
