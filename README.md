@@ -7,19 +7,19 @@ _A visual debugging suite for Playdate._
 ## What is Acetate?
 
 Acetate is a visual debugging utility for use with the [Playdate](https://play.date/) Simulator,
-optimized for use with `playdate.graphics.sprite` classes. With Acetate, you can easily
-enter a visual debugging mode at any time, cycle through debug visualizations for each sprite, and optionally
+optimized for `playdate.graphics.sprite` subclasses. With Acetate, you can easily
+enter a visual debug mode at any time, cycle through debug visualizations for each sprite, and optionally
 customize the visuals and information shown for each from directly within your sprite classes.
 
 Acetate wraps the built-in functionality for debug drawing, and adds:
 
-1.  Out-of-the-box visualizations for common properties: bounding boxes, center points, collision rects, rotation, etc.
-2.  The ability to cycle through debug info for each sprite, one by one
-3.  Rich debug strings displayed in a bespoke monospaced font
-4.  The ability to do custom debug drawing from directly within your sprite classes
-5.  An option to pause your game while performing visual debugging
-6.  Customizable keyboard shortcuts for toggling debug mode and various visualization options
-7.  Settings that let you decide how it looks and behaves
+1.  Visualize common sprite properties—bounds, centers, rotation, collision rects, etc.—out of the box
+2.  Cycle through debug info for each sprite, individually
+3.  Display rich debug strings in a bespoke monospaced font
+4.  Perform custom debug drawing directly from your sprite classes
+5.  Pause your game while debugging
+6.  Customize keyboard shortcuts
+7.  Configure appearance and behavior
 
 ![Acetate debug visualizations](./assets/screenshots/acetate_debug_layers.png?raw=true)
 
@@ -42,13 +42,12 @@ _Playdate is a registered trademark of [Panic](https://panic.com)._
 
 ### Introduction
 
-Once you've imported Acetate in your project, you don't need to do anything else to start
-taking advantage of its features.
+After importing Acetate, you can take advantage of its features right away:
 
 1. Build and run your app in the Playdate Simulator.
 2. Press the `D` key on your keyboard to enter debug mode.
 3. Use `,` (`<`) and `.` (`>`) to cycle through sprites.
-4. Press the `?` key to toggle a debug string with additional information.
+4. Press the `?` key to toggle a (customizable) debug string with additional information.
 5. Refer to the list of [keyboard shortcuts](#keyboard-shortcuts) for additional options.
 
 Out of the box, you can see the following information for each sprite:
@@ -61,12 +60,12 @@ Out of the box, you can see the following information for each sprite:
 - collision rect
 - orientation orb
 
-You can also easily display additional information and visualizations unique to your sprites. Read
+You can also display additional information and visualizations unique to your sprites. Read
 on to learn how to implement custom debug drawing for your sprite classes and customize the debug
 string displayed as you cycle through them in debug mode.
 
 _**NOTE:** If your game adjusts the draw offset, you may need to cache it so that debug drawing
-appears in the correct position relative to your sprites. See the [#Troubleshooting](troubleshooting)
+appears in the correct position relative to your sprites. See the [Troubleshooting](#troubleshooting)
 section for additional details._
 
 ### Customizing Debug Drawing for Your Sprites
@@ -75,7 +74,7 @@ Acetate provides several debug visualizations out-of-the-box, which are suitable
 basic properties common to most sprites. However, you may want to visualize custom properties
 unique to your sprite as well. Acetate makes this easy!
 
-You can implement the `debugDraw` function within your `playdate.graphics.sprite` subclasses and
+You can implement `debugDraw` within your `playdate.graphics.sprite` subclasses and
 Acetate will ensure it gets called automatically:
 
 ```lua
@@ -92,7 +91,7 @@ Acetate prepares the graphics context for you automatically:
   drawing relative to your sprite (just like in your `draw` function).
 
 Anything you draw within this function will appear in debug mode. You can toggle your custom
-debug drawing on/off using the `M` key, or set `acetate.customDebugDrawing` to `true` or `false`
+debug drawing on and off using the `M` key, or set `acetate.customDebugDrawing` to `true` or `false`
 from within your code.
 
 #### Rendering Text
@@ -109,7 +108,7 @@ acetate.debugFont:drawText("This text will render in the debug layer!", x, y)
 #### Reusing Acetate's Built-in Debug Visualizations
 
 Acetate provides a handful of extensions to the sprite class specifically designed for drawing
-debug info for common sprite properties. You can toggle these on/off globally using the
+debug info for common sprite properties. You can toggle these on and off globally using the
 [keyboard shortcuts](#keyboard-shortcuts) or Acetate [settings](#settings), but occasionally
 you'll want certain features for particular types of sprites and not others. For example, you might
 want to show orientation orbs _only_ for sprites which rotate within your game.
@@ -160,7 +159,7 @@ include the most useful information for your use case in two ways:
 1.  **Change the default.** Modify the `acetate.defaultDebugStringFormat` to change the debug
     string shown for all of your sprites.
 
-2.  **Set custom strings.** Implement the `debugString()` function on your sprite. You can provide a
+2.  **Set custom strings.** Implement `debugString()` on your sprite. You can provide a
     fully formatted string, or include substitution patterns as shown in the table below. If you don't
     require substitutions, you may pass `false` as a second return value to skip the substitution logic.
 
@@ -213,7 +212,7 @@ characters. They are case sensitive.
 
 #### Printing Debug Info
 
-You can print debug information for the currently focused sprite(s) to the console by pressing the `I` key. This makes it easy to review, compare, or copy/paste values. This works regardless of whether the current focus is an individual sprite, a class, a debug group, or all sprites currently in the global sprite list.
+You can print debug information for the currently focused sprite(s) to the console by pressing the `I` key. This makes it easy to review, compare, or copy and paste values. This works regardless of whether the current focus is an individual sprite, a class, a debug group, or all sprites currently in the global sprite list.
 
 You can also dump debug info for a sprite programmatically in order to easily view debug data at specific points in your program's execution:
 
@@ -251,7 +250,7 @@ self:printDebugTrace("How did we get here?")
 
 ### Improving Debug Legibility
 
-Debug visualizations, and especially debug text, can be difficult to see regardless of color when the underlying game contains high frequency patterns and visuals. Acetate offers a translucent overlay which can be used to dim the game content and help the debug layer stand out for added legibility. It does so by drawing directly to the screen buffer after your game renders each frame, and so requires adding a call to `acetate.update` at the end of your `playdate.update` callback:
+Debug visualizations, and especially debug text, can be difficult to see regardless of color when the underlying game contains high frequency patterns and visuals. Acetate offers a translucent overlay which can be used to dim the game content and help the debug layer stand out for added legibility. It does so by drawing directly to the screen buffer after your game renders each frame, which requires adding a call to `acetate.update` at the end of your `playdate.update` callback:
 
 ```lua
 -- at the very end of playdate.update
@@ -264,7 +263,7 @@ Set the `showOverlayOnEnable` setting to `true` if you want the overlay to appea
 
 ### Managing Focus
 
-Cycling focus to obtain debug info for specific sprites is central to Acetate's functionality. Highlighting individual sprites or groups of related sprite allows you to isolate visual debug layers or access textual debug output for the things that matter in the moment, without needing to comment/uncomment and rebuild to surface that data. The beauty of Acetate is that you can define detailed debug visuals and text output for each class as part of its design, so it's all at the ready the next time you need to debug, without getting in the way in the meantime.
+Cycling focus to obtain debug info for specific sprites is central to Acetate's functionality. Highlighting individual sprites or groups of related sprites allows you to isolate visual debug layers or access textual debug output for the things that matter in the moment, without needing to comment/uncomment and rebuild to surface that data. The beauty of Acetate is that you can define detailed debug visuals and text output for each class as part of its design, so it's all at the ready the next time you need to debug, without getting in the way in the meantime.
 
 Acetate offers three main affordances for managing focus:
 
@@ -276,7 +275,7 @@ As you focus each sprite, their visual debug drawing layer will appear. You can 
 
 #### Cycling Through Sprites
 
-Cycling through sprites one-by-one is Acetate's basic interaction mode. Press the comma (',') and period (`.`) keys to cycle backward and forward through the list of extant sprites, respectively. (As a "mnemonic" of sorts, it may be helpful to think of these as the `<` (backward) and `>` (forward) keys. When you first enable Acetate, _all_ visible sprites in the SDKs display list are focused at once—use these keys to isolate each in sequence.
+Cycling through sprites one by one is Acetate's basic interaction mode. Press the comma (',') and period (`.`) keys to cycle backward and forward through the list of extant sprites, respectively. (As a "mnemonic" of sorts, it may be helpful to think of these as the `<` (backward) and `>` (forward) keys. When you first enable Acetate, _all_ visible sprites in the display list are focused at once—use these keys to isolate each in sequence.
 
 > [!NOTE]
 > Invisible sprites are excluded from the focus list by default. Press the `Z` key to toggle their inclusion.
@@ -341,7 +340,7 @@ acetate.releaseFocus()
 
 ### Nudge Mode
 
-Nudge mode lets you tweak the size, position, rotation, or even other properties of your sprites interactively. This lets you visualize the desired result in real time and then codify those values, avoiding the need to guess and rebuild each time.
+Nudge mode lets you tweak the size, position, rotation, or even other properties of your sprites interactively. This lets you visualize the desired result in real time and then codify those values, avoiding repeated guess-and-rebuild cycles.
 
 #### Activating Nudge Mode
 
@@ -357,7 +356,7 @@ You can nudge multiple sprites at once by using class focus or debug groups (or 
 
 #### Customizing Nudge Behaviors
 
-Depending on your sprite, you might want to adjust other properties. For example, an arc or circular sprite might have a radius that parameterizes it, rather than a width and height. You can provide a custom `debugNudge(x, y)` function which will be called when the B button is held down. This function receives `x` and `y` increments, which are positive or negative according to whether the left/right and/or up/down keys are pressed.
+Depending on your sprite, you might want to adjust other properties. For example, an arc or circular sprite might have a radius that parameterizes it, rather than a width and height. If you implement `debugNudge(x, y)`, it will be called when the **B** button is pressed or held. This function receives `x` and `y` increments as arguments, which are positive or negative according to whether the left/right and/or up/down keys are pressed.
 
 You can choose to modify different properties with up/down vs. left/right, or have them both adjust a single property. In the latter case, you can take a shortcut by redefining the increment as their sum, e.g. `local increment = x + y`, then simply add the increment to the property you wish to adjust.
 
@@ -462,7 +461,7 @@ The following settings are available:
 | `drawBounds`              | boolean | `true`  | Bounding rects are shown for all sprites in debug mode when true.                       |
 | `drawOrientations`        | boolean | `true`  | Orientation orbs are shown for all sprites in debug mode when true.                     |
 | `drawCollideRects`        | boolean | `false` | Collision rects are shown for all sprites while debug mode is enabled.                  |
-| `customDebugDrawing`      | boolean | `true`  | Custom debug drawing (implemtented in sprite `debugDraw` functions) is shown when true. |
+| `customDebugDrawing`      | boolean | `true`  | Custom debug drawing (implemented in sprite `debugDraw` functions) is shown when true. |
 | `customOverridesDefaults` | boolean | `false` | Built-in debug drawing is hidden for sprites with custom debug drawing when true.       |
 
 ### Drawing Options
@@ -542,8 +541,8 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
     correct path relative to your source file.
 
 2.  **Keyboard handler.** Acetate implements the `playdate.keyPressed` function, which provides
-    shortcuts for, among other things, toggling its debug overlay. If you implement the
-    `keyPressed` handler yourself, it will override Acetate's. In this case, you can call
+    shortcuts for, among other things, toggling its debug overlay. If you implement
+    `keyPressed` yourself, it will override Acetate's. In this case, you can call
     Acetate's from your own:
 
     ```lua
@@ -555,10 +554,10 @@ If you can't activate Acetate debug mode for your app in the simulator, check th
     ```
 
     If acetate keyboard handling interferes with your own, you can modify the keyboard shortcuts
-    with custom settings, including the key used to enable/disble the acetate debug layer.
+    with custom settings, including the key used to enable/disable the acetate debug layer.
 
 3.  **Debug draw.** Acetate implements the `playdate.debugDraw` function in order to render into
-    the debug layer of the simulator. If you implement the `debugDraw` function yourself, it
+    the debug layer of the simulator. If you implement `debugDraw`, it
     will override Acetate's. In this case, you can call Acetate's from your own:
 
     ```lua
