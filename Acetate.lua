@@ -507,7 +507,7 @@ function acetate.formatDebugStringForSprite(sprite, options)
 
     s = s:gsub("%$[a-zA-Z#]+", function(str)                                  -- SUBSTITUTION KEY
         if     str == "$n"   then return n                                    -- $n  | sprite `debugName` (or classname)
-        elseif str == "$N"   then return n .. " (" .. a .. ")"                -- $n  | sprite `debugName` (or classname with address)
+        elseif str == "$N"   then return n .. " (" .. a .. ")"                -- $n  | sprite `debugName` (+ address)
         elseif str == "$cn"  then return cn                                   -- $cn | sprite classname
         elseif str == "$str" then return tostring(sprite)                     -- $str| `tostring()` output
         elseif str == "$a"   then return a                                    -- $a  | memory address
